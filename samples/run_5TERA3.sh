@@ -231,9 +231,7 @@ for i in "${samples[@]}"; do
 		$sdir/fastq/reads.1.sanitize.noribo.fastq.gz \
 	| add-tag-max-sam --tag ms --newtag XP --newtag2 XN \
 	| grep -v "SA:Z:" \
-	| samtools view -b - \
-	| samtools sort -n - \
-	| sam-count-secondary --tag X0 --sorted - \
+	| sam-count-secondary --tag X0 \
 	| samtools view -b - \
 	| samtools sort - \
 	> $sdir/align/reads.1.sanitize.noribo.toTranscriptome-polya.sorted.bam
@@ -258,9 +256,7 @@ for i in "${samples[@]}"; do
 		$sdir/fastq/reads.1.sanitize.noribo.fastq.gz \
 	| add-tag-max-sam --tag ms --newtag XP --newtag2 XN \
 	| grep -v "SA:Z:" \
-	| samtools view -b - \
-	| samtools sort -n - \
-	| sam-count-secondary --tag X0 --sorted - \
+	| sam-count-secondary --tag X0 \
 	| samtools view -b - \
 	| samtools sort - \
 	> $sdir/align/reads.1.sanitize.noribo.toTranscriptome-total.sorted.bam
@@ -288,9 +284,7 @@ for i in "${samples[@]}"; do
 		$sdir/fastq/reads.1.sanitize.noribo-nanopolish.fastq.gz \
 	| add-tag-max-sam --tag ms --newtag XP --newtag2 XN \
 	| grep -v "SA:Z:" \
-	| samtools view -b - \
-	| samtools sort -n - \
-	| sam-count-secondary --tag X0 --sorted - \
+	| sam-count-secondary --tag X0 \
 	| samtools view -b - \
 	| samtools sort - \
 	> $sdir/align/reads.1.sanitize.noribo-nanopolish.toTranscriptome-total.sorted.bam
@@ -315,9 +309,7 @@ for i in "${samples[@]}"; do
 		$sdir/fastq/reads.1.sanitize.rel3_trim.fastq.gz \
 	| add-tag-max-sam --tag ms --newtag XP --newtag2 XN \
 	| grep -v "SA:Z:" \
-	| samtools view -b - \
-	| samtools sort -n - \
-	| sam-count-secondary --tag X0 --sorted - \
+	| sam-count-secondary --tag X0 \
 	| samtools view -b - \
 	| samtools sort - \
 	> $sdir/align/reads.1.sanitize.toGenome.sorted.bam
