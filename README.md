@@ -8,17 +8,17 @@ This repository will be archived as soon as the publication is accepted to keep 
 ## Requirements
 
 ### Environment
-First, we make a local copy of this repository anywhere you want. 
+First, we make a local copy of this repository anywhere you want.
 
     git clone https://github.com/mourelatos-lab/TERA-Seq_manuscript
 Then, we would like to specificy some system-wide variables we will use in this analysis. The variables used throughout the analysis can be found in `PARAMS.sh` in the main `TERA-Seq_manuscript` directory you just downloaded. You can open in it and edit the variables so it suits to your needs. We will assume you will work on the analysis in the `TERA-Seq_manuscript` directory.
 
 The individual analysis scripts **will assume the structure** from `PARAMS.sh`.
-    
+
 #### Conda environment
 Most of the software used for the analyses can be installed using the provided Conda environment yml (or text) file. Some additional software had to be installed outside  Conda environment for various reason.
 
-To get the Conda environment, you need to get Conda environment manager ([Miniconda](https://docs.conda.io/en/latest/miniconda.html) or [Conda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html)) first. We recommend Miniconda but Conda installation should work as well. 
+To get the Conda environment, you need to get Conda environment manager ([Miniconda](https://docs.conda.io/en/latest/miniconda.html) or [Conda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html)) first. We recommend Miniconda but Conda installation should work as well.
 Once you installed Conda manager (tested with `conda 4.9.0`) you can use the `teraseq.yml` file (recommended) file and install the environment like this:
 
     conda env create -f teraseq-env.yml
@@ -64,18 +64,18 @@ To re-analyze the data please populate the `samples` directory first. For more i
 Note:  5TERA 5' adapter might and will be called *REL5/rel5*, and TERA3 3' end adapter might and will be called *REL3/rel3* throughout the analyses.
 
 ## Data and Analysis
-Each analysis directory contains main `run.sh` script which shows how to reproduce the analysis and visualization if applicable. Visuzalization and other additional scripts (for example R visualization) can be found in `src` directory.  In most cases, executing the `run.sh` should be enough to reproduce the analysis. However, if this fails, the content of `run.sh` script should be comment enough for you to see where the error comes from. The `run.sh` also contains information about how to to execute the individual scripts in the `src` directory. `dev` directory contains additional used tools. 
+Each analysis directory contains main `run.sh` script which shows how to reproduce the analysis and visualization if applicable. Visuzalization and other additional scripts (for example R visualization) can be found in `src` directory.  In most cases, executing the `run.sh` should be enough to reproduce the analysis. However, if this fails, the content of `run.sh` script should be comment enough for you to see where the error comes from. The `run.sh` also contains information about how to to execute the individual scripts in the `src` directory. `dev` directory contains additional used tools.
 
 Most of the analyses has been created by [Jan Oppelt](mailto:jan.oppelt@pennmedicine.upenn.edu) ([Mourelatos lab](http://mourelatos.med.upenn.edu/), Department of Pathology and Laboratory Medicine,  Perelman School of Medicine, University of Pennsylvania). Most of the `dev` tools have been developed by [Emmanouil "Manolis" Maragkakis](mailto:emmanouil.maragkakis@nih.gov) (currently [Laboratory of Genetics and Genomics, National Institute on Aging](https://www.nia.nih.gov/research/labs/lgg/computational-genomics-unit), NIH, USA) or [Panagiotis Alexiou](mailto:panagiotis.alexiou@ceitec.muni.cz) (currently [RBP Bioinformatics](https://www.ceitec.eu/rbp-bioinformatics-panagiotis-alexiou/rg281) & [Bioinformatics Core Facility](https://www.ceitec.eu/bioinformatics-core-facility/cf284), CEITEC, CZE).
 
 ### Data and preprocessing
 #### Data preparation
-The `data` directory `run.sh` scripts will download and format all the references and annotations required for the following analyses. It also downloads the additional external data. 
+The `data` directory `run.sh` scripts will download and format all the references and annotations required for the following analyses. It also downloads the additional external data.
 
     cd data/
     ./run.sh
 Note: Pre-composed references are temporarily also available to download [here](TODO).
-#### Preprocessing 
+#### Preprocessing
 The `samples` directory contains several run scripts additonal to the main `run.sh`. This is because different library types are processed differently. However, it should be possible to run all the processing simply by executing the `run.sh`. The Guppy basecalling example is done only for one of the libraries. Reminder: the included data are only **examples** and not the complete libraries.
 `run_guppy.sh` script contains commands used to basecall the libraries (`Guppy 3.3.2-1`). `run_5TERA.sh`, `run_TERA3`, `run_5TERA3.sh`, `run_5TERA-short.sh`, `run_5TERA-SIRV.sh`, `run_Akron5Seq.sh`, and `run_RiboSeq.sh` scripts contain steps to preprocess and align the reads and postproces the resulting bam files. Script `run_5TERA3-merge.sh` contains instructions to merge the 5TERA3 replicates to a single sample. It also shows how to create the `sqlite3` database ([CLIPSeqTools](http://mourelatos.med.upenn.edu/clipseqtools/)) necessary for some of the analyses.
 
@@ -83,22 +83,22 @@ The `samples` directory contains several run scripts additonal to the main `run.
 #### Alignment statistics
 The `align-stats` directory contains code to reproduce analysis summarized in: **Supplementary Table 2**.
 #### Meta-coordinates, re-annotation and heatmap
-The `metacoord_correction` directory contains code and scripts to reproduce analysis summarized in: **Figure 1b**; **Figure 2b**; **Supplementary Figure2a-c**. 
+The `metacoord_correction` directory contains code and scripts to reproduce analysis summarized in: **Figure 1b,c,d**; **Figure 2b**; **Figure 5c**; **Supplementary Figure2a,b,c,d**.
 #### Transcript coverage - transcriptome & genome
-The `trans-coverage` directory contains code and scripts to reproduce analysis summarized in: **Figure 1d**; **Figure 1e**; **Figure 2c**; **Figure 4c**.
+The `trans-coverage` directory contains code and scripts to reproduce analysis summarized in: **Figure 2b,c**; **Figure 3c**; **Figure 4b**; **Figure 5d**.
 #### Poly(A) length
-The `polya` directory contains code and scripts to reproduce analysis summarized in: **Figure 3a**; **Figure 4b**.
+The `polya` directory contains code and scripts to reproduce analysis summarized in: **Figure 4a**; **Figure 5b**.
 #### CAGE and APA
-The `cage_apa` directory contains code and scripts to reproduce analysis summarized in: **Figure 1c (CAGE)**; **Figure 2d (APA)**; **Supplementary Figure 2d (CAGE)**.
+The `cage_apa` directory contains code and scripts to reproduce analysis summarized in: **Figure 2a (CAGE)**; **Figure 3d (APA)**; **Supplementary Figure 3a,b (CAGE)**.
 #### Relative position distribution
-The `relative-pos-distro` directory contains code and scripts to reproduce analysis summarized in: **Figure 5b**; **Figure 5c**; **Figure 5d**.
-#### Adapter length 
-The `adapter` directory contains code and scripts to reproduce analysis summarized in: **Supplementary Figure 1b**. 
+The `relative-pos-distro` directory contains code and scripts to reproduce analysis summarized in: **Figure 6b,c,d**.
+#### Adapter length
+The `adapter` directory contains code and scripts to reproduce analysis summarized in: **Supplementary Figure 1b**.
 #### SIRV expression distribution
-The `sirv` directory contains code and scripts to reproduce analysis summarized in: **Supplementary Figure 1c**; **Supplementary Figure 1e**.
+The `sirv` directory contains code and scripts to reproduce analysis summarized in: **Supplementary Figure 1c,e**.
 #### Meta-coordinates and poly(A) correlation
-The `metacoord-vs-polya` directory contains code and scripts to reproduce analysis summarized in: **Figure 3b**; **Figure 3c**.
+The `metacoord-vs-polya` directory contains code and scripts to reproduce analysis summarized in: **Figure 3c,d**.
 #### Expression correlation
-The `expression` directory contains code and scripts to reproduce analysis summarized in: **Supplementary Figure 3**.
+The `expression` directory contains code and scripts to reproduce analysis summarized in: **Supplementary Figure 4**.
 
 > Written with [StackEdit](https://stackedit.io/).

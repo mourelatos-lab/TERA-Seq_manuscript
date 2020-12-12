@@ -75,6 +75,9 @@ bed <- bed %>%
 # Make bed great again
 bed<-bed[, c(1:no_col, ncol(bed))]
 
+# Adjust length to reflect the corrections
+bed[,5]<-bed[,3]-bed[,2]
+
 # Summary of number of changes
 table(bed$corr)
 

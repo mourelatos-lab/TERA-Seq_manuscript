@@ -30,17 +30,17 @@ color.woAd=rgb(0, 0, 0, maxColorValue = 255) # wo adapter=Black; # R:0; # G:0; #
 # Read command line options and arguments
 option_list <- list(
     make_option(
-        c("-i", "--ifile"), type = "character",
-        help = "Input table", metavar = "File"),
-	make_option(
-		c("-s", "--qprob"), type = "double",
-		help = "Probality for transcript expression quantile (keep transcripts above)", metavar = "Num"),
-	make_option(
-		c("-y", "--ymax"), type = "integer", default=100,
-		help = "Y-axis maximum for the main plot. Default: 100%", metavar = "Num"),
+      c("-i", "--ifile"), type = "character",
+      help = "Input table", metavar = "File"),
     make_option(
-        c("-f", "--figfile"), type = "character",
-        help = "Output pdf file with graphs")
+      c("-s", "--subset"), type = "double", default=1,
+      help = "Percent of top expressed transcripts to keep [0-1]. Default: 1 (keep all)", metavar = "Num"),    
+    make_option(
+      c("-y", "--ymax"), type = "integer", default=100,
+      help = "Y-axis maximum for the main plots (1st and 4th). Default: 100 (=100%)", metavar = "Num"),
+    make_option(
+      c("-f", "--figfile"), type = "character",
+      help = "Output pdf file with graphs")
 )
 opt = parse_args(OptionParser(option_list = option_list))
 
@@ -48,13 +48,13 @@ opt = parse_args(OptionParser(option_list = option_list))
 #print("USING TESTING VARIABLES!!!")
 #opt<-NULL
 #opt$ifile<-"/home/jan/projects/mourelatos11/projects/ribothrypsis/analysis/distro-on-meta-gene/results/hsa.dRNASeq.HeLa.polyA.REL5OH.long.1/coords-on-corrected-meta-mrnas.unambig.rel5.tab"
-#opt$qprob<-0
+#opt$subset<-0.3
 #opt$ymax<-100
 #opt$figfile<-"/home/jan/projects/mourelatos11/projects/ribothrypsis/analysis/distro-on-meta-gene/results/hsa.dRNASeq.HeLa.polyA.REL5OH.long.1/test.pdf"
 #print("USING TESTING VARIABLES!!!")
 ### Testing variables
 
-qprob = opt$qprob
+qprob = 1-as.numeric(opt$subset)
 
 # Create data frame from file.
 df = read.delim(opt$ifile)
@@ -72,7 +72,7 @@ dt[, metalen := bin3p - bin5p]
 # 4. Remove extra columns.
 dt.tr.count = dt[, .(count = .N), by = .(group1, feat)]
 dt.tr.count[, q := quant(count, qprob), by = .(group1)]
-dt.tr.count.expressed = dt.tr.count[count > q]
+dt.tr.count.expressed = dt.tr.count[count >= q]
 dt = merge(dt, dt.tr.count.expressed, by = c("group1", "feat"))
 dt[, c("count", "q") := NULL]
 
@@ -170,13 +170,14 @@ if(opt$ymax < max(dt.bin.counts.transcr_agg$percent_sum)){
 pdf(opt$figfile, width = 7)
   ggplot(dt.bin.counts.transcr_agg, aes(x = bin, y = percent_sum)) +
   	geom_line(aes(colour = group1)) +
-#    geom_point(aes(colour = group1)) +
-#    #coord_cartesian(ylim = c(0, opt$ymax)) +
-    scale_y_continuous(breaks = seq(0, opt$ymax, by=5), labels = seq(0, opt$ymax, by=5), limits = c(0, opt$ymax)) +
+    coord_cartesian(ylim = c(0, opt$ymax)) +
+    scale_y_continuous(breaks = seq(0, opt$ymax, by=5), labels = seq(0, opt$ymax, by=5)) +      
   	facet_grid(. ~ type) +
   	ylab("read count (%)") +
     scale_colour_manual(values = cols) +
-  	theme_classic()
+  	theme_classic() + 
+    guides(color = guide_legend(ncol=2)) +    
+    theme(legend.position="bottom")
 
   ggplot(dt.metalen, aes(x = metalen, y = percent, color = group1)) +
       geom_line() +
@@ -184,7 +185,9 @@ pdf(opt$figfile, width = 7)
       xlab("meta-length (bins)") +
       ylab("read count (%)") +
       scale_colour_manual(values = cols.2) +
-      theme_classic()
+      theme_classic() + 
+    guides(color = guide_legend(ncol=2)) +    
+    theme(legend.position="bottom")
 
   ggplot(dt.metalen, aes(x = metalen, y = cumpercent, color = group1)) +
       geom_line() +
@@ -192,17 +195,23 @@ pdf(opt$figfile, width = 7)
       xlab("meta-length (bins)") +
       ylab("cumulative read count (%)") +
       scale_colour_manual(values = cols.2) +
-      theme_classic()
+      theme_classic() + 
+    guides(color = guide_legend(ncol=2)) +    
+    theme(legend.position="bottom")
 
   ggplot(dt.bin.counts.transcr_agg, aes(x = bin, y = dens_mean, ymin = dens_mean - dens_sd, ymax = dens_mean + dens_sd)) +
   	geom_line(aes(colour = group1)) +
-      geom_point(aes(colour = group1)) +
-      geom_ribbon(aes(fill = group1), alpha = 0.1) +
+	geom_point(aes(colour = group1)) +
+	geom_ribbon(aes(fill = group1), alpha = 0.1) +
+    coord_cartesian(ylim = c(0, opt$ymax/100)) +
+    scale_y_continuous(breaks = seq(0, opt$ymax/100, by=0.05), labels = seq(0, opt$ymax/100, by=0.05)) +
   	facet_grid(. ~ type) +
   	ylab("average read density (avg. across transcripts)") +
     scale_colour_manual(values = cols) +
     scale_fill_manual(values = cols) +
-  	theme_classic()
+  	theme_classic() + 
+    guides(color = guide_legend(ncol=2), fill = guide_legend(ncol=2)) +    
+    theme(legend.position="bottom")
 
   ggplot(dt.bin.counts, aes(x = bin, y = feat )) +
       geom_tile(aes(fill = dens)) +

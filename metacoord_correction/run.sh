@@ -213,7 +213,7 @@ for i in "${samples[@]}"; do
 		$sdir/coords-on-corrected-meta-mrnas.primary.rel5.tab \
 		| src/R/plot-meta-coords.R \
 			--ifile stdin \
-			--qprob 0 \
+			--subset 0.3 \
 			--figfile $sdir/corrected/coords-on-corrected-meta-mrnas.primary.norel5_vs_rel5.pdf &
 	src/R/plot-meta-coords-heatmap.R \
 		--ifile $sdir/coords-on-corrected-meta-mrnas.primary.norel5.tab \
@@ -230,7 +230,7 @@ for i in "${samples[@]}"; do
 		$sdir/coords-on-corrected-meta-mrnas.unambig.rel5.tab \
 		| src/R/plot-meta-coords.R \
 			--ifile stdin \
-			--qprob 0 \
+			--subset 0.3 \
 			--figfile $sdir/corrected/coords-on-corrected-meta-mrnas.unambig.norel5_vs_rel5.pdf &
 	src/R/plot-meta-coords-heatmap.R \
 		--ifile $sdir/coords-on-corrected-meta-mrnas.unambig.norel5.tab \
@@ -304,7 +304,7 @@ for i in "${samples[@]}"; do
 		$sdir/coords-on-meta-mrnas.primary.rel5.tab \
 		| src/R/plot-meta-coords.R \
 			--ifile stdin \
-			--qprob 0 \
+			--subset 0.3 \
 			--figfile $sdir/uncorrected/coords-on-meta-mrnas.primary.norel5_vs_rel5.pdf &
 	src/R/plot-meta-coords-heatmap.R \
 		--ifile $sdir/coords-on-meta-mrnas.primary.norel5.tab \
@@ -321,7 +321,7 @@ for i in "${samples[@]}"; do
 		$sdir/coords-on-meta-mrnas.unambig.rel5.tab \
 		| src/R/plot-meta-coords.R \
 			--ifile stdin \
-			--qprob 0 \
+			--subset 0.3 \
 			--figfile $sdir/uncorrected/coords-on-meta-mrnas.unambig.norel5_vs_rel5.pdf &
 	src/R/plot-meta-coords-heatmap.R \
 		--ifile $sdir/coords-on-meta-mrnas.unambig.norel5.tab \
@@ -404,7 +404,7 @@ for i in "${samples[@]}"; do
 		$sdir/coords-on-corrected-meta-mrnas.primary.rel3.tab \
 		| src/R/plot-meta-coords.R \
 			--ifile stdin \
-			--qprob 0 \
+			--subset 0.3 \
 			--figfile $sdir/corrected/coords-on-corrected-meta-mrnas.primary.norel3_vs_rel3.pdf &
 	src/R/plot-meta-coords-heatmap.R \
 		--ifile $sdir/coords-on-corrected-meta-mrnas.primary.norel3.tab \
@@ -421,7 +421,7 @@ for i in "${samples[@]}"; do
 		$sdir/coords-on-corrected-meta-mrnas.unambig.rel3.tab \
 		| src/R/plot-meta-coords.R \
 			--ifile stdin \
-			--qprob 0 \
+			--subset 0.3 \
 			--figfile $sdir/corrected/coords-on-corrected-meta-mrnas.unambig.norel3_vs_rel3.pdf &
 	src/R/plot-meta-coords-heatmap.R \
 		--ifile $sdir/coords-on-corrected-meta-mrnas.unambig.norel3.tab \
@@ -496,7 +496,7 @@ for i in "${samples[@]}"; do
 		$sdir/coords-on-meta-mrnas.primary.rel3.tab \
 		| src/R/plot-meta-coords.R \
 			--ifile stdin \
-			--qprob 0 \
+			--subset 0.3 \
 			--figfile $sdir/uncorrected/coords-on-meta-mrnas.primary.norel3_vs_rel3.pdf &
 	src/R/plot-meta-coords-heatmap.R \
 		--ifile $sdir/coords-on-meta-mrnas.primary.norel3.tab \
@@ -513,7 +513,7 @@ for i in "${samples[@]}"; do
 		$sdir/coords-on-meta-mrnas.unambig.rel3.tab \
 		| src/R/plot-meta-coords.R \
 			--ifile stdin \
-			--qprob 0 \
+			--subset 0.3 \
 			--figfile $sdir/uncorrected/coords-on-meta-mrnas.unambig.norel3_vs_rel3.pdf &
 	src/R/plot-meta-coords-heatmap.R \
 		--ifile $sdir/coords-on-meta-mrnas.unambig.norel3.tab \
@@ -582,7 +582,6 @@ for i in "${samples[@]}"; do
 		cat $a \
 		| src/R/plot-meta-coords-inclLen.R \
 			--ifile stdin \
-			--qprob 0 \
 			--figfile $sdir/corrected/${name%.*}-sameQuart.pdf \
 			--recalquart \
 			--addtransnum &
@@ -595,7 +594,6 @@ for i in "${samples[@]}"; do
 		$sdir/coords-on-corrected-meta-mrnas.primary.rel5-inclLen.tab \
 		| src/R/plot-meta-coords-inclLen.R \
 			--ifile stdin \
-			--qprob 0 \
 			--figfile $sdir/corrected/coords-on-corrected-meta-mrnas.primary.rel5-vs-norel5-inclLen-sameQuart.pdf \
 			--recalquart &
 
@@ -604,7 +602,6 @@ for i in "${samples[@]}"; do
 		$sdir/coords-on-corrected-meta-mrnas.unambig.rel5-inclLen.tab \
 		| src/R/plot-meta-coords-inclLen.R \
 			--ifile stdin \
-			--qprob 0 \
 			--figfile $sdir/corrected/coords-on-corrected-meta-mrnas.unambig.rel5-vs-norel5-inclLen-sameQuart.pdf \
 			--recalquart &
     wait
@@ -614,7 +611,6 @@ for i in "${samples[@]}"; do
 		cat $a \
 		| src/R/plot-meta-coords-inclLen.R \
 			--ifile stdin \
-			--qprob 0 \
 			--figfile $sdir/uncorrected/${name%.*}-sameQuart.pdf \
 			--recalquart \
 			--addtransnum &    
@@ -626,7 +622,6 @@ for i in "${samples[@]}"; do
 		$sdir/coords-on-meta-mrnas.primary.rel5-inclLen.tab \
 		| src/R/plot-meta-coords-inclLen.R \
 			--ifile stdin \
-			--qprob 0 \
 			--figfile $sdir/uncorrected/coords-on-meta-mrnas.primary.rel5-vs-norel5-inclLen-sameQuart.pdf \
 			--recalquart &
 
@@ -635,7 +630,6 @@ for i in "${samples[@]}"; do
 		$sdir/coords-on-meta-mrnas.unambig.rel5-inclLen.tab \
 		| src/R/plot-meta-coords-inclLen.R \
 			--ifile stdin \
-			--qprob 0 \
 			--figfile $sdir/uncorrected/coords-on-meta-mrnas.unambig.rel5-vs-norel5-inclLen-sameQuart.pdf \
 			--recalquart &
     wait        
@@ -659,7 +653,6 @@ for i in "${samples[@]}"; do
 		cat $a \
 		| src/R/plot-meta-coords-inclLen.R \
 			--ifile stdin \
-			--qprob 0 \
 			--figfile $sdir/corrected/${name%.*}-sameQuart.pdf \
 			--recalquart \
 			--addtransnum &
@@ -672,7 +665,6 @@ for i in "${samples[@]}"; do
 		$sdir/coords-on-corrected-meta-mrnas.primary.rel3-inclLen.tab \
 		| src/R/plot-meta-coords-inclLen.R \
 			--ifile stdin \
-			--qprob 0 \
 			--figfile $sdir/corrected/coords-on-corrected-meta-mrnas.primary.rel3-vs-norel3-inclLen-sameQuart.pdf \
 			--recalquart &
 
@@ -681,7 +673,6 @@ for i in "${samples[@]}"; do
 		$sdir/coords-on-corrected-meta-mrnas.unambig.rel3-inclLen.tab \
 		| src/R/plot-meta-coords-inclLen.R \
 			--ifile stdin \
-			--qprob 0 \
 			--figfile $sdir/corrected/coords-on-corrected-meta-mrnas.unambig.rel3-vs-norel3-inclLen-sameQuart.pdf \
 			--recalquart &		
     wait
@@ -692,7 +683,6 @@ for i in "${samples[@]}"; do
 		cat $a \
 		| src/R/plot-meta-coords-inclLen.R \
 			--ifile stdin \
-			--qprob 0 \
 			--figfile $sdir/uncorrected/${name%.*}-sameQuart.pdf \
 			--recalquart \
 			--addtransnum &
@@ -704,7 +694,6 @@ for i in "${samples[@]}"; do
 		$sdir/coords-on-meta-mrnas.primary.rel3-inclLen.tab \
 		| src/R/plot-meta-coords-inclLen.R \
 			--ifile stdin \
-			--qprob 0 \
 			--figfile $sdir/uncorrected/coords-on-meta-mrnas.primary.rel3-vs-norel3-inclLen-sameQuart.pdf \
 			--recalquart &
 
@@ -713,7 +702,6 @@ for i in "${samples[@]}"; do
 		$sdir/coords-on-meta-mrnas.unambig.rel3-inclLen.tab \
 		| src/R/plot-meta-coords-inclLen.R \
 			--ifile stdin \
-			--qprob 0 \
 			--figfile $sdir/uncorrected/coords-on-meta-mrnas.unambig.rel3-vs-norel3-inclLen-sameQuart.pdf \
 			--recalquart &
     wait        

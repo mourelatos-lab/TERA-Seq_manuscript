@@ -38,8 +38,8 @@ option_list <- list(
 	    c("-i", "--ifile"), type = "character",
 	    help = "Input table", metavar = "File"),
 	make_option(
-	    c("-s", "--qprob"), type = "double",
-	    help = "Probality for transcript expression quantile (keep transcripts above)", metavar = "Num"),
+	    c("-s", "--subset"), type = "double", default=1.0,
+	    help = "Percent of top expressed transcripts to keep [0-1]. Default: 1 (keep all)", metavar = "Num"),
 	make_option(
             c("-f", "--figfile"), type = "character",
 	    help = "Output pdf file with graphs"),
@@ -56,14 +56,14 @@ opt = parse_args(OptionParser(option_list = option_list))
 # print("USING TESTING VARIABLES!!!")
 # opt<-NULL
 # opt$ifile<-"/home/jan/projects/mourelatos11/projects/ribothrypsis/analysis/distro-on-meta-gene/results/hsa.dRNASeq.HeLa.polyA.REL5OH.long.1/coords-on-corrected-meta-mrnas.unambig.norel5-inclLen.tab"
-# opt$qprob<-0
+# opt$subset<-0.3
 # opt$recalquart<-TRUE
 # opt$addtransnum<-TRUE
 # opt$figfile<-"/home/jan/projects/mourelatos11/projects/ribothrypsis/analysis/distro-on-meta-gene/results/hsa.dRNASeq.HeLa.polyA.REL5OH.long.1/test.pdf"
 # print("USING TESTING VARIABLES!!!")
 ### Testing variables
 
-qprob = opt$qprob
+qprob = 1-as.numeric(opt$subset)
 
 # Create data frame from file.
 df = read.delim(opt$ifile)
@@ -106,7 +106,7 @@ dt[, metalen := bin3p - bin5p]
 # 4. Remove extra columns.
 dt.tr.count = dt[, .(count = .N), by = .(group1, feat)]
 dt.tr.count[, q := quant(count, qprob), by = .(group1)]
-dt.tr.count.expressed = dt.tr.count[count > q]
+dt.tr.count.expressed = dt.tr.count[count >= q]
 dt = merge(dt, dt.tr.count.expressed, by = c("group1", "feat"))
 dt[, c("count", "q") := NULL]
 
@@ -207,13 +207,14 @@ pdf(opt$figfile, width = 9)
   ggplot(data = subset(dt.bin.counts.transcr_agg, quartile %in% c(seq(500, 3000, by=500))),
          aes(x = bin, y = percent_sum)) +
   	geom_line(aes(colour = group1)) +
-#    geom_point(aes(colour = group1)) +
-#  #coord_cartesian(ylim = c(0, 100)) +
-  	scale_y_continuous(breaks = seq(0, 100, by=10), labels = c(0, "", 20, "", 40, "", 60, "", 80, "", 100), limits = c(0, 100)) +
+  	coord_cartesian(ylim = c(0, 100)) +
+  	scale_y_continuous(breaks = seq(0, 100, by=10), labels = c(0, "", 20, "", 40, "", 60, "", 80, "", 100)) +
   	facet_grid(quartile_name ~ type) +
   	ylab("read count (%)") +
     scale_colour_manual(values = cols) +
-  	theme_classic()
+  	theme_classic() +
+    guides(color = guide_legend(ncol=2)) +
+    theme(legend.position="bottom")
 
   ggplot(data = subset(dt.metalen, quartile %in% c(seq(500, 3000, by=500))),
          aes(x = metalen, y = percent, color = group1)) +
@@ -223,7 +224,9 @@ pdf(opt$figfile, width = 9)
       xlab("meta-length (bins)") +
       ylab("read count (%)") +
       scale_colour_manual(values = cols.2) +
-      theme_classic()
+      theme_classic() +
+    guides(color = guide_legend(ncol=2)) +
+    theme(legend.position="bottom")
 
   ggplot(data = subset(dt.metalen, quartile %in% c(seq(500, 3000, by=500))),
          aes(x = metalen, y = cumpercent, color = group1)) +
@@ -233,27 +236,21 @@ pdf(opt$figfile, width = 9)
       xlab("meta-length (bins)") +
       ylab("cumulative read count (%)") +
       scale_colour_manual(values = cols.2) +
-      theme_classic()
+      theme_classic() +
+    guides(color = guide_legend(ncol=2)) +
+    theme(legend.position="bottom")
 
   ggplot(data = subset(dt.bin.counts.transcr_agg, quartile %in% c(seq(500, 3000, by=500))),
          aes(x = bin, y = dens_mean, ymin = dens_mean - dens_sd, ymax = dens_mean + dens_sd)) +
   	geom_line(aes(colour = group1)) +
-#    geom_point(aes(colour = group1)) +
+    coord_cartesian(ylim = c(0, 1.0)) +
+    scale_y_continuous(breaks = seq(0.0, 1.0, by=0.1), labels = c(0, "", 0.2, "", 0.4, "", 0.6, "", 0.8, "", 1.0)) +
     geom_ribbon(aes(fill = group1), alpha = 0.1) +
   	facet_grid(quartile ~ type) +
   	ylab("average read density (avg. across transcripts)") +
     scale_colour_manual(values = cols) +
     scale_fill_manual(values = cols) +
-  	theme_classic()
-
-  # TODO - check how to add quartile information
-  # It would probably have to be either a loop or nested facets (https://stackoverflow.com/questions/40316169/nested-facets-in-ggplot2-spanning-groups)
-  # ggplot(dt.bin.counts, aes(x = bin, y = feat )) +
-  #     geom_tile(aes(fill = dens)) +
-  #     scale_fill_gradient(low = "white", high = "firebrick") +
-  # 	facet_grid(group1 ~ type) +
-  #     theme_classic() +
-  # 	theme(
-  # 	    axis.text.y = element_text(size = 1),
-  # 	    axis.ticks.y = element_blank())
+  	theme_classic() +
+    guides(color = guide_legend(ncol=2), fill = guide_legend(ncol=2)) +
+    theme(legend.position="bottom")
 graphics.off()
