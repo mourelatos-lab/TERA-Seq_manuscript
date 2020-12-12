@@ -9,7 +9,7 @@ threads=6
 assembly="hg38"
 
 RES_DIR="results"
-mkdir $RES_DIR
+mkdir -p $RES_DIR
 
 ##########################################################################
 

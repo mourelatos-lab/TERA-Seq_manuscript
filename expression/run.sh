@@ -8,7 +8,7 @@ threads=10
 assembly="hg38"
 
 RES_DIR="results"
-mkdir $RES_DIR
+mkdir -p $RES_DIR
 
 ####################################################################################################
 
@@ -20,7 +20,7 @@ echo ">>> GET TPM EXPRESSION <<<"
 conda activate teraseq
 source $INSTALL/perl-virtualenv/teraseq/bin/activate
 
-libraries=(
+samples=(
     "hsa.dRNASeq.HeLa.polyA.CIP.decap.REL5.long.1"
     "hsa.dRNASeq.HeLa.polyA.decap.REL5.long.1"
     "hsa.dRNASeq.HeLa.polyA.REL5.long.1"
@@ -35,7 +35,7 @@ libraries=(
     "hsa.dRNASeq.HeLa.total.REL5.long.REL3.X"
 )
 
-for i in "${libraries[@]}"; do
+for i in "${samples[@]}"; do
 	echo " Working for" $i;
 	sdir=$RES_DIR/$i
 

@@ -16,7 +16,7 @@ transcripts="data/transcripts_select.txt" # Selected transcripts (you can make y
 polya_resdir="$DIR/polya/results" # Directory with poly(A) length results
 
 RES_DIR="results"
-mkdir $RES_DIR
+mkdir -p $RES_DIR
 
 ####################################################################################################
 

@@ -13,7 +13,7 @@ dist_cage=10 # Max distance of read len to signal
 dist_apa=$dist_cage
 
 RES_DIR="results"
-mkdir $RES_DIR
+mkdir -p $RES_DIR
 
 ####################################################################################################
 

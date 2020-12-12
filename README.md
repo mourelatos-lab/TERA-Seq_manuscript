@@ -84,6 +84,8 @@ The `samples` directory contains several run scripts additonal to the main `run.
 The `align-stats` directory contains code to reproduce analysis summarized in: **Supplementary Table 2**.
 #### Meta-coordinates, re-annotation and heatmap
 The `metacoord_correction` directory contains code and scripts to reproduce analysis summarized in: **Figure 1b,c,d**; **Figure 2b**; **Figure 5c**; **Supplementary Figure2a,b,c,d**.
+#### Changes after re-annotation
+The `reannot-change` directory contains code and scripts to reproduce analysis summarized in: **Figure 1b,c**.
 #### Transcript coverage - transcriptome & genome
 The `trans-coverage` directory contains code and scripts to reproduce analysis summarized in: **Figure 2b,c**; **Figure 3c**; **Figure 4b**; **Figure 5d**.
 #### Poly(A) length

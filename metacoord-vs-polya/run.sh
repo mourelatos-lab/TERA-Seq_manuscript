@@ -14,7 +14,7 @@ distro_res_dir="$DIR/metacoord_correction/results" # Directory with metacoordina
 polya_resdir="$DIR/polya/results" # Directory with poly(A) length results
 
 RES_DIR="results"
-mkdir $RES_DIR
+mkdir -p $RES_DIR
 
 ####################################################################################################
 

@@ -7,7 +7,7 @@ RES_DIR="results"
 
 conda activate teraseq
 
-mkdir $RES_DIR
+mkdir -p $RES_DIR
 
 ####################################################################################################
 
