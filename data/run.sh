@@ -9,7 +9,7 @@ assembly="hg38"
 source ../PARAMS.sh
 
 ####################################################################################################
-" >>> GET SILVA rRNA DATABASE <<<"
+echo " >>> GET SILVA rRNA DATABASE <<<"
 # Download ribosomal sequences
 # Nr99 "version" clusters highly (99%) similar sequences. From the Silva - "Ref NR 99 (Web database & ARB file), a 99% identity criterion to remove highly identical sequences using the  UCLUST tool was applied."
 # Difference between Parc and Ref part of the database - "SILVA Parc and SILVA Ref. The Parc datasets comprise the entire SILVA databases for the respective gene, whereas the Ref datasets represent a subset of the Parc comprising only high-quality nearly full-length sequences."
@@ -31,7 +31,7 @@ zcat \
     | fasta-rm-dup-seqs \
     | fasta-unique-names \
     | sed '/^[^>]/ y/uU/tT/' \
-        > ribosomal.fa
+    > ribosomal.fa
 
 # Create simple BED file where stop position corresponds to sequence length.
 fasta-sanitize-header \
@@ -54,15 +54,17 @@ echo ">>> GET GENOME AND REFERENCES <<<"
 # Download and prepare the genome FASTA file from Ensembl
 cd $DATA_DIR/
 mkdir -p $assembly/genome
-cd $assembly/genome/
+cd $assembly/
 
-curl ftp://ftp.ensembl.org/pub/release-91/fasta/homo_sapiens/dna/Homo_sapiens.GRCh38.dna_sm.primary_assembly.fa.gz \
-    | zcat \
+wget -qO- ftp://ftp.ensembl.org/pub/release-91/fasta/homo_sapiens/dna/Homo_sapiens.GRCh38.dna_sm.primary_assembly.fa.gz \
+    | gunzip -c \
     | clean-genome-headers --fasta - \
     > genome/genome.fa
 
 # Download Ensembl annotation
-curl ftp://ftp.ensembl.org/pub/release-91/gtf/homo_sapiens/Homo_sapiens.GRCh38.91.gtf.gz | gunzip -c > ensembl_genes.gtf
+wget -qO- ftp://ftp.ensembl.org/pub/release-91/gtf/homo_sapiens/Homo_sapiens.GRCh38.91.gtf.gz \
+    | gunzip -c \
+    > ensembl_genes.gtf
 ln -s ensembl_genes.gtf Homo_sapiens.GRCh38.91.gtf
 
 echo ">>> CLEAN ANNOTATION <<<"
@@ -119,7 +121,7 @@ gmap -d genome -D gmap-2019-09-12 ../silva/ribosomal.hsa.fa -t $threads \
 gff2gtf-gmap ribosomal.hsa.gmap.gff3 | sed "s/\tgmapidx\t/\tsilva\t/g" | sed "s/;$/; gene_biotype \"rRNA\"; transcript_biotype \"rRNA\";/g" \
     | sort -k1,1 -k4,4n > ribosomal.hsa.gmap.gtf # Convert GMAP gff3 to gtf
 
-gtf2bed ribosomal.hsa.gmap.gtf | cut -f1-6 > rRNA.bed
+gtf2bed6 ribosomal.hsa.gmap.gtf | cut -f1-6 > rRNA.bed
 
 cat ensembl_genes.gtf | grep -v " \"rRNA\";" > ensembl_genes.gtf.tmp # Remove annotated rRNA from Ensembl but keep ribosomal - SILVA rRNA db doesn't annotate those
 cat ensembl_genes.gtf.tmp ribosomal.hsa.gmap.gtf > ensembl_genes.gtf.tmp2
@@ -200,6 +202,7 @@ STAR \
     --runThreadN $threads \
     --genomeDir STAR-2.7.2b/ \
     --genomeFastaFiles genome/genome.fa
+#    --genomeSAsparseD 2 # add this if you need to save RAM requirements; you can also increase the value to 3
 
 # Build STAR index on the genome with gene annotation
 mkdir STAR-2.7.2b-annot
@@ -210,6 +213,7 @@ STAR \
     --genomeFastaFiles genome/genome.fa \
     --sjdbGTFfile ensembl_genes.gtf \
     --sjdbOverhang 100
+#    --genomeSAsparseD 2 # add this if you need to save RAM requirements; you can also increase the value to 3
 
 echo ">>> MAKE TRNA AND RRNA BED <<<"
 # We can use this for cleaning of the bam files from tRNA and rRNA
@@ -218,9 +222,9 @@ wget http://gtrnadb.ucsc.edu/genomes/eukaryota/Hsapi38/hg38-tRNAs.tar.gz -O GtRN
 tar -xvzf GtRNAdb/hg38-tRNAs.tar.gz -C GtRNAdb
 # Convert hg38 to GRCh38 chromosome coding
 cat GtRNAdb/hg38-tRNAs.bed | sed 's/^chrM/MT/g' | sed 's/^chr//g' | sed 's/chr1_KI270713v1_random/KI270713.1/g' \
-    | sort --parallel=$threads -T GtRNAdb/ -k1,1 -k2,2 | cut -f1-6 > hg38/tRNA.bed
+    | sort --parallel=$threads -T GtRNAdb/ -k1,1 -k2,2 | cut -f1-6 > tRNA.bed
 
-cat hg38/tRNA.bed hg38/rRNA.bed > hg38/rRNA_tRNA.bed
+cat tRNA.bed rRNA.bed > rRNA_tRNA.bed
 
 echo ">>> GET POLYA DATABASE <<<"
 
@@ -302,12 +306,12 @@ cd $DATA_DIR/
 mkdir -p $assembly/genome
 cd $assembly/
 
-curl ftp://ftp.ensembl.org/pub/release-97/fasta/mus_musculus/dna/Mus_musculus.GRCm38.dna.primary_assembly.fa.gz \
-    | zcat \
+wget -qO- ftp://ftp.ensembl.org/pub/release-97/fasta/mus_musculus/dna/Mus_musculus.GRCm38.dna.primary_assembly.fa.gz \
+    | gunzip -c \
     | clean-genome-headers --fasta - \
     > genome/genome.fa
 
-curl ftp://ftp.ensembl.org/pub/release-97/gtf/mus_musculus/Mus_musculus.GRCm38.97.gtf.gz | gunzip -c > ensembl_genes.gtf
+wget -qO- ftp://ftp.ensembl.org/pub/release-97/gtf/mus_musculus/Mus_musculus.GRCm38.97.gtf.gz | gunzip -c > ensembl_genes.gtf
 ln -s ensembl_genes.gtf Mus_musculus.GRCm38.97.gtf
 
 echo ">>> CLEAN ANNOTATION <<<"

@@ -5,6 +5,8 @@ This repository will be archived as soon as the publication is accepted to keep 
 
 ## General information
 
+The analysis was tested on Ubuntu 16.04 LTS, 16 threads, 32 GB RAM, xxx GB HDD. The only exception is `STAR` indexing and mapping which needs ~32GB RAM for human-sized genome. If you need to run `STAR` on a machine with lower amount of RAM, you can add `--genomeSAsparseD 2` (or higher value) to `STAR` genome indexings to decrease RAM requirements for at a cost of speed reduction.
+
 ## Requirements
 
 ### Environment
@@ -21,6 +23,7 @@ Most of the software used for the analyses can be installed using the provided C
 To get the Conda environment, you need to get Conda environment manager ([Miniconda](https://docs.conda.io/en/latest/miniconda.html) or [Conda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html)) first. We recommend Miniconda but Conda installation should work as well.
 Once you installed Conda manager (tested with `conda 4.9.0`) you can use the `teraseq.yml` file (recommended) file and install the environment like this:
 
+    cd TERA-Seq_manuscript/
     conda env create -f teraseq-env.yml
 
 This will install `teraseq` environment. In case yml installation doesn't work you can try to install the environment using the provided `teraseq-env.txt` using the same command.
@@ -47,6 +50,8 @@ In case you need a manual installation, you can also use:
     ucsc-bedgraphtobigwig ucsc-bedtobigbed ucsc-genePredToBed ucsc-gtfToGenePred \
     qualimap rseqc cd-hit bedops parallel
 
+Note: If you get a lot of `ClobberError: This transaction has incompatible packages due to a shared path.` errors try to restart your Conda environment and/or exectue `conda clean --all` to [clean the Conda cache](https://github.com/conda/conda/issues/7038).
+
 #### Additional software
 `tools` directory contains information additional software required for some of the analyses. By executing `run.sh` you should be able to make a local installation of the additional software. Virtual environment are use wherever possible.
 
@@ -72,9 +77,9 @@ Most of the analyses has been created by [Jan Oppelt](mailto:jan.oppelt@pennmedi
 #### Data preparation
 The `data` directory `run.sh` scripts will download and format all the references and annotations required for the following analyses. It also downloads the additional external data.
 
-    cd data/
+    cd ../data/
     ./run.sh
-Note: Pre-composed references are temporarily also available to download [here](TODO).
+Note: Pre-compiled references are temporarily also available to download [here](TODO).
 #### Preprocessing
 The `samples` directory contains several run scripts additonal to the main `run.sh`. This is because different library types are processed differently. However, it should be possible to run all the processing simply by executing the `run.sh`. The Guppy basecalling example is done only for one of the libraries. Reminder: the included data are only **examples** and not the complete libraries.
 `run_guppy.sh` script contains commands used to basecall the libraries (`Guppy 3.3.2-1`). `run_5TERA.sh`, `run_TERA3`, `run_5TERA3.sh`, `run_5TERA-short.sh`, `run_5TERA-SIRV.sh`, `run_Akron5Seq.sh`, and `run_RiboSeq.sh` scripts contain steps to preprocess and align the reads and postproces the resulting bam files. Script `run_5TERA3-merge.sh` contains instructions to merge the 5TERA3 replicates to a single sample. It also shows how to create the `sqlite3` database ([CLIPSeqTools](http://mourelatos.med.upenn.edu/clipseqtools/)) necessary for some of the analyses.

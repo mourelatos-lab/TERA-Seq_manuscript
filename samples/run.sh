@@ -8,8 +8,6 @@
 #echo ">>> GUPPY BASECALLING <<<"
 #./run_Guppy.sh
 
-echo ">>> PREPARE SAMPLES <<<"
-
 echo ">> RUNNING 5TERA-SHORT <<"
 ./run_5TERA-short.sh
 echo ">> RUNNING 5TERA <<"

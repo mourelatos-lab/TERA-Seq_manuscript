@@ -12,7 +12,7 @@ assembly="hg38"
 
 samples=(
     "hsa.dRNASeq.HeLa.polyA.REL5.1"
-	"hsa.dRNASeq.HeLa.polyA.PNK.REL5.1"
+    "hsa.dRNASeq.HeLa.polyA.PNK.REL5.1"
 )
 
 echo ">>> MAKE DIRECTORY STRUCTURE <<<"

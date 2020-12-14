@@ -1,7 +1,7 @@
 # Samples
 To be able to fully re-analyze the data, please the full TERA-Seq dataset from SRA BioProject accession: [PRJNA673166](https://www.ncbi.nlm.nih.gov/bioproject/673166), put the downloaded *fastq.gz* files to directories names by `Library name/fastq` (please see the table bellow) in this directory and rename the downloaded *fastq.gz* files to `reads.1.fastq.gz`. 
 
-For example, the prepared Cap-Poly(A) *fastq.gz* have to be placed in `hsa.dRNASeq.HeLa.polyA.CIP.decap.REL5.long.1/fastq/reads.1.fastq.gz` in this directory. 
+For example, the prepared Cap-Poly(A) *fastq.gz* have to be placed in `hsa.dRNASeq.HeLa.polyA.CIP.decap.REL5.long.1/fastq/reads.1.fastq.gz` in this directory. The analysis will not work without the samples directory populated exactly this way!
 
 After you prepared the input samples/files you can run `run.sh` script to process the sample files. 
 

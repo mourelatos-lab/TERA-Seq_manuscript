@@ -39,6 +39,7 @@ ln -s $INSTALL/jvarkit/dist/biostar84452.jar $CONDA_PREFIX/share/jvarkit/remove-
 conda deactivate
 
 echo ">>> INSTALL PERL - ENVIRONMENT <<<"
+echo "Note: This might take some time"
 # Note: All Perl libraries might be possible to install to Conda but from compatibility issues we have install them separately. Also, Perl likes to break Conda environments so it's safer to make them separate.
 
 cd $INSTALL/
