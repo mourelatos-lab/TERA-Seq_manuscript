@@ -5,4 +5,4 @@
 
 echo ">>> PREPARE SAMPLES <<<"
 
-# TODO: Populate samples dir by downloading from db
+echo "TODO: Populate samples dir by downloading from db"

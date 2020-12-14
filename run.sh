@@ -9,9 +9,6 @@ main_dir = $(dirname "$0") # Save location of this script to a variable
 
 cd $main_dir/
 
-echo ">>> INSTALLING CONDA ENVIRONMENT <<<"
-conda env create -f teraseq-env.yml -y
-
 echo ">>> INSTALLING ADDITIONAL SOFTWARE <<<"
 cd tools/
 ./run.sh
@@ -20,11 +17,12 @@ echo ">>> COMPILING REFERENCES <<<"
 cd ../data/
 ./run.sh
 
-echo ">>> POPULATING SAMPLES DIRECTORY <<<"
-cd ../samples/
-./run-populate.sh
+#echo ">>> POPULATING SAMPLES DIRECTORY <<<"
+#cd ../samples/
+#./run-populate.sh
 
 echo ">>> PREPARING SAMPLES <<<"
+cd ../samples/
 ./run.sh
 
 echo ">>> RUNNING ALIGNMENT STATISTICS <<<"

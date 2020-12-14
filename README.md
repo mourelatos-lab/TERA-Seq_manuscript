@@ -21,7 +21,8 @@ The individual analysis scripts **will assume the structure** from `PARAMS.sh`.
 Most of the software used for the analyses can be installed using the provided Conda environment yml (or text) file. Some additional software had to be installed outside  Conda environment for various reason.
 
 To get the Conda environment, you need to get Conda environment manager ([Miniconda](https://docs.conda.io/en/latest/miniconda.html) or [Conda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html)) first. We recommend Miniconda but Conda installation should work as well.
-Once you installed Conda manager (tested with `conda 4.9.0`) you can use the `teraseq.yml` file (recommended) file and install the environment like this:
+
+Once you installed Conda manager (tested with `conda 4.9.0`) you can use the `teraseq.yml` file (recommended) file and install the environment:
 
     cd TERA-Seq_manuscript/
     conda env create -f teraseq-env.yml
@@ -53,7 +54,7 @@ In case you need a manual installation, you can also use:
 Note: If you get a lot of `ClobberError: This transaction has incompatible packages due to a shared path.` errors try to restart your Conda environment and/or exectue `conda clean --all` to [clean the Conda cache](https://github.com/conda/conda/issues/7038).
 
 #### Additional software
-`tools` directory contains information additional software required for some of the analyses. By executing `run.sh` you should be able to make a local installation of the additional software. Virtual environment are use wherever possible.
+`tools` directory contains information additional software required for some of the analyses. Installation of the additioonal software is included in the main `run.sh`. If you wish to install it manually you can execute `run.sh` in the `tools` directory. We use virtual environments wherever possible.
 
     cd tools/
     ./run.sh
@@ -64,11 +65,18 @@ To test the Guppy basecalling we only provide a small subset of 10 fast5 files i
 `misc` directory contains various miscellaneous scripts and sources.
 
 ## Sample data
-To re-analyze the data please populate the `samples` directory first. For more information see `samples` directory README.
+To re-analyze the data **please populate** the `samples` directory first. For more information see `samples` directory README.
 
 Note:  5TERA 5' adapter might and will be called *REL5/rel5*, and TERA3 3' end adapter might and will be called *REL3/rel3* throughout the analyses.
 
 ## Data and Analysis
+The main `run.sh` in the cloned `TERA-Seq_manuscript` directory should **execute all the analyses** used in the manuscript including the installation of additional software and preparing the references. Reminder: The only two exceptions are the installation of `teraseq` Conda environment and populating the samples directory which you have to do **before** you can run the analyses.
+
+If you wish to run only selected analyses you can go to the individual directories and execute the *local* `run.sh`. Simply go to the selected analysis and run the `run.sh` script. For example:
+
+    cd metacoord_correction/
+    ./run.sh
+
 Each analysis directory contains main `run.sh` script which shows how to reproduce the analysis and visualization if applicable. Visuzalization and other additional scripts (for example R visualization) can be found in `src` directory.  In most cases, executing the `run.sh` should be enough to reproduce the analysis. However, if this fails, the content of `run.sh` script should be comment enough for you to see where the error comes from. The `run.sh` also contains information about how to to execute the individual scripts in the `src` directory. `dev` directory contains additional used tools.
 
 Most of the analyses has been created by [Jan Oppelt](mailto:jan.oppelt@pennmedicine.upenn.edu) ([Mourelatos lab](http://mourelatos.med.upenn.edu/), Department of Pathology and Laboratory Medicine,  Perelman School of Medicine, University of Pennsylvania). Most of the `dev` tools have been developed by [Emmanouil "Manolis" Maragkakis](mailto:emmanouil.maragkakis@nih.gov) (currently [Laboratory of Genetics and Genomics, National Institute on Aging](https://www.nia.nih.gov/research/labs/lgg/computational-genomics-unit), NIH, USA) or [Panagiotis Alexiou](mailto:panagiotis.alexiou@ceitec.muni.cz) (currently [RBP Bioinformatics](https://www.ceitec.eu/rbp-bioinformatics-panagiotis-alexiou/rg281) & [Bioinformatics Core Facility](https://www.ceitec.eu/bioinformatics-core-facility/cf284), CEITEC, CZE).
@@ -77,8 +85,6 @@ Most of the analyses has been created by [Jan Oppelt](mailto:jan.oppelt@pennmedi
 #### Data preparation
 The `data` directory `run.sh` scripts will download and format all the references and annotations required for the following analyses. It also downloads the additional external data.
 
-    cd ../data/
-    ./run.sh
 Note: Pre-compiled references are temporarily also available to download [here](TODO).
 #### Preprocessing
 The `samples` directory contains several run scripts additonal to the main `run.sh`. This is because different library types are processed differently. However, it should be possible to run all the processing simply by executing the `run.sh`. The Guppy basecalling example is done only for one of the libraries. Reminder: the included data are only **examples** and not the complete libraries.
