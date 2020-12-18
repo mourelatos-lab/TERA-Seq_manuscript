@@ -25,6 +25,10 @@ echo ">>> PREPARING SAMPLES <<<"
 cd ../samples/
 ./run.sh
 
+echo ">>> RUNNING ADAPTER LENGTH VISUALIZATION <<<"
+cd ../adapter/
+./run.sh
+
 echo ">>> RUNNING ALIGNMENT STATISTICS <<<"
 cd ../align-stats/
 ./run.sh
@@ -51,10 +55,6 @@ cd ../cage_apa/
 
 echo ">>> RUNNING RELATIVE POSITION DISTRIBUTION <<<"
 cd ../relative-pos-distro/
-./run.sh
-
-echo ">>> RUNNING ADAPTER LENGTH VISUALIZATION <<<"
-cd ../adapter/
 ./run.sh
 
 echo ">>> RUNNING SIRV <<<"

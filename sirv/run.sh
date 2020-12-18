@@ -205,16 +205,6 @@ for i in "${samples[@]}"; do
         samtools index -@ $threads $bam
     done
     wait
-
-    for tab in $sdir/unambig/reassign/genome/w_wo_rel5/assign_read-to-trans.SIRV*.w_rel5.coverage.tab; do
-        echo $tab
-        table-cat $tab ${tab%w_rel5.coverage.tab}wo_rel5.coverage.tab > ${tab%w_rel5.coverage.tab}w_wo_rel5.coverage.tab
-        ./src/R/coverage_simple.R ${tab%w_rel5.coverage.tab}w_wo_rel5.coverage.tab ${tab%w_rel5.coverage.tab}w_wo_rel5.coverage.pdf
-    done
-
-    gs -dFirstPage=1 -dLastPage=1 -dNOPAUSE -dBATCH -dAutoRotatePages=/None -sDEVICE=pdfwrite \
-        -sOutputFile=$sdir/unambig/reassign/genome/w_wo_rel5/assign_read-to-trans.SIRVall.w_wo_rel5.coverage.pdf \
-        $sdir/unambig/reassign/genome/w_wo_rel5/assign_read-to-trans.SIRV*.w_wo_rel5.coverage.pdf &
 done
 wait
 

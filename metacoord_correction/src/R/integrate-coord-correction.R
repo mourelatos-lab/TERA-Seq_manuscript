@@ -106,17 +106,17 @@ corr_stats<-corr_stats %>%
 
 corr_stats$Ends<-factor(corr_stats$Ends, levels=unique(corr_stats$Ends)) # Put back the factors
 
-pdf(paste0(sub("^(.*)[.].*", "\\1", opt$ofile), "-stats.pdf"), height=6, width = 8)
-  ggplot(data=corr_stats, aes(x=Length, y=Count, colour=Ends)) +
-    geom_line() +
-    xlim(0, 15000)
-
-  # Cut xaxis and show just a zoom of one section https://stackoverflow.com/questions/7194688/using-ggplot2-can-i-insert-a-break-in-the-axis
-  ggplot() +
-    aes(x = Length, y = Count, colour=Ends) +
-    geom_line(data = corr_stats %>% mutate(subset = "all")) +
-    geom_line(data = corr_stats %>% filter(Count <= 200) %>% mutate(subset = "short")) +
-    facet_wrap(~ subset, scales = "free_y") +
-    xlim(0, 5000) +
-	xlab("Transcript length (bins by 200 nt)")
-dev.off()
+#pdf(paste0(sub("^(.*)[.].*", "\\1", opt$ofile), "-stats.pdf"), height=6, width = 8)
+#  ggplot(data=corr_stats, aes(x=Length, y=Count, colour=Ends)) +
+#    geom_line() +
+#    xlim(0, 15000)
+#
+#  # Cut xaxis and show just a zoom of one section https://stackoverflow.com/questions/7194688/using-ggplot2-can-i-insert-a-break-in-the-axis
+#  ggplot() +
+#    aes(x = Length, y = Count, colour=Ends) +
+#    geom_line(data = corr_stats %>% mutate(subset = "all")) +
+#    geom_line(data = corr_stats %>% filter(Count <= 200) %>% mutate(subset = "short")) +
+#    facet_wrap(~ subset, scales = "free_y") +
+#    xlim(0, 5000) +
+#	xlab("Transcript length (bins by 200 nt)")
+#dev.off()

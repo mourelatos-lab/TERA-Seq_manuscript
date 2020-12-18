@@ -18,6 +18,7 @@ mkdir -p $RES_DIR
 echo ">>> RELATIVE POS DISTRO 5p-5p - AKRON5 VS 5TERA W ADAPTER <<<"
 
 conda activate teraseq
+source $INSTALL/perl-virtualenv/teraseq/bin/activate
 
 pairs=(
 	"hsa.dRNASeq.HeLa.polyA.CIP.decap.REL5.long.1" "hsa.Akron5Seq.HeLa.whole.2"

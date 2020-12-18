@@ -54,7 +54,7 @@ In case you need a manual installation, you can also use:
 Note: If you get a lot of `ClobberError: This transaction has incompatible packages due to a shared path.` errors try to restart your Conda environment and/or exectue `conda clean --all` to [clean the Conda cache](https://github.com/conda/conda/issues/7038).
 
 #### Additional software
-`tools` directory contains information additional software required for some of the analyses. Installation of the additioonal software is included in the main `run.sh`. If you wish to install it manually you can execute `run.sh` in the `tools` directory. We use virtual environments wherever possible.
+`tools` directory contains information additional software required for some of the analyses. Installation of the additioonal software **is included in the main** `run.sh`. If you wish to install it manually you can execute `run.sh` in the `tools` directory. We use virtual environments wherever possible.
 
     cd tools/
     ./run.sh
@@ -65,7 +65,7 @@ To test the Guppy basecalling we only provide a small subset of 10 fast5 files i
 `misc` directory contains various miscellaneous scripts and sources.
 
 ## Sample data
-To re-analyze the data **please populate** the `samples` directory first. For more information see `samples` directory README.
+To re-analyze the data **please populate** the `samples` directory **first**. For more information see `samples` directory README.
 
 Note:  5TERA 5' adapter might and will be called *REL5/rel5*, and TERA3 3' end adapter might and will be called *REL3/rel3* throughout the analyses.
 
@@ -99,7 +99,7 @@ The `metacoord_correction` directory contains code and scripts to reproduce anal
 The `reannot-change` directory contains code and scripts to reproduce analysis summarized in: **Figure 1b,c**.
 #### Transcript coverage - transcriptome & genome
 The `trans-coverage` directory contains code and scripts to reproduce analysis summarized in: **Figure 2b,c**; **Figure 3c**; **Figure 4b**; **Figure 5d**.
-#### Poly(A) length
+#### Poly(A) tail length
 The `polya` directory contains code and scripts to reproduce analysis summarized in: **Figure 4a**; **Figure 5b**.
 #### CAGE and APA
 The `cage_apa` directory contains code and scripts to reproduce analysis summarized in: **Figure 2a (CAGE)**; **Figure 3d (APA)**; **Supplementary Figure 3a,b (CAGE)**.
@@ -107,9 +107,9 @@ The `cage_apa` directory contains code and scripts to reproduce analysis summari
 The `relative-pos-distro` directory contains code and scripts to reproduce analysis summarized in: **Figure 6b,c,d**.
 #### Adapter length
 The `adapter` directory contains code and scripts to reproduce analysis summarized in: **Supplementary Figure 1b**.
-#### SIRV expression distribution
+#### SIRV expression distribution and alignment
 The `sirv` directory contains code and scripts to reproduce analysis summarized in: **Supplementary Figure 1c,e**.
-#### Meta-coordinates and poly(A) correlation
+#### Meta-coordinates and poly(A) tail length correlation
 The `metacoord-vs-polya` directory contains code and scripts to reproduce analysis summarized in: **Figure 3c,d**.
 #### Expression correlation
 The `expression` directory contains code and scripts to reproduce analysis summarized in: **Supplementary Figure 4**.

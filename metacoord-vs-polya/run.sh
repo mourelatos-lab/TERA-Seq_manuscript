@@ -42,8 +42,6 @@ echo ">>> APPEND POLYA LENGTH LIBRARIES - REL5 <<<"
 source $INSTALL/perl-virtualenv/teraseq/bin/activate
 
 samples=(
-	"hsa.dRNASeq.HeLa.polyA.CIP.decap.REL5.long.1"
-	"hsa.dRNASeq.HeLa.polyA.decap.REL5.long.1"
 	"hsa.dRNASeq.HeLa.polyA.REL5.long.1"
 )
 
@@ -66,18 +64,8 @@ echo ">>> COMPARE POLYA AND DEGRADATION <<<"
 deactivate
 conda activate teraseq
 
-echo ">> VIOLIN PLOT AND CORRELATION <<"
-
-for i in "${samples[@]}"; do
-	echo $i
-	sdir=$RES_DIR/$i
-
-	src/R/degradation-polya-simple.R $sdir/coords-on-corrected-meta-mrnas.unambig.rel5-inclLen-inclPolya.tab $sdir &
-done
-wait
-
 echo ">> INDIVIDUAL MOLECULES WITH POLYA <<"
-# Slightly different visualization and only for selected transcripts (transcripts of genes which have only one protein-coding transcript "child")
+# Visualization only for selected transcripts (transcripts of genes which have only one protein-coding transcript "child")
 
 for i in "${samples[@]}"; do
 	echo $i
@@ -86,6 +74,20 @@ for i in "${samples[@]}"; do
 	src/R/degradation-vs-polya.R --ifile $sdir/coords-on-corrected-meta-mrnas.unambig.rel5-inclLen-inclPolya.tab \
 		--tx_list data/HeLa_transcripts.all-perGene-one2one.transcript-gene.txt \
 		--outdir $sdir > ${sdir}/degradation-vs-polya.log &
+done
+wait
+
+echo ">> VIOLIN PLOT AND CORRELATION <<"
+
+samples=(
+	"hsa.dRNASeq.HeLa.polyA.REL5.long.1"
+)
+
+for i in "${samples[@]}"; do
+	echo $i
+	sdir=$RES_DIR/$i
+
+	src/R/degradation-polya-simple.R $sdir/coords-on-corrected-meta-mrnas.unambig.rel5-inclLen-inclPolya.tab $sdir &
 done
 wait
 

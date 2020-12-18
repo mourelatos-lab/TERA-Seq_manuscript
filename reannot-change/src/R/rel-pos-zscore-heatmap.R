@@ -146,11 +146,10 @@ pl.count_col <- ggplot(dt.tr, aes(x = ref, y = count)) +
         axis.title.y = element_blank(),
         axis.ticks.y = element_blank())
 
-pdf(file = NULL) # Hack to prevent empty first page; see https://github.com/wilkelab/cowplot/issues/24
+pdf(NULL) # Prevent ggarrange creating an empty pdf for unknown reason
 p1 <- ggarrange(pl.zscore_line, NULL, pl.zscore_heatmap, pl.count_col,
           ncol = 2, nrow = 2,  align = "hv",
           widths = c(4, 1), heights = c(1, 4), common.legend = TRUE, legend = "bottom")
-graphics.off()
 
 pl.count_line <- ggplot(data = dt.pos, aes(x = pos, y = count_density)) +
 	geom_vline(xintercept = 0, colour = "darkgrey", linetype = "dotted", alpha = 1) +
@@ -178,7 +177,8 @@ p2 <- ggarrange(pl.count_line, NULL, pl.count_heatmap, pl.count_col,
           ncol = 2, nrow = 2,  align = "hv",
           widths = c(4, 1), heights = c(1, 5), common.legend = TRUE, legend = "bottom")
 
-pdf(opt$figfile, height = 14)
+pdf(opt$figfile, height = 14) # pdf(file = NULL) # Hack to prevent empty first page; see https://github.com/wilkelab/cowplot/issues/24
     annotate_figure(p1, top = sprintf("%s: transcrs: %d (%.1f%%)", name, trCount, subsetPct*100))
     annotate_figure(p2, top = sprintf("%s: transcrs: %d (%.1f%%)", name, trCount, subsetPct*100))
+dev.off()
 graphics.off()

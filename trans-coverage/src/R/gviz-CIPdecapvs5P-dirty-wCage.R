@@ -151,6 +151,8 @@ if(!file.exists(sqlite_path)) {
 EnsDb <- ensembldb::EnsDb(sqlite_path)
 #supportedFilters(EnsDb)
 
+dir.create(opt$outdir, recursive = T)
+
 for(selectid in inlist$V1){
 tryCatch({
 
@@ -234,7 +236,7 @@ tryCatch({
                             stacking = "dense", fill = cage, col = cage,
                             background.title="transparent", showTitle=FALSE)
 
-  bedannot2<-bedannot.main2[seqnames(bedannot.main2) == mychr & start(bedannot.main2) > afrom & end(bedannot.main2) < ato & strand(bedannot.main2) == astrand] 
+  bedannot2<-bedannot.main2[seqnames(bedannot.main2) == mychr & start(bedannot.main2) > afrom & end(bedannot.main2) < ato & strand(bedannot.main2) == astrand]
   atrack2 <- AnnotationTrack(bedannot2, name = "NET-CAGE", shape = "box",
                             stacking = "dense", fill = cage2, col = cage2,
                             background.title="transparent", showTitle=FALSE)
@@ -254,7 +256,7 @@ tryCatch({
   if(astrand=="+"){
     gtrack <- GenomeAxisTrack(add53=TRUE, add35=FALSE, littleTicks = FALSE, showId = TRUE)
   }else if(astrand=="-"){
-    gtrack <- GenomeAxisTrack(add53=FALSE, add35=TRUE, littleTicks = FALSE, showId = TRUE) 
+    gtrack <- GenomeAxisTrack(add53=FALSE, add35=TRUE, littleTicks = FALSE, showId = TRUE)
   }
 
   readsTrackL<-Gviz:::.import.bam.alignments(inbam[1], GRanges(seqnames = mychr, ranges = IRanges(afrom, ato)))
@@ -300,8 +302,6 @@ tryCatch({
 
   # Height of the bottom track
   displayPars(grtrack)<-list(size=length(unique(parsedEnsembl$tx_id))*0.2)
-
-  dir.create(opt$outdir, recursive = T)
 
   # Flipping of the visualization in Gviz
   if(astrand=="+"){

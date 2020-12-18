@@ -11,7 +11,8 @@ threads=6
 
 conda activate teraseq
 
-sdir="$SAMPLE_DIR/hsa.dRNASeq.HeLa.total.REL5.long.REL3.X"
+i="hsa.dRNASeq.HeLa.total.REL5.long.REL3.X"
+sdir="$SAMPLE_DIR/$i"
 
 mkdir -p $sdir/align
 mkdir $sdir/fastq
@@ -34,7 +35,7 @@ inbam="reads.1.sanitize.noribo.toTranscriptome.sorted.bam"
 samtools merge -@ $threads $sdir/align/$inbam \
     hsa.dRNASeq.HeLa.total.REL5.long.REL3.4/align/$inbam \
     hsa.dRNASeq.HeLa.total.REL5.long.REL3.5/align/$inbam \
-    hsa.dRNASeq.HeLa.total.REL5.long.REL3.6/align/$inbam 
+    hsa.dRNASeq.HeLa.total.REL5.long.REL3.6/align/$inbam
 samtools index $sdir/align/$inbam &
 wait
 
@@ -99,7 +100,7 @@ head -${line_num} $sdir/db/${samples[0]}.sqlite.transcr.sql > $sdir/db/sqlite.tr
 # Check the INDEX & COMMIT of the db and in case we are missing it append it manually
 end_line=`cat $sdir/db/${samples[0]}.sqlite.transcr.sql | grep -nP "^CREATE INDEX transcr" | cut -d":" -f1` # Get line number/size of tail
 if [ -z "$end_line" ]; then
-    echo -e "CREATE INDEX transcr_loc ON transcr (rname, start);\nCOMMIT;" > $sdir/db/sqlite.transcr.sql.tail.tmp # We can just add it manually  
+    echo -e "CREATE INDEX transcr_loc ON transcr (rname, start);\nCOMMIT;" > $sdir/db/sqlite.transcr.sql.tail.tmp # We can just add it manually
 else
     tail -n +${end_line} $sdir/db/${samples[0]}.sqlite.transcr.sql > $sdir/db/sqlite.transcr.sql.tail.tmp # Temporarily get the tail to append to the main db from ultimate 6
 fi
@@ -132,7 +133,7 @@ head -${line_num} $sdir/db/${samples[0]}.sqlite.genome.sql > $sdir/db/sqlite.gen
 # Check the INDEX & COMMIT of the db and in case we are missing it append it manually
 end_line=`cat $sdir/db/${samples[0]}.sqlite.genome.sql | grep -nP "^CREATE INDEX genome" | cut -d":" -f1` # Get line number/size of tail
 if [ -z "$end_line" ]; then
-    echo -e "CREATE INDEX genome_loc ON genome (rname, start);\nCOMMIT;" > $sdir/db/sqlite.genome.sql.tail.tmp # We can just add it manually  
+    echo -e "CREATE INDEX genome_loc ON genome (rname, start);\nCOMMIT;" > $sdir/db/sqlite.genome.sql.tail.tmp # We can just add it manually
 else
     tail -n +${end_line} $sdir/db/${samples[0]}.sqlite.genome.sql > $sdir/db/sqlite.genome.sql.tail.tmp # Temporarily get the tail to append to the main db from ultimate 6
 fi

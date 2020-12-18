@@ -26,7 +26,7 @@ conda activate teraseq
 samples=(
 	"hsa.dRNASeq.HeLa.polyA.decap.REL5.long.1"
 	"hsa.dRNASeq.HeLa.polyA.REL5.long.1"
-)	
+)
 
 mkdir $RES_DIR/coords-corrected
 
@@ -55,7 +55,7 @@ head -${line_num} $RES_DIR/coords-corrected/hsa.dRNASeq.HeLa.polyA.CIP.decap.REL
 end_line=`cat $RES_DIR/coords-corrected/hsa.dRNASeq.HeLa.polyA.CIP.decap.REL5.long.1.sqlite.transcr.sql \
 	| grep -nP "^CREATE INDEX transcr" | cut -d":" -f1` # Get line number/size of tail
 if [ -z "$end_line" ]; then
-    echo -e "CREATE INDEX transcr_loc ON transcr (rname, start);\nCOMMIT;" > $RES_DIR/coords-corrected/sqlite.transcr.coords.sql.tail.tmp # We can just add it manually  
+    echo -e "CREATE INDEX transcr_loc ON transcr (rname, start);\nCOMMIT;" > $RES_DIR/coords-corrected/sqlite.transcr.coords.sql.tail.tmp # We can just add it manually
 else
     tail -n +${end_line} $RES_DIR/coords-corrected/hsa.dRNASeq.HeLa.polyA.CIP.decap.REL5.long.1.sqlite.transcr.sql > $RES_DIR/coords-corrected/sqlite.transcr.coords.sql.tail.tmp # Temporarily get the tail to append to the main db from ultimate 6
 fi
@@ -64,7 +64,7 @@ samples=(
 	"hsa.dRNASeq.HeLa.polyA.CIP.decap.REL5.long.1"
 	"hsa.dRNASeq.HeLa.polyA.decap.REL5.long.1"
 	"hsa.dRNASeq.HeLa.polyA.REL5.long.1"
-)	
+)
 
 for i in "${samples[@]}"; do
 	echo $i
@@ -120,7 +120,7 @@ bin/redefine-mrna-coords \
 	--where "$MATE1 AND $CODINGTRANSCRIPT AND $UNAMBIG" \
 	--thres 2 \
 	> $RES_DIR/coords-corrected/new-mrna-coords.3p.unambig.tab &
-wait	
+wait
 
 echo "> REINTEGRATE THE ANNOTATION CORRECTION <"
 
@@ -139,7 +139,7 @@ src/R/integrate-coord-correction.R \
 	--column_ifile 1 \
 	--column_bed 1 \
 	--ofile $RES_DIR/coords-corrected/genic_elements.mrna.unambig.tab &
-wait	
+wait
 
 echo ">>> COORDINATES OF READS W/WO REL5 TO META-COORDINATES ON MRNAS (WITH CORRECTED) <<<"
 
@@ -149,7 +149,7 @@ samples=(
 	"hsa.dRNASeq.HeLa.polyA.REL5.long.1"
 	"hsa.dRNASeq.HeLa.polyA.CIP.decap.REL5.long.1"
 	"hsa.dRNASeq.HeLa.polyA.decap.REL5.long.1"
-	"hsa.dRNASeq.HeLa.total.REL5.long.REL3.X"    
+	"hsa.dRNASeq.HeLa.total.REL5.long.REL3.X"
 )
 
 # For the corrected valuse we use ONLY correction from the REL5 libraries to be sure we are capturing the end
@@ -215,6 +215,19 @@ for i in "${samples[@]}"; do
 			--ifile stdin \
 			--subset 0.3 \
 			--figfile $sdir/corrected/coords-on-corrected-meta-mrnas.primary.norel5_vs_rel5.pdf &
+	cat \
+		$sdir/coords-on-corrected-meta-mrnas.primary.norel5.tab \
+		| src/R/plot-meta-coords.R \
+			--ifile stdin \
+			--subset 0.3 \
+			--figfile $sdir/corrected/coords-on-corrected-meta-mrnas.primary.norel5.pdf &
+	cat \
+		$sdir/coords-on-corrected-meta-mrnas.primary.rel5.tab \
+		| src/R/plot-meta-coords.R \
+			--ifile stdin \
+			--subset 0.3 \
+			--figfile $sdir/corrected/coords-on-corrected-meta-mrnas.primary.rel5.pdf &
+
 	src/R/plot-meta-coords-heatmap.R \
 		--ifile $sdir/coords-on-corrected-meta-mrnas.primary.norel5.tab \
 		--sub 50000 \
@@ -232,6 +245,19 @@ for i in "${samples[@]}"; do
 			--ifile stdin \
 			--subset 0.3 \
 			--figfile $sdir/corrected/coords-on-corrected-meta-mrnas.unambig.norel5_vs_rel5.pdf &
+	cat \
+		$sdir/coords-on-corrected-meta-mrnas.unambig.norel5.tab \
+		| src/R/plot-meta-coords.R \
+			--ifile stdin \
+			--subset 0.3 \
+			--figfile $sdir/corrected/coords-on-corrected-meta-mrnas.unambig.norel5.pdf &
+	cat \
+		$sdir/coords-on-corrected-meta-mrnas.unambig.rel5.tab \
+		| src/R/plot-meta-coords.R \
+			--ifile stdin \
+			--subset 0.3 \
+			--figfile $sdir/corrected/coords-on-corrected-meta-mrnas.unambig.rel5.pdf &
+
 	src/R/plot-meta-coords-heatmap.R \
 		--ifile $sdir/coords-on-corrected-meta-mrnas.unambig.norel5.tab \
 		--sub 50000 \
@@ -239,7 +265,7 @@ for i in "${samples[@]}"; do
 	src/R/plot-meta-coords-heatmap.R \
 		--ifile $sdir/coords-on-corrected-meta-mrnas.unambig.rel5.tab \
 		--sub 50000 \
-		--figfile $sdir/corrected/coords-on-corrected-meta-mrnas-heatmap.unambig.rel5.pdf &	
+		--figfile $sdir/corrected/coords-on-corrected-meta-mrnas-heatmap.unambig.rel5.pdf &
     wait
 done
 
@@ -288,7 +314,7 @@ for i in "${samples[@]}"; do
 		--bins 20 \
 		--min-len 200 \
 		| table-paste-col --table - --col-name group1 --col-val $i-rel5 \
-		> $sdir/coords-on-meta-mrnas.unambig.rel5.tab & 
+		> $sdir/coords-on-meta-mrnas.unambig.rel5.tab &
     wait
 done
 
@@ -306,6 +332,20 @@ for i in "${samples[@]}"; do
 			--ifile stdin \
 			--subset 0.3 \
 			--figfile $sdir/uncorrected/coords-on-meta-mrnas.primary.norel5_vs_rel5.pdf &
+	cat \
+		$sdir/coords-on-meta-mrnas.primary.norel5.tab \
+		| src/R/plot-meta-coords.R \
+			--ifile stdin \
+			--subset 0.3 \
+			--figfile $sdir/uncorrected/coords-on-meta-mrnas.primary.norel5.pdf &
+	cat \
+		$sdir/coords-on-meta-mrnas.primary.rel5.tab \
+		| src/R/plot-meta-coords.R \
+			--ifile stdin \
+			--subset 0.3 \
+			--figfile $sdir/uncorrected/coords-on-meta-mrnas.primary.rel5.pdf &
+
+
 	src/R/plot-meta-coords-heatmap.R \
 		--ifile $sdir/coords-on-meta-mrnas.primary.norel5.tab \
 		--sub 50000 \
@@ -323,6 +363,19 @@ for i in "${samples[@]}"; do
 			--ifile stdin \
 			--subset 0.3 \
 			--figfile $sdir/uncorrected/coords-on-meta-mrnas.unambig.norel5_vs_rel5.pdf &
+	cat \
+		$sdir/coords-on-meta-mrnas.unambig.norel5.tab \
+		| src/R/plot-meta-coords.R \
+			--ifile stdin \
+			--subset 0.3 \
+			--figfile $sdir/uncorrected/coords-on-meta-mrnas.unambig.norel5.pdf &
+	cat \
+		$sdir/coords-on-meta-mrnas.unambig.rel5.tab \
+		| src/R/plot-meta-coords.R \
+			--ifile stdin \
+			--subset 0.3 \
+			--figfile $sdir/uncorrected/coords-on-meta-mrnas.unambig.rel5.pdf &
+
 	src/R/plot-meta-coords-heatmap.R \
 		--ifile $sdir/coords-on-meta-mrnas.unambig.norel5.tab \
 		--sub 50000 \
@@ -331,7 +384,7 @@ for i in "${samples[@]}"; do
 		--ifile $sdir/coords-on-meta-mrnas.unambig.rel5.tab \
 		--sub 50000 \
 		--figfile $sdir/uncorrected/coords-on-meta-mrnas-heatmap.unambig.rel5.pdf &
-    wait    
+    wait
 done
 
 echo ">>> COORDINATES OF READS REL3 TO META-COORDINATES ON MRNAS (WITH CORRECTED) <<<"
@@ -341,7 +394,7 @@ samples=(
 	"hsa.dRNASeq.HeLa.total.REL3.1"
 	"hsa.dRNASeq.HeLa.total.REL3.2"
 	"hsa.dRNASeq.HeLa.total.REL3.3"
-	"hsa.dRNASeq.HeLa.total.REL5.long.REL3.X"	
+	"hsa.dRNASeq.HeLa.total.REL5.long.REL3.X"
 )
 
 for i in "${samples[@]}"; do
@@ -388,7 +441,7 @@ for i in "${samples[@]}"; do
 		--min-len 200 \
 		| table-paste-col --table - --col-name group1 --col-val $i-rel3 \
 		> $sdir/coords-on-corrected-meta-mrnas.unambig.rel3.tab &
-    wait    
+    wait
 done
 
 echo ">>> PLOT META-COORDINATES OF READS W/WO REL3 ON MRNAS (WITH CORRECTED) <<<"
@@ -406,6 +459,19 @@ for i in "${samples[@]}"; do
 			--ifile stdin \
 			--subset 0.3 \
 			--figfile $sdir/corrected/coords-on-corrected-meta-mrnas.primary.norel3_vs_rel3.pdf &
+	cat \
+		$sdir/coords-on-corrected-meta-mrnas.primary.norel3.tab \
+		| src/R/plot-meta-coords.R \
+			--ifile stdin \
+			--subset 0.3 \
+			--figfile $sdir/corrected/coords-on-corrected-meta-mrnas.primary.norel3.pdf &
+	cat \
+		$sdir/coords-on-corrected-meta-mrnas.primary.rel3.tab \
+		| src/R/plot-meta-coords.R \
+			--ifile stdin \
+			--subset 0.3 \
+			--figfile $sdir/corrected/coords-on-corrected-meta-mrnas.primary.rel3.pdf &
+
 	src/R/plot-meta-coords-heatmap.R \
 		--ifile $sdir/coords-on-corrected-meta-mrnas.primary.norel3.tab \
 		--sub 50000 \
@@ -423,6 +489,19 @@ for i in "${samples[@]}"; do
 			--ifile stdin \
 			--subset 0.3 \
 			--figfile $sdir/corrected/coords-on-corrected-meta-mrnas.unambig.norel3_vs_rel3.pdf &
+	table-cat \
+		$sdir/coords-on-corrected-meta-mrnas.unambig.norel3.tab \
+		| src/R/plot-meta-coords.R \
+			--ifile stdin \
+			--subset 0.3 \
+			--figfile $sdir/corrected/coords-on-corrected-meta-mrnas.unambig.norel3.pdf &
+	table-cat \
+		$sdir/coords-on-corrected-meta-mrnas.unambig.rel3.tab \
+		| src/R/plot-meta-coords.R \
+			--ifile stdin \
+			--subset 0.3 \
+			--figfile $sdir/corrected/coords-on-corrected-meta-mrnas.unambig.rel3.pdf &
+
 	src/R/plot-meta-coords-heatmap.R \
 		--ifile $sdir/coords-on-corrected-meta-mrnas.unambig.norel3.tab \
 		--sub 50000 \
@@ -431,7 +510,7 @@ for i in "${samples[@]}"; do
 		--ifile $sdir/coords-on-corrected-meta-mrnas.unambig.rel3.tab \
 		--sub 50000 \
 		--figfile $sdir/corrected/coords-on-corrected-meta-mrnas-heatmap.unambig.rel3.pdf &
-    wait    
+    wait
 done
 
 echo ">>> COORDINATES OF READS W/WO REL3 TO META-COORDINATES ON MRNAS (ON DEFAULT) <<<"
@@ -480,7 +559,7 @@ for i in "${samples[@]}"; do
 		--min-len 200 \
 		| table-paste-col --table - --col-name group1 --col-val $i-rel3 \
 		> $sdir/coords-on-meta-mrnas.unambig.rel3.tab &
-    wait    
+    wait
 done
 
 echo ">>> PLOT META-COORDINATES OF READS W/WO REL3 ON MRNAS (ON DEFAULT) <<<"
@@ -498,6 +577,19 @@ for i in "${samples[@]}"; do
 			--ifile stdin \
 			--subset 0.3 \
 			--figfile $sdir/uncorrected/coords-on-meta-mrnas.primary.norel3_vs_rel3.pdf &
+	cat \
+		$sdir/coords-on-meta-mrnas.primary.norel3.tab \
+		| src/R/plot-meta-coords.R \
+			--ifile stdin \
+			--subset 0.3 \
+			--figfile $sdir/uncorrected/coords-on-meta-mrnas.primary.norel3.pdf &
+	cat \
+		$sdir/coords-on-meta-mrnas.primary.rel3.tab \
+		| src/R/plot-meta-coords.R \
+			--ifile stdin \
+			--subset 0.3 \
+			--figfile $sdir/uncorrected/coords-on-meta-mrnas.primary.rel3.pdf &
+
 	src/R/plot-meta-coords-heatmap.R \
 		--ifile $sdir/coords-on-meta-mrnas.primary.norel3.tab \
 		--sub 50000 \
@@ -515,6 +607,19 @@ for i in "${samples[@]}"; do
 			--ifile stdin \
 			--subset 0.3 \
 			--figfile $sdir/uncorrected/coords-on-meta-mrnas.unambig.norel3_vs_rel3.pdf &
+	cat \
+		$sdir/coords-on-meta-mrnas.unambig.norel3.tab \
+		| src/R/plot-meta-coords.R \
+			--ifile stdin \
+			--subset 0.3 \
+			--figfile $sdir/uncorrected/coords-on-meta-mrnas.unambig.norel3.pdf &
+	cat \
+		$sdir/coords-on-meta-mrnas.unambig.rel3.tab \
+		| src/R/plot-meta-coords.R \
+			--ifile stdin \
+			--subset 0.3 \
+			--figfile $sdir/uncorrected/coords-on-meta-mrnas.unambig.rel3.pdf &
+
 	src/R/plot-meta-coords-heatmap.R \
 		--ifile $sdir/coords-on-meta-mrnas.unambig.norel3.tab \
 		--sub 50000 \
@@ -523,10 +628,11 @@ for i in "${samples[@]}"; do
 		--ifile $sdir/coords-on-meta-mrnas.unambig.rel3.tab \
 		--sub 50000 \
 		--figfile $sdir/uncorrected/coords-on-meta-mrnas-heatmap.unambig.rel3.pdf &
-    wait    
+    wait
 done
 
 echo ">>> COORDINATES OF READS W/WO POLYA TO META-COORDINATES ON MRNAS <<<"
+echo "Note: This section will succeed only if you ran Nanopolish section in the sample processing section."
 
 samples=(
 	"hsa.dRNASeq.HeLa.total.REL5.long.REL3.X"
@@ -536,7 +642,7 @@ for i in "${samples[@]}"; do
     echo " Working for" $i;
     sdir=$RES_DIR/$i
     mkdir -p $sdir
-  
+
     # Unambiguous
     bin/coords-on-meta-feats \
         --db $SAMPLE_DIR/$i/db/sqlite.db \
@@ -545,9 +651,9 @@ for i in "${samples[@]}"; do
         --where "$MATE1 AND $CODINGTRANSCRIPT AND $UNAMBIG AND (rel5 IS NOT NULL) AND polya > 0" \
         --bins 20 \
         --min-len 200 \
-        | /home/mns/bin/table-paste-col --table - --col-name group1 --col-val $i-rel5 \
+        | table-paste-col --table - --col-name group1 --col-val $i-rel5 \
         > $sdir/coords-on-corrected-meta-mrnas.unambig.rel5.coding.w_polya.tab &
-            
+
     bin/coords-on-meta-feats \
         --db $SAMPLE_DIR/$i/db/sqlite.db \
         --table transcr \
@@ -555,7 +661,7 @@ for i in "${samples[@]}"; do
         --where "$MATE1 AND $CODINGTRANSCRIPT AND $UNAMBIG AND (rel5 IS NOT NULL) AND polya = 0" \
         --bins 20 \
         --min-len 200 \
-        | /home/mns/bin/table-paste-col --table - --col-name group1 --col-val $i-rel5 \
+        | table-paste-col --table - --col-name group1 --col-val $i-rel5 \
         > $sdir/coords-on-corrected-meta-mrnas.unambig.rel5.coding.wo_polya.tab &
 done
 wait
@@ -627,7 +733,7 @@ samples=(
 	"hsa.dRNASeq.HeLa.polyA.REL5.long.1"
 	"hsa.dRNASeq.HeLa.polyA.CIP.decap.REL5.long.1"
 	"hsa.dRNASeq.HeLa.polyA.decap.REL5.long.1"
-	"hsa.dRNASeq.HeLa.total.REL5.long.REL3.X"    
+	"hsa.dRNASeq.HeLa.total.REL5.long.REL3.X"
 )
 
 for i in "${samples[@]}"; do
@@ -643,7 +749,7 @@ for i in "${samples[@]}"; do
 			--figfile $sdir/corrected/${name%.*}-sameQuart.pdf \
 			--recalquart \
 			--addtransnum &
-	done		
+	done
     wait
 
 	# With recalculated quartiles
@@ -652,7 +758,7 @@ for i in "${samples[@]}"; do
 		$sdir/coords-on-corrected-meta-mrnas.primary.rel5-inclLen.tab \
 		| src/R/plot-meta-coords-inclLen.R \
 			--ifile stdin \
-			--figfile $sdir/corrected/coords-on-corrected-meta-mrnas.primary.rel5-vs-norel5-inclLen-sameQuart.pdf \
+			--figfile $sdir/corrected/coords-on-corrected-meta-mrnas.primary.rel5_vs_norel5-inclLen-sameQuart.pdf \
 			--recalquart &
 
 	table-cat \
@@ -660,7 +766,7 @@ for i in "${samples[@]}"; do
 		$sdir/coords-on-corrected-meta-mrnas.unambig.rel5-inclLen.tab \
 		| src/R/plot-meta-coords-inclLen.R \
 			--ifile stdin \
-			--figfile $sdir/corrected/coords-on-corrected-meta-mrnas.unambig.rel5-vs-norel5-inclLen-sameQuart.pdf \
+			--figfile $sdir/corrected/coords-on-corrected-meta-mrnas.unambig.rel5_vs_norel5-inclLen-sameQuart.pdf \
 			--recalquart &
     wait
 	# Uncorrected
@@ -671,8 +777,8 @@ for i in "${samples[@]}"; do
 			--ifile stdin \
 			--figfile $sdir/uncorrected/${name%.*}-sameQuart.pdf \
 			--recalquart \
-			--addtransnum &    
-	done		
+			--addtransnum &
+	done
     wait
 
 	table-cat \
@@ -680,7 +786,7 @@ for i in "${samples[@]}"; do
 		$sdir/coords-on-meta-mrnas.primary.rel5-inclLen.tab \
 		| src/R/plot-meta-coords-inclLen.R \
 			--ifile stdin \
-			--figfile $sdir/uncorrected/coords-on-meta-mrnas.primary.rel5-vs-norel5-inclLen-sameQuart.pdf \
+			--figfile $sdir/uncorrected/coords-on-meta-mrnas.primary.rel5_vs_norel5-inclLen-sameQuart.pdf \
 			--recalquart &
 
 	table-cat \
@@ -688,9 +794,9 @@ for i in "${samples[@]}"; do
 		$sdir/coords-on-meta-mrnas.unambig.rel5-inclLen.tab \
 		| src/R/plot-meta-coords-inclLen.R \
 			--ifile stdin \
-			--figfile $sdir/uncorrected/coords-on-meta-mrnas.unambig.rel5-vs-norel5-inclLen-sameQuart.pdf \
+			--figfile $sdir/uncorrected/coords-on-meta-mrnas.unambig.rel5_vs_norel5-inclLen-sameQuart.pdf \
 			--recalquart &
-    wait        
+    wait
 done
 
 echo ">>> PLOT META MRNA DISTRIB OVER QUARTILES - REL3 <<<"
@@ -698,7 +804,7 @@ samples=(
 	"hsa.dRNASeq.HeLa.total.REL3.1"
 	"hsa.dRNASeq.HeLa.total.REL3.2"
 	"hsa.dRNASeq.HeLa.total.REL3.3"
-	"hsa.dRNASeq.HeLa.total.REL5.long.REL3.X"	
+	"hsa.dRNASeq.HeLa.total.REL5.long.REL3.X"
 )
 
 for i in "${samples[@]}"; do
@@ -723,7 +829,7 @@ for i in "${samples[@]}"; do
 		$sdir/coords-on-corrected-meta-mrnas.primary.rel3-inclLen.tab \
 		| src/R/plot-meta-coords-inclLen.R \
 			--ifile stdin \
-			--figfile $sdir/corrected/coords-on-corrected-meta-mrnas.primary.rel3-vs-norel3-inclLen-sameQuart.pdf \
+			--figfile $sdir/corrected/coords-on-corrected-meta-mrnas.primary.rel3_vs_norel3-inclLen-sameQuart.pdf \
 			--recalquart &
 
 	table-cat \
@@ -731,10 +837,10 @@ for i in "${samples[@]}"; do
 		$sdir/coords-on-corrected-meta-mrnas.unambig.rel3-inclLen.tab \
 		| src/R/plot-meta-coords-inclLen.R \
 			--ifile stdin \
-			--figfile $sdir/corrected/coords-on-corrected-meta-mrnas.unambig.rel3-vs-norel3-inclLen-sameQuart.pdf \
-			--recalquart &		
+			--figfile $sdir/corrected/coords-on-corrected-meta-mrnas.unambig.rel3_vs_norel3-inclLen-sameQuart.pdf \
+			--recalquart &
     wait
-    
+
 	# Uncorrected
 	for a in $sdir/coords-on-meta-mrnas.*.*-inclLen.tab; do
 		name=$(basename $a)
@@ -746,13 +852,13 @@ for i in "${samples[@]}"; do
 			--addtransnum &
 	done
     wait
-    
+
 	table-cat \
 		$sdir/coords-on-meta-mrnas.primary.norel3-inclLen.tab \
 		$sdir/coords-on-meta-mrnas.primary.rel3-inclLen.tab \
 		| src/R/plot-meta-coords-inclLen.R \
 			--ifile stdin \
-			--figfile $sdir/uncorrected/coords-on-meta-mrnas.primary.rel3-vs-norel3-inclLen-sameQuart.pdf \
+			--figfile $sdir/uncorrected/coords-on-meta-mrnas.primary.rel3_vs_norel3-inclLen-sameQuart.pdf \
 			--recalquart &
 
 	table-cat \
@@ -760,9 +866,9 @@ for i in "${samples[@]}"; do
 		$sdir/coords-on-meta-mrnas.unambig.rel3-inclLen.tab \
 		| src/R/plot-meta-coords-inclLen.R \
 			--ifile stdin \
-			--figfile $sdir/uncorrected/coords-on-meta-mrnas.unambig.rel3-vs-norel3-inclLen-sameQuart.pdf \
+			--figfile $sdir/uncorrected/coords-on-meta-mrnas.unambig.rel3_vs_norel3-inclLen-sameQuart.pdf \
 			--recalquart &
-    wait        
+    wait
 done
 
 echo ">>> ALL DONE <<<"

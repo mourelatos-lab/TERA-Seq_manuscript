@@ -1,6 +1,6 @@
-#!/bin/env bash
+#!/bin/bash
 #
-#
+# Evaluate and visualize changes after the annotation correction
 #
 
 source ../PARAMS.sh
@@ -18,7 +18,7 @@ mkdir -p $RES_DIR
 
 ####################################################################################################
 
-echo ">>> DENSITY OF READ 5p AROUND MRNA 5p FOR READS WITH REL5 (TRANSCRIPTOME) - DEFAULT ANNOT <<<"
+echo ">>> DENSITY OF READ 5p AROUND MRNA 5p FOR READS WITH REL5 (TRANSCRIPTOME) - DEFAULT ANNOTATION <<<"
 
 conda activate teraseq
 source $INSTALL/perl-virtualenv/teraseq/bin/activate
@@ -71,7 +71,7 @@ for i in "${samples[@]}"; do
 done
 wait
 
-echo ">>> DENSITY OF READ 5p AROUND MRNA 5p FOR READS WITH REL5 (TRANSCRIPTOME) - CORRECTED ANNOT <<<"
+echo ">>> DENSITY OF READ 5p AROUND MRNA 5p FOR READS WITH REL5 (TRANSCRIPTOME) - CORRECTED ANNOTATION <<<"
 
 for i in "${samples[@]}"; do
 	echo " Working for" $i;
@@ -156,7 +156,7 @@ for i in "${samples[@]}"; do
 	src/R/compare-counts-for-decay-levels.R \
 		--ifile $sdir/counts.uncorrected-mrna.unambig.rel5.tab \
 		--figfile $sdir/counts.uncorrected-mrna.unambig.rel5.pdf \
-		> $sdir/metrics.uncorrected-mrna.unambig.rel5.tab	
+		> $sdir/metrics.uncorrected-mrna.unambig.rel5.tab
 
 done
 wait
@@ -196,7 +196,7 @@ for i in "${samples[@]}"; do
 	src/R/compare-counts-for-decay-levels.R \
 		--ifile $sdir/counts.corrected-mrna.unambig.rel5.tab \
 		--figfile $sdir/counts.corrected-mrna.unambig.rel5.pdf \
-		> $sdir/metrics.corrected-mrna.unambig.rel5.tab	
+		> $sdir/metrics.corrected-mrna.unambig.rel5.tab
 
 done
 wait

@@ -22,6 +22,8 @@ Please contact [Jan Oppelt](mailto:jan.oppelt@pennmedicine.upenn.edu) if you nee
 | 5TERA3 | 5TERA3 | [TBU]() | hsa.dRNASeq.HeLa.total.REL5.long.REL3.6 |
 | 5TERA | 5TERA SIRV | [TBU]() | hsa.dRNASeq.SIRV.polyA.REL5.long.2 |
 
+Note: The direct link to the TERA-Seq datasets will be updated once the manuscript has been published. Until then, the datasets are available only for reviewers.
+
 To re-analyze analysis using external data please populate the additional directories. Follow the same instructions as for TERA-Seq using the table bellow.
 
 | Library type | Sample name | DB id | Library name |

@@ -5,11 +5,11 @@
 
 RES_DIR="results"
 
-conda activate teraseq
-
 mkdir -p $RES_DIR
 
 ####################################################################################################
+
+conda activate teraseq
 
 ./src/R/trimming.R data/trimming.tsv $RES_DIR/trimming.pdf
 
