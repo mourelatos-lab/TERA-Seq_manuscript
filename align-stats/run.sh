@@ -106,6 +106,7 @@ for i in "${samples[@]}"; do
 
 	echo "Mapped reads to protein-coding transcripts without REL5 adapter (primary)"
 	sqlite3 $sdir/db/sqlite.db 'SELECT COUNT (DISTINCT qname) FROM transcr WHERE (rel5 IS NULL AND ((flag & 1) == 0 OR (flag & 64) == 64) AND ((flag & 256) == 0) AND (coding_transcript IS NOT NULL AND noncoding_transcript IS NULL));'
+	echo "Mapped reads to protein-coding transcripts with REL5 adapter (primary)"
 	sqlite3 $sdir/db/sqlite.db 'SELECT COUNT (DISTINCT qname) FROM transcr WHERE (rel5 IS NOT NULL AND ((flag & 1) == 0 OR (flag & 64) == 64) AND ((flag & 256) == 0) AND (coding_transcript IS NOT NULL AND noncoding_transcript IS NULL));'
 
 	echo "All mapped protein-coding transcripts without REL5 adapter (from primary mappings)"

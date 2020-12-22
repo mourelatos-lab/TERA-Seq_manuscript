@@ -2,7 +2,7 @@
 **Important:** This analysis can be only run after **metacoord_correction** and **polya** analyses are finished!
 
 ## Degradation and poly(A) tail - transcripts
-Relation between degradation and poly(A) tail can be found at `results/library-name/coords-on-corrected-meta-mrnas.unambig.rel5-inclLen-inclPolya-transcript-heatmap-polya.pdf`. 
+Relation between mapped reads ends distribtution and poly(A) tail can be found at `results/library-name/coords-on-corrected-meta-mrnas.unambig.rel5-inclLen-inclPolya-transcript-heatmap-polya.pdf`.
 
 `library-name` is a placeholder for individual libraries names.
 

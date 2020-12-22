@@ -5,7 +5,7 @@
 # You still have to make sure the sample directories are populated!
 #
 
-main_dir = $(dirname "$0") # Save location of this script to a variable
+main_dir=$(dirname "$0") # Save location of this script to a variable
 
 cd $main_dir/
 

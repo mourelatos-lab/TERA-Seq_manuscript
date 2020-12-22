@@ -7,4 +7,4 @@ For results from individual libraries, please see results at `results/library-na
 
 `library-name` is a placeholder for individual libraries names. 
 
-Alternative for comparison of all reads **regardless on the presence of poly(A) tail** can be found at `results/polya_length_all.pdf`.
+Alternative for comparison of all reads **regardless on the presence of poly(A) tail** can be found at `results/polya_length_all.pdf`, and `results/library-name/polya_length_all.pdf`.

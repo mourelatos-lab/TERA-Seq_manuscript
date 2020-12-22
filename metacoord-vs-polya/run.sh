@@ -41,10 +41,6 @@ echo ">>> APPEND POLYA LENGTH LIBRARIES - REL5 <<<"
 
 source $INSTALL/perl-virtualenv/teraseq/bin/activate
 
-samples=(
-	"hsa.dRNASeq.HeLa.polyA.REL5.long.1"
-)
-
 for i in "${samples[@]}"; do
 	echo $i
 	sdir=$RES_DIR/$i
