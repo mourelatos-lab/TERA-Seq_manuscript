@@ -16,8 +16,8 @@ option_list <- list(
         c("-i", "--ifile"), type = "character",
         help = "Input table", metavar = "File"),
     make_option(
-      c("-s", "--software"), type = "character", default = "tailfindr",
-      help = "Which tools was used to make the results [nanopolish; tailfindr]"),
+      c("-s", "--software"), type = "character", default = "nanopolish",
+      help = "Which tools was used to make the results [nanopolish; tailfindr]. Default: nanopolish"),
     make_option(
 	    c("-l", "--maxL"), type = "integer", default = 300,
 	    help = "Maximum poly(A) length to plot", metavar = "Num"),
