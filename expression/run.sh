@@ -1,3 +1,4 @@
+#!/bin/bash
 #
 # Compare gene/transcript expressions between the libraries
 #
@@ -10,7 +11,7 @@ assembly="hg38"
 RES_DIR="results"
 mkdir -p $RES_DIR
 
-####################################################################################################
+################################################################################
 
 echo ">>> GET TPM EXPRESSION <<<"
 # We don't care about having or not having adapters as we want to compare only the expression
@@ -24,6 +25,7 @@ samples=(
     "hsa.dRNASeq.HeLa.polyA.CIP.decap.REL5.long.1"
     "hsa.dRNASeq.HeLa.polyA.decap.REL5.long.1"
     "hsa.dRNASeq.HeLa.polyA.REL5.long.1"
+    "hsa.dRNASeq.HeLa.polyA.REL5OH.long.1"
     "hsa.dRNASeq.HeLa.polyA.REL5.1"
     "hsa.dRNASeq.HeLa.polyA.PNK.REL5.1"
     "hsa.dRNASeq.HeLa.total.REL3.1"
@@ -75,9 +77,10 @@ done
 table-cat \
     $RES_DIR/hsa.dRNASeq.HeLa.polyA.CIP.decap.REL5.long.1/quant.short.w_len.sf \
     $RES_DIR/hsa.dRNASeq.HeLa.polyA.decap.REL5.long.1/quant.short.w_len.sf \
+    $RES_DIR/hsa.dRNASeq.HeLa.polyA.REL5.long.1/quant.short.w_len.sf \
+    $RES_DIR/hsa.dRNASeq.HeLa.polyA.REL5OH.long.1/quant.short.w_len.sf \
     $RES_DIR/hsa.dRNASeq.HeLa.polyA.PNK.REL5.1/quant.short.w_len.sf \
     $RES_DIR/hsa.dRNASeq.HeLa.polyA.REL5.1/quant.short.w_len.sf \
-    $RES_DIR/hsa.dRNASeq.HeLa.polyA.REL5.long.1/quant.short.w_len.sf \
     $RES_DIR/hsa.dRNASeq.HeLa.total.REL3.1/quant.short.w_len.sf \
     $RES_DIR/hsa.dRNASeq.HeLa.total.REL3.2/quant.short.w_len.sf \
     $RES_DIR/hsa.dRNASeq.HeLa.total.REL3.3/quant.short.w_len.sf \

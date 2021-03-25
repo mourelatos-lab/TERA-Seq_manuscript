@@ -53,8 +53,16 @@ echo ">>> RUNNING CAGE AND APA <<<"
 cd ../cage_apa/
 ./run.sh
 
+echo ">>> RUNNING PROMOTER HEATMAP <<<"
+cd ../promoter-heatmap/
+./run.sh
+
 echo ">>> RUNNING RELATIVE POSITION DISTRIBUTION <<<"
 cd ../relative-pos-distro/
+./run.sh
+
+echo ">>> RUNNING CONSERVATION <<<"
+cd ../conservation/
 ./run.sh
 
 echo ">>> RUNNING SIRV <<<"

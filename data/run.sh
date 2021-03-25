@@ -61,6 +61,10 @@ wget -qO- ftp://ftp.ensembl.org/pub/release-91/fasta/homo_sapiens/dna/Homo_sapie
     | clean-genome-headers --fasta - \
     > genome/genome.fa
 
+# Get chromosome sizes
+samtools faidx genome/genome.fa
+cut -f1-2 genome/genome.fa.fai > chrom.sizes
+
 # Download Ensembl annotation
 wget -qO- ftp://ftp.ensembl.org/pub/release-91/gtf/homo_sapiens/Homo_sapiens.GRCh38.91.gtf.gz \
     | gunzip -c \
@@ -285,6 +289,24 @@ for i in NET-CAGE/*.bed.gz; do
         | sed 's/1_KI270706v1_random/KI270706.1/g' | sed 's/Un_KI270742v1/KI270742.1/g' | sort --parallel=$threads -T . -k1,1 -k2,2n > ${i%.ctss*}.hg38.ctss_chr.bed
     rm tmp.$RND
 done
+
+
+# Get conversion of UCSC->Ensembl
+wget https://raw.githubusercontent.com/dpryan79/ChromosomeMappings/master/GRCh38_UCSC2ensembl.txt -O UCSC2ensembl.txt
+
+# Get cis-regions from ENCODE SEARCH/UCSC http://genome.ucsc.edu/cgi-bin/hgTrackUi?db=hg38&g=encodeCcreCombined
+mkdir meth
+wget http://hgdownload.soe.ucsc.edu/gbdb/hg38/encode3/ccre/encodeCcreCombined.bb -O meth/encodeCcreCombined.bigBed
+bigBedToBed meth/encodeCcreCombined.bigBed meth/encodeCcreCombined.bed
+# cat meth/encodeCcreCombined.bed | cut -f 11 | sort | uniq -c
+#  56766 CTCF-only
+# 667599 dELS
+#  25537 DNase-H3K4me3
+# 141830 pELS
+#  34803 PLS
+# Use mark "type" as name, not unique but easier to process
+cat meth/encodeCcreCombined.bed | awk 'BEGIN{FS="\t"; OFS="\t"} {print $1, $2, $3, $11, $5, $6}' \
+| substitute-in-column.py --table UCSC2ensembl.txt > meth/encodeCcreCombined.genome.bed # Convert UCSC chr to Ensembl
 
 echo ">>> MAKE MM10 REFERENCES <<<"
 

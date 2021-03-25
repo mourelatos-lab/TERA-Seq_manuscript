@@ -8,7 +8,6 @@ source ../PARAMS.sh
 threads=10
 assembly="hg38"
 
-offset=200 # Offset for generating control set of mRNA ends
 dist_cage=10 # Max distance of read len to signal
 dist_apa=$dist_cage
 
@@ -25,9 +24,10 @@ samples=(
     "hsa.dRNASeq.HeLa.polyA.CIP.decap.REL5.long.1"
     "hsa.dRNASeq.HeLa.polyA.decap.REL5.long.1"
     "hsa.dRNASeq.HeLa.polyA.REL5.long.1"
+    "hsa.dRNASeq.HeLa.polyA.REL5OH.long.1"
     "hsa.dRNASeq.HeLa.total.REL3.1"
     "hsa.dRNASeq.HeLa.total.REL3.2"
-    "hsa.dRNASeq.HeLa.total.REL3.3"    
+    "hsa.dRNASeq.HeLa.total.REL3.3"
 )
 
 for i in "${samples[@]}"; do
@@ -54,6 +54,7 @@ samples=(
     "hsa.dRNASeq.HeLa.polyA.CIP.decap.REL5.long.1"
     "hsa.dRNASeq.HeLa.polyA.decap.REL5.long.1"
     "hsa.dRNASeq.HeLa.polyA.REL5.long.1"
+    "hsa.dRNASeq.HeLa.polyA.REL5OH.long.1"
 )
 
 for i in "${samples[@]}"; do
@@ -68,21 +69,8 @@ for i in "${samples[@]}"; do
         > $sdir/tmp.minus.bed
 	wait
 
-	# Control with offset
-	cat $sdir/tmp.plus.bed | awk -v var="$offset" 'BEGIN {FS = "\t"; OFS = "\t"} {print $1,$2+var,$3+var,$4,$5,$6}' \
-        > $sdir/tmp.plus-offset${offset}.bed &
-	cat $sdir/tmp.minus.bed | awk -v var="$offset" 'BEGIN {FS = "\t"; OFS = "\t"} {print $1,$2-var,$3-var,$4,$5,$6}' \
-        > $sdir/tmp.minus-offset${offset}.bed
-	wait
-
 	cat $sdir/tmp.plus.bed $sdir/tmp.minus.bed | sort -k1,1 -k2,2n > $sdir/reads.1.sanitize.toGenome.sorted.5p.bed
 	rm $sdir/tmp.plus.bed $sdir/tmp.minus.bed
-
-	# Make sure that we don't under 0 coordinate in any of the strands
-	# TODO: Make sure we don't go OVER the last coordinate
-	cat $sdir/tmp.plus-offset${offset}.bed $sdir/tmp.minus-offset${offset}.bed | awk 'BEGIN {FS = "\t"; OFS = "\t"} {if ($2<0) {$2=0; $3=1}; print $0}' \
-		| sort -k1,1 -k2,2n > $sdir/reads.1.sanitize.toGenome.sorted.5p-offset${offset}.bed
-	rm $sdir/tmp.plus-offset${offset}.bed $sdir/tmp.minus-offset${offset}.bed
 
 	# This is the most likely overlap - reporting the first upstream CAGE signal - sample
 	bedtools closest -s -D a -id -t first -mdb all \
@@ -92,17 +80,32 @@ for i in "${samples[@]}"; do
 		| paste-table-col --ifile - \
 		--col-val $i.5p \
 		> $sdir/reads.1.sanitize.toGenome.sorted.5p-cage-upstream.bed &
-
-	# This is the most likely overlap - reporting the first upstream CAGE signal - control
-	bedtools closest -s -D a -id -t first -mdb all \
-		-names fantom5.rep1 fantom5.rep2 fantom5.rep3 \
-		-a $sdir/reads.1.sanitize.toGenome.sorted.5p-offset${offset}.bed \
-		-b $DATA_DIR/fantom5/HeLa.rep1.hg38.ctss.bed $DATA_DIR/fantom5/HeLa.rep2.hg38.ctss.bed $DATA_DIR/fantom5/HeLa.rep3.hg38.ctss.bed \
-		| paste-table-col --ifile - \
-		--col-val $i.control-${offset} \
-		> $sdir/reads.1.sanitize.toGenome.sorted.5p-cage-upstream-offset${offset}.bed &
 	wait
 done
+
+echo ">>> GENERATE CONTROLS - RANDOM <<<"
+
+sdir=$RES_DIR/common
+mkdir -p $sdir
+
+cat $DATA_DIR/$assembly/genes.gtf | grep -P "\texon\t" \
+    | grep -w -f data/HeLa_transcripts.all.txt > $sdir/genes.exon.sub.gtf
+
+lines=10000000
+bedtools random -l 1 -n $lines -seed $RANDOM -g $DATA_DIR/$assembly/genome/genome.fa.fai \
+    | bedtools intersect -wa -u -s -f 1 \
+    -a stdin -b $sdir/genes.exon.sub.gtf \
+    | sort -k1,1 -k2,2n > $sdir/genes.exon.sub.random.bed
+
+echo ">> GET OVERLAPS - RANDOM <<"
+
+bedtools closest -s -D a -id -t first -mdb all \
+    -names fantom5.rep1 fantom5.rep2 fantom5.rep3 \
+    -a $sdir/genes.exon.sub.random.bed \
+    -b $DATA_DIR/$assembly/fantom5/HeLa.rep1.hg38.ctss.bed $DATA_DIR/$assembly/fantom5/HeLa.rep2.hg38.ctss.bed $DATA_DIR/$assembly/fantom5/HeLa.rep3.hg38.ctss.bed \
+    | paste-table-col --ifile - \
+    --col-val control-transcripts \
+    > $sdir/genes.exon.sub.random.5p-cage-upstream.bed
 
 echo ">>> PLOT OVERLAPS AND STATS - CAGE <<<"
 
@@ -118,13 +121,6 @@ for i in "${samples[@]}"; do
 		--ofile $sdir/reads.1.sanitize.toGenome.sorted.5p-cage-upstream.wAdapter.bed
 		sed -i "s/${i}/${i}.wAd/g" $sdir/reads.1.sanitize.toGenome.sorted.5p-cage-upstream.wAdapter.bed
 
-	subset-table --ifile $sdir/reads.1.sanitize.toGenome.sorted.5p-cage-upstream-offset${offset}.bed \
-		--ilist $SAMPLE_DIR/$i/fastq/reads.1.sanitize.w_rel5.names.txt \
-		--nonames \
-		--column 5 \
-		--ofile $sdir/reads.1.sanitize.toGenome.sorted.5p-cage-upstream-offset${offset}.wAdapter.bed
-		sed -i "s/${i}/${i}.wAd/g" $sdir/reads.1.sanitize.toGenome.sorted.5p-cage-upstream-offset${offset}.wAdapter.bed
-
 	subset-table --ifile $sdir/reads.1.sanitize.toGenome.sorted.5p-cage-upstream.bed \
 		--ilist $SAMPLE_DIR/$i/fastq/reads.1.sanitize.wo_rel5.names.txt \
 		--nonames \
@@ -136,9 +132,27 @@ for i in "${samples[@]}"; do
 		| src/R/plot-distance.R --ifile stdin --direction up --distance $dist_cage --ofile $sdir/5p-cage-upstream.w_vs_woAdapter.pdf \
         > $sdir/5p-cage-upstream.w_vs_woAdapter.txt &
 
-	cat $sdir/reads.1.sanitize.toGenome.sorted.5p-cage-upstream.wAdapter.bed $sdir/reads.1.sanitize.toGenome.sorted.5p-cage-upstream-offset${offset}.wAdapter.bed \
-		| src/R/plot-distance.R --ifile stdin --direction up --distance $dist_cage --ofile $sdir/5p-cage-upstream.wAdapter_vs_offset${offset}-wAdapter.pdf \
-        > $sdir/5p-cage-upstream.wAdapter_vs_offset${offset}-wAdapter.txt &
+    cat $sdir/reads.1.sanitize.toGenome.sorted.5p-cage-upstream.wAdapter.bed $RES_DIR/common/genes.exon.sub.random.5p-cage-upstream.be \
+        | src/R/plot-distance.R --ifile stdin --direction up --distance $dist_cage --ofile $sdir/5p-cage-upstream.w_vs_controlAdapter.pdf \
+        > $sdir/5p-cage-upstream.w_vs_controlAdapter.txt &
+
+    cat $sdir/reads.1.sanitize.toGenome.sorted.5p-cage-upstream.woAdapter.bed $RES_DIR/common/genes.exon.sub.random.5p-cage-upstream.be \
+        | src/R/plot-distance.R --ifile stdin --direction up --distance $dist_cage --ofile $sdir/5p-cage-upstream.wo_vs_controlAdapter.pdf \
+        > $sdir/5p-cage-upstream.wo_vs_controlAdapter.txt &
+
+    # wider span
+    cat $sdir/reads.1.sanitize.toGenome.sorted.5p-cage-upstream.wAdapter.bed $sdir/reads.1.sanitize.toGenome.sorted.5p-cage-upstream.woAdapter.bed \
+        | src/R/plot-distance.R --ifile stdin --direction up --distance 500 --ofile $sdir/5p-cage-upstream.w_vs_woAdapter.500.pdf \
+        > $sdir/5p-cage-upstream.w_vs_woAdapter.500.txt &
+
+    cat $sdir/reads.1.sanitize.toGenome.sorted.5p-cage-upstream.wAdapter.bed $RES_DIR/common/genes.exon.sub.random.5p-cage-upstream.be \
+        | src/R/plot-distance.R --ifile stdin --direction up --distance 500 --ofile $sdir/5p-cage-upstream.w_vs_controlAdapter.500.pdf \
+        > $sdir/5p-cage-upstream.w_vs_controlAdapter.500.txt &
+
+    cat $sdir/reads.1.sanitize.toGenome.sorted.5p-cage-upstream.woAdapter.bed $RES_DIR/common/genes.exon.sub.random.5p-cage-upstream.be \
+        | src/R/plot-distance.R --ifile stdin --direction up --distance 500 --ofile $sdir/5p-cage-upstream.wo_vs_controlAdapter.500.pdf \
+        > $sdir/5p-cage-upstream.wo_vs_controlAdapter.500.txt &
+    wait
 done
 wait
 
@@ -155,6 +169,7 @@ samples=(
     "hsa.dRNASeq.HeLa.polyA.CIP.decap.REL5.long.1"
     "hsa.dRNASeq.HeLa.polyA.decap.REL5.long.1"
     "hsa.dRNASeq.HeLa.polyA.REL5.long.1"
+    "hsa.dRNASeq.HeLa.polyA.REL5OH.long.1"
     "hsa.dRNASeq.HeLa.total.REL3.1"
     "hsa.dRNASeq.HeLa.total.REL3.2"
     "hsa.dRNASeq.HeLa.total.REL3.3"
@@ -172,19 +187,8 @@ for i in "${samples[@]}"; do
         > $sdir/tmp.minus.bed
 	wait
 
-	# Control with offset
-	cat $sdir/tmp.plus.bed | awk -v var="$offset" 'BEGIN {FS = "\t"; OFS = "\t"} {print $1,$2-var,$3-var,$4,$5,$6}' > $sdir/tmp.plus-offset${offset}.bed &
-	cat $sdir/tmp.minus.bed | awk -v var="$offset" 'BEGIN {FS = "\t"; OFS = "\t"} {print $1,$2+var,$3+var,$4,$5,$6}' > $sdir/tmp.minus-offset${offset}.bed
-	wait
-
 	cat $sdir/tmp.plus.bed $sdir/tmp.minus.bed | sort -k1,1 -k2,2n > $sdir/reads.1.sanitize.toGenome.sorted.3p.bed
 	rm $sdir/tmp.plus.bed $sdir/tmp.minus.bed
-
-	# Make sure that we don't under 0 coordinate in any of the strands
-	# TODO: Make sure we don't go OVER the last coordinate
-	cat $sdir/tmp.plus-offset${offset}.bed $sdir/tmp.minus-offset${offset}.bed | awk 'BEGIN {FS = "\t"; OFS = "\t"} {if ($2<0) {$2=0; $3=1}; print $0}' \
-		| sort -k1,1 -k2,2n > $sdir/reads.1.sanitize.toGenome.sorted.3p-offset${offset}.bed
-	rm $sdir/tmp.plus-offset${offset}.bed $sdir/tmp.minus-offset${offset}.bed
 
 	# This is the most likely overlap - reporting the first upstream apa signal
 	# Note: -names x doesn't work if there is only one database
@@ -195,18 +199,21 @@ for i in "${samples[@]}"; do
 	| paste-table-col --ifile - \
 	--col-val $i.3p \
 	> $sdir/reads.1.sanitize.toGenome.sorted.3p-apa-upstream.bed &
-
-	# This is the most likely overlap - reporting the first upstream apa signal - control
-	bedtools closest -s -D a -id -t first -mdb all \
-	   -a $sdir/reads.1.sanitize.toGenome.sorted.3p-offset${offset}.bed \
-	   -b $RES_DIR/common/polyasite-2.0.bed \
-	| awk 'BEGIN {FS="\t"; OFS="\t"} {print $1,$2,$3,$4,$5,$6,"polyasite-2.0",$7,$8,$9,$10,$11,$12,$13}' \
-	| paste-table-col --ifile - \
-	--col-val $i.control-${offset} \
-	> $sdir/reads.1.sanitize.toGenome.sorted.3p-apa-upstream-offset${offset}.bed &
-
 	wait
 done
+
+echo ">> GET OVERLAPS - RANDOM TRANSCRIPTS <<"
+# We reuse the same random positions we had for CAGE since these are random positions in transcripts
+
+sdir=$RES_DIR/common
+
+bedtools closest -s -D a -id -t first -mdb all \
+    -a $sdir/genes.exon.sub.random.bed \
+    -b $RES_DIR/common/polyasite-2.0.bed \
+    | awk 'BEGIN {FS="\t"; OFS="\t"} {print $1,$2,$3,$4,$5,$6,"polyasite-2.0",$7,$8,$9,$10,$11,$12,$13}' \
+    | paste-table-col --ifile - \
+    --col-val control-transcripts \
+    > $sdir/genes.exon.sub.random.3p-apa-upstream.bed
 
 echo ">>> PLOT OVERLAPS AND STATS - APA (ALT. POLYA SITES) <<<"
 
@@ -214,6 +221,7 @@ samples=(
 	"hsa.dRNASeq.HeLa.polyA.CIP.decap.REL5.long.1"
 	"hsa.dRNASeq.HeLa.polyA.decap.REL5.long.1"
 	"hsa.dRNASeq.HeLa.polyA.REL5.long.1"
+    "hsa.dRNASeq.HeLa.polyA.REL5OH.long.1"
 	"hsa.dRNASeq.HeLa.total.REL3.1"
 	"hsa.dRNASeq.HeLa.total.REL3.2"
 	"hsa.dRNASeq.HeLa.total.REL3.3"
@@ -232,13 +240,6 @@ for i in "${samples[@]}"; do
 	   --ofile $sdir/reads.1.sanitize.toGenome.sorted.3p-apa-upstream.wAdapter.bed
 	sed -i "s/${i}/${i}.wAd/g" $sdir/reads.1.sanitize.toGenome.sorted.3p-apa-upstream.wAdapter.bed
 
-	subset-table --ifile $sdir/reads.1.sanitize.toGenome.sorted.3p-apa-upstream-offset${offset}.bed \
-	   --ilist $SAMPLE_DIR/$i/fastq/reads.1.sanitize.w_rel[3,5].names.txt \
-	   --nonames \
-	   --column 5 \
-	   --ofile $sdir/reads.1.sanitize.toGenome.sorted.3p-apa-upstream-offset${offset}.wAdapter.bed
-	sed -i "s/${i}/${i}.wAd/g" $sdir/reads.1.sanitize.toGenome.sorted.3p-apa-upstream-offset${offset}.wAdapter.bed
-
 	subset-table --ifile $sdir/reads.1.sanitize.toGenome.sorted.3p-apa-upstream.bed \
 	   --ilist $SAMPLE_DIR/$i/fastq/reads.1.sanitize.wo_rel[3,5].names.txt \
 	   --nonames \
@@ -250,9 +251,26 @@ for i in "${samples[@]}"; do
 		| src/R/plot-distance.R --ifile stdin --direction up --distance $dist_apa --ofile $sdir/3p-apa-upstream.w_vs_woAdapter.pdf \
         > $sdir/3p-apa-upstream.w_vs_woAdapter.txt &
 
-	cat $sdir/reads.1.sanitize.toGenome.sorted.3p-apa-upstream.wAdapter.bed $sdir/reads.1.sanitize.toGenome.sorted.3p-apa-upstream-offset${offset}.wAdapter.bed \
-		| src/R/plot-distance.R --ifile stdin --direction up --distance $dist_apa --ofile $sdir/3p-apa-upstream.wAdapter_vs_offset${offset}-wAdapter.pdf \
-        > $sdir/3p-apa-upstream.wAdapter_vs_offset${offset}-wAdapter.txt &
+    cat $sdir/reads.1.sanitize.toGenome.sorted.3p-apa-upstream.wAdapter.bed $RES_DIR/common/genes.exon.sub.random.3p-apa-upstream.bed \
+        | src/R/plot-distance.R --ifile stdin --direction up --distance $dist_apa --ofile $sdir/3p-apa-upstream.w_vs_controlAdapter.pdf \
+        > $sdir/3p-apa-upstream.w_vs_controlAdapter.txt &
+
+    cat $sdir/reads.1.sanitize.toGenome.sorted.3p-apa-upstream.woAdapter.bed $RES_DIR/common/genes.exon.sub.random.3p-apa-upstream.bed \
+        | src/R/plot-distance.R --ifile stdin --direction up --distance $dist_apa --ofile $sdir/3p-apa-upstream.wo_vs_controlAdapter.pdf \
+        > $sdir/3p-apa-upstream.wo_vs_controlAdapter.txt &
+
+    # wider span
+    cat $sdir/reads.1.sanitize.toGenome.sorted.3p-apa-upstream.wAdapter.bed $sdir/reads.1.sanitize.toGenome.sorted.3p-apa-upstream.woAdapter.bed \
+        | src/R/plot-distance.R --ifile stdin --direction up --distance 500 --ofile $sdir/3p-apa-upstream.w_vs_woAdapter.500.pdf \
+        > $sdir/3p-apa-upstream.w_vs_woAdapter.500.txt &
+
+    cat $sdir/reads.1.sanitize.toGenome.sorted.3p-apa-upstream.wAdapter.bed $RES_DIR/common/genes.exon.sub.random.3p-apa-upstream.bed \
+        | src/R/plot-distance.R --ifile stdin --direction up --distance 500 --ofile $sdir/3p-apa-upstream.w_vs_controlAdapter.500.pdf \
+        > $sdir/3p-apa-upstream.w_vs_controlAdapter.500.txt &
+
+    cat $sdir/reads.1.sanitize.toGenome.sorted.3p-apa-upstream.woAdapter.bed $RES_DIR/common/genes.exon.sub.random.3p-apa-upstream.bed \
+        | src/R/plot-distance.R --ifile stdin --direction up --distance 500 --ofile $sdir/3p-apa-upstream.wo_vs_controlAdapter.500.pdf \
+        > $sdir/3p-apa-upstream.wo_vs_controlAdapter.500.txt &
 	wait
 done
 

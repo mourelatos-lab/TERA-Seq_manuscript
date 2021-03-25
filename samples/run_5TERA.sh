@@ -14,6 +14,7 @@ samples=(
     "hsa.dRNASeq.HeLa.polyA.CIP.decap.REL5.long.1"
     "hsa.dRNASeq.HeLa.polyA.decap.REL5.long.1"
     "hsa.dRNASeq.HeLa.polyA.REL5.long.1"
+	"hsa.dRNASeq.HeLa.polyA.REL5OH.long.1"
 )
 
 echo ">>> MAKE DIRECTORY STRUCTURE <<<"

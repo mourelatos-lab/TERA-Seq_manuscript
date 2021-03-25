@@ -17,11 +17,10 @@ norm1 <- function(x){(x-min(x))/(max(x)-min(x))} # normalized to one function
 trimming<-read.table(args[1], sep="\t", header=T)
 
 colnames(trimming)[colnames(trimming)=="length"]<-"Length"
-colnames(trimming)[colnames(trimming)=="CIP.decap"]<-"5PL-CIP-decap"
-colnames(trimming)[colnames(trimming)=="decap"]<-"5PL-decap"
-colnames(trimming)[colnames(trimming)=="X5P"]<-"5PL-Poly(A)"
-trimming$X5OH<-NULL
-#colnames(trimming)[colnames(trimming)=="X5OH"]<-"5PL-OH-Poly(A)"
+colnames(trimming)[colnames(trimming)=="CIP.decap"]<-"Cap-Poly(A)"
+colnames(trimming)[colnames(trimming)=="decap"]<-"Cap & 5P-Poly(A)"
+colnames(trimming)[colnames(trimming)=="X5P"]<-"5P-Poly(A)"
+colnames(trimming)[colnames(trimming)=="X5OH"]<-"5OH-Poly(A)"
 
 trimming.m<-reshape2::melt(trimming, id.vars="Length")
 
@@ -43,7 +42,7 @@ p <- ggplot(trimming.m, aes(x=Length, y=freq, color=Library)) +
   scale_x_continuous(limits = c(20, 80), breaks = breaks, labels = labels) +
   theme_classic() +
   theme(legend.position="bottom") +
-  ggtitle("Removed sequence length") +
+#  ggtitle("Removed sequence length") +
   xlab("Removed length") + ylab("Frequency")
 
 p <- p +

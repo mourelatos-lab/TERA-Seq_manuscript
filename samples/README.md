@@ -12,6 +12,7 @@ Please contact [Jan Oppelt](mailto:jan.oppelt@pennmedicine.upenn.edu) if you nee
 | 5TERA | Cap-Poly(A) | [TBU]() | hsa.dRNASeq.HeLa.polyA.CIP.decap.REL5.long.1 |
 | 5TERA | Cap & 5P-Poly(A) | [TBU]() | hsa.dRNASeq.HeLa.polyA.decap.REL5.long.1 |
 | 5TERA | 5P-Poly(A) | [TBU]() | hsa.dRNASeq.HeLa.polyA.REL5.long.1 |
+| 5TERA | 5OH-Poly(A) | [TBU]() | hsa.dRNASeq.HeLa.polyA.REL5OH.long.1.fastq.gz |
 | 5TERA-short | 5P short-Poly(A) | [TBU]() | hsa.dRNASeq.HeLa.polyA.REL5.1 |
 | 5TERA-short | 5 short-PNK-Poly(A) | [TBU]() | hsa.dRNASeq.HeLa.polyA.PNK.REL5.1 |
 | TERA3 | TERA3_replicate1 | [TBU]() | hsa.dRNASeq.HeLa.total.REL3.1 |

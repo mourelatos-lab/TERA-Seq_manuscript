@@ -24,6 +24,7 @@ pairs=(
 	"hsa.dRNASeq.HeLa.polyA.CIP.decap.REL5.long.1" "hsa.Akron5Seq.HeLa.whole.2"
     "hsa.dRNASeq.HeLa.polyA.decap.REL5.long.1" "hsa.Akron5Seq.HeLa.whole.2"
     "hsa.dRNASeq.HeLa.polyA.REL5.long.1" "hsa.Akron5Seq.HeLa.whole.2"
+    "hsa.dRNASeq.HeLa.polyA.REL5OH.long.1" "hsa.Akron5Seq.HeLa.whole.2"
 )
 tLen=${#pairs[@]}
 
@@ -66,7 +67,7 @@ pairs=(
 	"hsa.dRNASeq.HeLa.polyA.CIP.decap.REL5.long.1" "hsa.RiboSeq.HeLa.async.2"
     "hsa.dRNASeq.HeLa.polyA.decap.REL5.long.1" "hsa.RiboSeq.HeLa.async.2"
     "hsa.dRNASeq.HeLa.polyA.REL5.long.1" "hsa.RiboSeq.HeLa.async.2"
-
+    "hsa.dRNASeq.HeLa.polyA.REL5OH.long.1" "hsa.RiboSeq.HeLa.async.2"   
 )
 tLen=${#pairs[@]}
 

@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Plot coverage of transcripts 
+# Plot coverage of transcripts
 #
 # IMPORTANT: This analysis can be run only after the metacoord_correction and polya analyses are finished
 #
@@ -38,7 +38,8 @@ samples=(
 	"hsa.dRNASeq.HeLa.polyA.CIP.decap.REL5.long.1"
 	"hsa.dRNASeq.HeLa.polyA.decap.REL5.long.1"
 	"hsa.dRNASeq.HeLa.polyA.REL5.long.1"
-	"hsa.dRNASeq.HeLa.total.REL5.long.REL3.X"    
+    "hsa.dRNASeq.HeLa.polyA.REL5OH.long.1"
+	"hsa.dRNASeq.HeLa.total.REL5.long.REL3.X"
 )
 
 for i in "${samples[@]}"; do
@@ -66,6 +67,7 @@ echo ">> CONVERT CAGE AND TSS GENOMIC BED TO TRANSCRIPTOMIC <<"
 mkdir $RES_DIR/common
 
 # fantom5 cage
+# Note: this is identical to metacoord_correction conversion
 ./src/R/genomic-to-transcriptomic-coord.R --ifile $DATA_DIR/fantom5/HeLa.rep1.hg38.ctss.bed \
 	--ofile $RES_DIR/common/HeLa.rep1.hg38.ctss.genom-to-trans.bed --annot $DATA_DIR/$assembly/genes.gtf &
 ./src/R/genomic-to-transcriptomic-coord.R --ifile $DATA_DIR/fantom5/HeLa.rep2.hg38.ctss.bed \
@@ -87,6 +89,7 @@ cat $RES_DIR/common/polyasite-2.0.bed | \
 wait
 
 # fantom5 cage
+# Note: this is identical to metacoord_correction conversion
 cat \
 	$RES_DIR/common/HeLa.rep1.hg38.ctss.genom-to-trans-ByExon.bed \
 	$RES_DIR/common/HeLa.rep2.hg38.ctss.genom-to-trans-ByExon.bed \
@@ -129,6 +132,7 @@ samples=(
 	"hsa.dRNASeq.HeLa.polyA.CIP.decap.REL5.long.1"
 	"hsa.dRNASeq.HeLa.polyA.decap.REL5.long.1"
 	"hsa.dRNASeq.HeLa.polyA.REL5.long.1"
+    "hsa.dRNASeq.HeLa.polyA.REL5OH.long.1"
 )
 
 for i in "${samples[@]}"; do
@@ -216,6 +220,7 @@ samples=(
     "hsa.dRNASeq.HeLa.polyA.CIP.decap.REL5.long.1"
     "hsa.dRNASeq.HeLa.polyA.decap.REL5.long.1"
     "hsa.dRNASeq.HeLa.polyA.REL5.long.1"
+    "hsa.dRNASeq.HeLa.polyA.REL5OH.long.1"
   	"hsa.dRNASeq.HeLa.total.REL5.long.REL3.X"
 )
 

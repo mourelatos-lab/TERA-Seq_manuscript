@@ -35,12 +35,13 @@ opt = parse_args(OptionParser(option_list = option_list))
   # print("USING TEST VARIABLES!!!")
   # opt<-NULL
   # opt$ifile<-"/home/joppelt/projects/ribothrypsis/analysis/dist-from-annot/results/hsa.dRNASeq.HeLa.polyA.CIP.decap.REL5.long.1/reads.1.sanitize.toGenome.sorted.3p-apa-upstream.wAdapter.bed" # Table to subset from
-  # opt$ifile<-"/home/joppelt/projects/ribothrypsis/analysis/dist-from-annot/results/hsa.dRNASeq.HeLa.polyA.CIP.decap.REL5.long.1/reads.1.sanitize.toGenome.sorted.3p-apa.bed" # Table to subset from
+  # opt$ifile<-"reads.1.sanitize.toGenome.sorted.5p-cage-upstream.wAdapter.bed" # Table to subset from  
   # opt$distance<-10
   # opt$keepChr<-FALSE
   # opt$direction<-"up"
   # opt$collapse<-FALSE
   # opt$ofile<-"/home/joppelt/projects/ribothrypsis/analysis/dist-from-annot/results/hsa.dRNASeq.HeLa.polyA.CIP.decap.REL5.long.1/reads.1.sanitize.toGenome.sorted.3p-apa.TEST.pdf" # Table to subset by
+  # opt$ofile<-"test.pdf"
   # print("USING TEST VARIABLES!!!")
 ### Testing variables
 
@@ -101,8 +102,7 @@ for(dataset.u in unique(input_bed$dataset)){
       filter(database != ".") %>%
       filter(distance %in% xlims)
   }else{
-    print("Please specify correct direction - up|down|both!")
-    q(save="no")
+    stop("Please specify correct direction - up|down|both!")
   }
 
   nreads.f<-tmp.f %>%
@@ -134,19 +134,18 @@ plot_bed$dataset<-factor(plot_bed$dataset, levels = unique(plot_bed$dataset))
 if(opt$direction=="up"){
   plot_bed_cum<-plot_bed %>%
     group_by(dataset) %>%
-    filter(Var1 <= 0 & Var1 >= (-opt$distance)) %>%
+    filter(Var1 <= 0) %>%    
     mutate(cumsum = cumsum(perc)) %>%
     ungroup()
 }else if(opt$direction=="down"){
   plot_bed_cum<-plot_bed %>%
     group_by(dataset) %>%
-    filter(Var1 >= 0 & Var1 <= opt$distance) %>%
+    filter(Var1 >= 0) %>%    
     mutate(cumsum = cumsum(perc)) %>%
     ungroup()
 }else if(opt$direction=="both"){
   plot_bed_cum<-plot_bed %>%
     group_by(dataset) %>%
-    filter(Var1 <= opt$distance & Var1 >= (-opt$distance)) %>%
     mutate(cumsum = cumsum(perc)) %>%
     ungroup()
 }else{
@@ -163,7 +162,7 @@ if(opt$direction=="up"){
 #   xlims_plot<-xlims
 # }
 xlims_plot<-xlims
-if(length(xlims_plot)>=45){
+if(length(xlims_plot)>=45 & length(xlims_plot)<=100){
   text_size<-375/length(xlims_plot)
 }else{
   text_size<-10
@@ -182,33 +181,67 @@ if(output_type=="pdf"){
   pdf(opt$ofile, height = 6, width = 8)
   alpha_plot<-0.6
 }
-  ggplot(plot_bed, aes(x=Var1, y=perc, color=dataset, shape=dataset)) +
-    geom_line(size=0.8, alpha=alpha_plot) +
-    geom_point(size=1.5, alpha=alpha_plot) +
-#    coord_cartesian(xlim = xlims_plot) +
-    scale_x_continuous(breaks = xlims_plot, labels = xlims_plot, limits = c(min(xlims_plot), max(xlims_plot))) +
+  # "raw"
+  p <- ggplot(plot_bed, aes(x = Var1, y = perc, color = dataset, shape = dataset)) +
+    geom_line(size = 0.8, alpha = alpha_plot) +
+    coord_cartesian(xlim = c(min(xlims_plot), max(xlims_plot))) +
     ggtitle("Distance to the annotated feature(s)") +
-    xlab("Distance (bp)") + ylab("Percentage of reads (%)") +
+    xlab("Distance (bp)") +
+    ylab("Percentage of reads (%)") +
     theme_bw() +
     theme(plot.title = element_text(hjust = 0.5)) +
-    theme(legend.position="bottom") +
-    theme(legend.text=element_text(size=8)) +
-    theme(panel.border = element_blank(), panel.grid.major = element_blank(),
-          panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"),
-          axis.text.x=element_text(size=text_size))
+    theme(legend.position = "bottom") +
+    theme(legend.text = element_text(size = 8)) +
+    theme(
+      panel.border = element_blank(), panel.grid.major = element_blank(),
+      panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"),
+      axis.text.x = element_text(size = text_size)
+    )
 
-  ggplot(plot_bed_cum, aes(x=Var1, y=cumsum, color=dataset, shape=dataset)) +
-    geom_line(size=0.8, alpha=alpha_plot) +
-    geom_point(size=1.5, alpha=alpha_plot) +
-    #    coord_cartesian(xlim = xlims_plot) +
-    scale_x_continuous(breaks = xlims_plot, labels = xlims_plot, limits = c(min(xlims_plot), max(xlims_plot))) +
+  # cummulative
+  p1 <- ggplot(plot_bed_cum, aes(x = Var1, y = cumsum, color = dataset, shape = dataset)) +
+    geom_line(size = 0.8, alpha = alpha_plot) +
+    coord_cartesian(xlim = c(min(xlims_plot), max(xlims_plot))) +
+    coord_cartesian(ylim = c(0, 100)) +
+    scale_y_continuous(breaks = seq(0, 100, by = 10)) +
     ggtitle("Distance to the annotated feature(s)") +
-    xlab("Distance (bp)") + ylab("Cummulative percentage of reads (%)") +
+    xlab("Distance (bp)") +
+    ylab("Cummulative percentage of reads (%)") +
     theme_bw() +
     theme(plot.title = element_text(hjust = 0.5)) +
-    theme(legend.position="bottom") +
-    theme(legend.text=element_text(size=8)) +
-    theme(panel.border = element_blank(), panel.grid.major = element_blank(),
-          panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"),
-          axis.text.x=element_text(size=text_size))
+    theme(legend.position = "bottom") +
+    theme(legend.text = element_text(size = 8)) +
+    theme(
+      panel.border = element_blank(), panel.grid.major = element_blank(),
+      panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"),
+      axis.text.x = element_text(size = text_size)
+    )
+
+	if(length(xlims_plot)<=100){
+		p <- p +
+				geom_point(size=1.5, alpha=alpha_plot) +
+				scale_x_continuous(breaks = xlims_plot, labels = xlims_plot, limits = c(min(xlims_plot), max(xlims_plot)))
+		p1 <- p1 +
+				geom_point(size=1.5, alpha=alpha_plot) +
+				scale_x_continuous(breaks = xlims_plot, labels = xlims_plot, limits = c(min(xlims_plot), max(xlims_plot)))
+ 	}else{
+ 	  scale_x <- c(min(xlims_plot), round(min(xlims_plot)/4, 0)*3, round(min(xlims_plot)/2, 0), round(min(xlims_plot)/4, 0)*1,
+ 	               0,
+ 	               round(max(xlims_plot)/4, 0)*1, round(max(xlims_plot)/2, 0), round(max(xlims_plot)/4, 0)*3, max(xlims_plot))
+
+		p <- p +
+				scale_x_continuous(breaks = scale_x,
+									         labels = scale_x, limits = c(min(xlims_plot), max(xlims_plot)))
+		p1 <- p1 +
+				scale_x_continuous(breaks = scale_x,
+								           labels = scale_x, limits = c(min(xlims_plot), max(xlims_plot)))
+	}
+
+  if (opt$direction == "both") {
+    p <- p + geom_vline(xintercept = 0, linetype = "dashed", color = "grey", size = 0.5)
+    p1 <- p1 + geom_vline(xintercept = 0, linetype = "dashed", color = "grey", size = 0.5)
+  }
+
+	print(p)
+	print(p1)
 dev.off()

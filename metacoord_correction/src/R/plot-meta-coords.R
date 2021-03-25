@@ -34,7 +34,7 @@ option_list <- list(
       help = "Input table", metavar = "File"),
     make_option(
       c("-s", "--subset"), type = "double", default=1,
-      help = "Percent of top expressed transcripts to keep [0-1]. Default: 1 (keep all)", metavar = "Num"),    
+      help = "Percent of top expressed transcripts to keep [0-1]. Default: 1 (keep all)", metavar = "Num"),
     make_option(
       c("-y", "--ymax"), type = "integer", default=100,
       help = "Y-axis maximum for the main plots (1st and 4th). Default: 100 (=100%)", metavar = "Num"),
@@ -171,12 +171,12 @@ pdf(opt$figfile, width = 7)
   ggplot(dt.bin.counts.transcr_agg, aes(x = bin, y = percent_sum)) +
   	geom_line(aes(colour = group1)) +
     coord_cartesian(ylim = c(0, opt$ymax)) +
-    scale_y_continuous(breaks = seq(0, opt$ymax, by=5), labels = seq(0, opt$ymax, by=5)) +      
+    scale_y_continuous(breaks = seq(0, opt$ymax, by=5), labels = seq(0, opt$ymax, by=5)) +
   	facet_grid(. ~ type) +
   	ylab("read count (%)") +
     scale_colour_manual(values = cols) +
-  	theme_classic() + 
-    guides(color = guide_legend(ncol=2)) +    
+  	theme_classic() +
+    guides(color = guide_legend(ncol=2)) +
     theme(legend.position="bottom")
 
   ggplot(dt.metalen, aes(x = metalen, y = percent, color = group1)) +
@@ -185,8 +185,8 @@ pdf(opt$figfile, width = 7)
       xlab("meta-length (bins)") +
       ylab("read count (%)") +
       scale_colour_manual(values = cols.2) +
-      theme_classic() + 
-    guides(color = guide_legend(ncol=2)) +    
+      theme_classic() +
+    guides(color = guide_legend(ncol=2)) +
     theme(legend.position="bottom")
 
   ggplot(dt.metalen, aes(x = metalen, y = cumpercent, color = group1)) +
@@ -195,8 +195,8 @@ pdf(opt$figfile, width = 7)
       xlab("meta-length (bins)") +
       ylab("cumulative read count (%)") +
       scale_colour_manual(values = cols.2) +
-      theme_classic() + 
-    guides(color = guide_legend(ncol=2)) +    
+      theme_classic() +
+    guides(color = guide_legend(ncol=2)) +
     theme(legend.position="bottom")
 
   ggplot(dt.bin.counts.transcr_agg, aes(x = bin, y = dens_mean, ymin = dens_mean - dens_sd, ymax = dens_mean + dens_sd)) +
@@ -209,8 +209,8 @@ pdf(opt$figfile, width = 7)
   	ylab("average read density (avg. across transcripts)") +
     scale_colour_manual(values = cols) +
     scale_fill_manual(values = cols) +
-  	theme_classic() + 
-    guides(color = guide_legend(ncol=2), fill = guide_legend(ncol=2)) +    
+  	theme_classic() +
+    guides(color = guide_legend(ncol=2), fill = guide_legend(ncol=2)) +
     theme(legend.position="bottom")
 
   ggplot(dt.bin.counts, aes(x = bin, y = feat )) +

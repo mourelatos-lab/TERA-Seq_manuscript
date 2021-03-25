@@ -12,7 +12,7 @@ echo ">>> INSTALL GeneCycle R PACKAGE <<<"
 # Installing packages manually in Conda environment is NOT recommended
 Rscript -e 'install.packages("GeneCycle", repos="https://cloud.r-project.org")'
 
-echo ">>> INSTALLING CUTADAPT <<<"
+echo ">>> INSTALL CUTADAPT <<<"
 
 cd $INSTALL/
 mkdir cutadapt-2.5/
@@ -24,19 +24,61 @@ which cutadapt # Check installation
 cutadapt --version
 deactivate
 
+echo ">>> INSTALL DEEPTOOLS <<<"
+cd $INSTALL/
+mkdir deepTools-3.5.0
+cd deepTools-3.5.0/
+python3 -m venv venv
+source venv/bin/activate
+pip3 install deeptools==3.5.0
+# pip3 install -Iv deeptools==3.5.0
+deeptools --version
+deactivate
+
+echo ">>> INSTALL ONT-FAST5-API <<<"
+cd $INSTALL/
+mkdir ont-fast5-api
+cd ont-fast5-api/
+python3 -m venv venv
+source venv/bin/activate
+pip install ont-fast5-api==3.3.0 h5py seaborn
+deactivate
+
 echo ">>> INSTALL JVARKIT <<<"
 
 cd $INSTALL/
 git clone "https://github.com/lindenb/jvarkit.git" # commit "ebcbaba"
 cd jvarkit/
 # Note: there has been substantial changes in the compilation recipe so we cannot reuse the 'ebcbaba' commit version; we provide the compiled jar in tools/utils but we recommend to compile your own
-#git reset ebcbaba --hard 
+#git reset ebcbaba --hard
 ./gradlew biostar84452
 mkdir $CONDA_PREFIX/share/jvarkit # the git commit version
 ln -s $INSTALL/jvarkit/dist/biostar84452.jar $CONDA_PREFIX/share/jvarkit/remove-softlip.jar
 #ln -s $INSTALL/tools/utils/biostar84452.jar $CONDA_PREFIX/share/jvarkit/remove-softlip.jar # Use this to link the used commit instead of the recent one
 
+CONDA_BIN=$CONDA_PREFIX/bin
 conda deactivate
+
+echo ">>> INSTALL NANOPOLISH <<<"
+# version used for polya tail estimates
+cd $INSTALL/
+git clone --recursive https://github.com/jts/nanopolish.git
+mv nanopolish nanopolish-480fc85
+cd nanopolish-480fc85/
+git reset 480fc85 --hard
+# fix outdated link to eigen and some code
+sed -i 's#http://bitbucket.org/eigen/eigen/get/$(EIGEN_VERSION).tar.bz2#https://gitlab.com/libeigen/eigen/-/archive/$(EIGEN_VERSION)/eigen-$(EIGEN_VERSION).tar.bz2#' Makefile
+sed -i 's/tar -xjf $(EIGEN_VERSION).tar.bz2/tar -xjf eigen-$(EIGEN_VERSION).tar.bz2/' Makefile
+sed -i 's/eigen-eigen-\*/eigen-$(EIGEN_VERSION)/' Makefile
+make
+ln -s $(pwd)/nanopolish $CONDA_BIN/nanopolish
+
+# new version with polya hmm scripts
+cd $INSTALL/
+git clone --recursive https://github.com/jts/nanopolish.git
+mv nanopolish nanopolish-ab9722b
+cd nanopolish-ab9722b/
+git reset ab9722b --hard
 
 echo ">>> INSTALL PERL - ENVIRONMENT <<<"
 echo "Note: This might take some time"

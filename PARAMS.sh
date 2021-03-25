@@ -4,6 +4,7 @@
 # Can be overriden in individual scripts/steps
 #
 
+CUR_DIR=$(pwd) # Current directory; useful for analyses
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 INSTALL="$DIR/tools"
 SAMPLE_DIR="$DIR/samples"

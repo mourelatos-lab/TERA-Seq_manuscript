@@ -26,6 +26,7 @@ conda activate teraseq
 samples=(
 	"hsa.dRNASeq.HeLa.polyA.decap.REL5.long.1"
 	"hsa.dRNASeq.HeLa.polyA.REL5.long.1"
+	"hsa.dRNASeq.HeLa.polyA.REL5OH.long.1"
 )
 
 mkdir $RES_DIR/coords-corrected
@@ -64,6 +65,7 @@ samples=(
 	"hsa.dRNASeq.HeLa.polyA.CIP.decap.REL5.long.1"
 	"hsa.dRNASeq.HeLa.polyA.decap.REL5.long.1"
 	"hsa.dRNASeq.HeLa.polyA.REL5.long.1"
+	"hsa.dRNASeq.HeLa.polyA.REL5OH.long.1"
 )
 
 for i in "${samples[@]}"; do
@@ -146,9 +148,10 @@ echo ">>> COORDINATES OF READS W/WO REL5 TO META-COORDINATES ON MRNAS (WITH CORR
 source $INSTALL/perl-virtualenv/teraseq/bin/activate
 
 samples=(
-	"hsa.dRNASeq.HeLa.polyA.REL5.long.1"
 	"hsa.dRNASeq.HeLa.polyA.CIP.decap.REL5.long.1"
 	"hsa.dRNASeq.HeLa.polyA.decap.REL5.long.1"
+	"hsa.dRNASeq.HeLa.polyA.REL5.long.1"
+	"hsa.dRNASeq.HeLa.polyA.REL5OH.long.1"
 	"hsa.dRNASeq.HeLa.total.REL5.long.REL3.X"
 )
 
@@ -631,71 +634,13 @@ for i in "${samples[@]}"; do
     wait
 done
 
-echo ">>> COORDINATES OF READS W/WO POLYA TO META-COORDINATES ON MRNAS <<<"
-echo "Note: This section will succeed only if you ran Nanopolish section in the sample processing section."
-
-samples=(
-	"hsa.dRNASeq.HeLa.total.REL5.long.REL3.X"
-)
-
-for i in "${samples[@]}"; do
-    echo " Working for" $i;
-    sdir=$RES_DIR/$i
-    mkdir -p $sdir
-
-    # Unambiguous
-    bin/coords-on-meta-feats \
-        --db $SAMPLE_DIR/$i/db/sqlite.db \
-        --table transcr \
-        --bed $RES_DIR/coords-corrected/genic_elements.mrna.unambig.tab \
-        --where "$MATE1 AND $CODINGTRANSCRIPT AND $UNAMBIG AND (rel5 IS NOT NULL) AND polya > 0" \
-        --bins 20 \
-        --min-len 200 \
-        | table-paste-col --table - --col-name group1 --col-val $i-rel5 \
-        > $sdir/coords-on-corrected-meta-mrnas.unambig.rel5.coding.w_polya.tab &
-
-    bin/coords-on-meta-feats \
-        --db $SAMPLE_DIR/$i/db/sqlite.db \
-        --table transcr \
-        --bed $RES_DIR/coords-corrected/genic_elements.mrna.unambig.tab \
-        --where "$MATE1 AND $CODINGTRANSCRIPT AND $UNAMBIG AND (rel5 IS NOT NULL) AND polya = 0" \
-        --bins 20 \
-        --min-len 200 \
-        | table-paste-col --table - --col-name group1 --col-val $i-rel5 \
-        > $sdir/coords-on-corrected-meta-mrnas.unambig.rel5.coding.wo_polya.tab &
-done
-wait
-
-echo ">>> PLOT META-COORDINATES OF READS W/WO POLYA ON MRNAS <<<"
-
-for i in "${samples[@]}"; do
-	echo " Working for" $i;
-	sdir=$RES_DIR/$i
-	mkdir -p $sdir/corrected
-
-	# Unambiguous
-    # Coding
-	cat \
-        $sdir/coords-on-corrected-meta-mrnas.unambig.rel5.coding.w_polya.tab \
-		| src/R/plot-meta-coords.R \
-			--ifile stdin \
-            --subset 0.3 \
-			--figfile $sdir/corrected/coords-on-corrected-meta-mrnas.unambig.rel5.coding.w_polya.pdf &
-	cat \
-        $sdir/coords-on-corrected-meta-mrnas.unambig.rel5.coding.wo_polya.tab \
-		| src/R/plot-meta-coords.R \
-			--ifile stdin \
-            --subset 0.3 \
-			--figfile $sdir/corrected/coords-on-corrected-meta-mrnas.unambig.rel5.coding.wo_polya.pdf &
-done
-wait
-
 echo ">>> GET DETECTED GENES, ADD LENGTHS AND DIVIDE TO QUARTILES <<<"
 
 samples=(
-	"hsa.dRNASeq.HeLa.polyA.REL5.long.1"
 	"hsa.dRNASeq.HeLa.polyA.CIP.decap.REL5.long.1"
 	"hsa.dRNASeq.HeLa.polyA.decap.REL5.long.1"
+	"hsa.dRNASeq.HeLa.polyA.REL5.long.1"
+	"hsa.dRNASeq.HeLa.polyA.REL5OH.long.1"
 	"hsa.dRNASeq.HeLa.total.REL3.1"
 	"hsa.dRNASeq.HeLa.total.REL3.2"
 	"hsa.dRNASeq.HeLa.total.REL3.3"
@@ -730,9 +675,10 @@ done
 echo ">>> PLOT META MRNA DISTRIB OVER QUARTILES - REL5 <<<"
 
 samples=(
-	"hsa.dRNASeq.HeLa.polyA.REL5.long.1"
 	"hsa.dRNASeq.HeLa.polyA.CIP.decap.REL5.long.1"
 	"hsa.dRNASeq.HeLa.polyA.decap.REL5.long.1"
+	"hsa.dRNASeq.HeLa.polyA.REL5.long.1"
+	"hsa.dRNASeq.HeLa.polyA.REL5OH.long.1"
 	"hsa.dRNASeq.HeLa.total.REL5.long.REL3.X"
 )
 
@@ -800,6 +746,7 @@ for i in "${samples[@]}"; do
 done
 
 echo ">>> PLOT META MRNA DISTRIB OVER QUARTILES - REL3 <<<"
+
 samples=(
 	"hsa.dRNASeq.HeLa.total.REL3.1"
 	"hsa.dRNASeq.HeLa.total.REL3.2"
@@ -869,6 +816,182 @@ for i in "${samples[@]}"; do
 			--figfile $sdir/uncorrected/coords-on-meta-mrnas.unambig.rel3_vs_norel3-inclLen-sameQuart.pdf \
 			--recalquart &
     wait
+done
+
+echo ">>>> ANALYZE META-COORDINATES - CAGE <<<<"
+
+sdir="$RES_DIR/CAGE"
+mkdir -p $sdir
+
+echo ">> CONVERT COORDS FROM GENOMIC TO TRANSCRIPTOMIC <<"
+
+mkdir $RES_DIR/common
+
+# fantom5 cage
+./src/R/genomic-to-transcriptomic-coord.R --ifile $DATA_DIR/fantom5/HeLa.rep1.hg38.ctss.bed \
+    --ofile $RES_DIR/common/HeLa.rep1.hg38.ctss.genom-to-trans.bed --annot $DATA_DIR/$assembly/genes.gtf &
+./src/R/genomic-to-transcriptomic-coord.R --ifile $DATA_DIR/fantom5/HeLa.rep2.hg38.ctss.bed \
+    --ofile $RES_DIR/common/HeLa.rep2.hg38.ctss.genom-to-trans.bed --annot $DATA_DIR/$assembly/genes.gtf &
+./src/R/genomic-to-transcriptomic-coord.R --ifile $DATA_DIR/fantom5/HeLa.rep3.hg38.ctss.bed \
+    --ofile $RES_DIR/common/HeLa.rep3.hg38.ctss.genom-to-trans.bed --annot $DATA_DIR/$assembly/genes.gtf &
+wait
+
+cat \
+    $RES_DIR/common/HeLa.rep1.hg38.ctss.genom-to-trans-ByExon.bed \
+    $RES_DIR/common/HeLa.rep2.hg38.ctss.genom-to-trans-ByExon.bed \
+    $RES_DIR/common/HeLa.rep3.hg38.ctss.genom-to-trans-ByExon.bed \
+    | sort --parallel=$threads -T $RES_DIR/common -k 1,1 -k2,2n \
+    | uniq \
+    > $RES_DIR/common/HeLa.repAll.hg38.ctss.genom-to-trans-ByExon.bed
+
+echo ">> SUBSET FOR DETECTED TRANSCRIPTS <<"
+
+subset-table \
+    -i "$RES_DIR/common/HeLa.repAll.hg38.ctss.genom-to-trans-ByExon.bed" \
+    --nonames \
+    -c 1 \
+    -l data/HeLa_transcripts.all.txt \
+    -o $sdir/HeLa.repAll.hg38.ctss.genom-to-trans-ByExon.HeLa_transcripts.bed
+
+echo ">> SELECT PRIMARY AND UNIQUE (=UNAMBIG) POSITONS <<"
+
+./src/R/primary-unique-select.R \
+    --ifile "$sdir/HeLa.repAll.hg38.ctss.genom-to-trans-ByExon.HeLa_transcripts.bed" \
+    --type "primary" \
+    --ofile "$sdir/HeLa.repAll.hg38.ctss.genom-to-trans-ByExon.HeLa_transcripts.primary.bed" &
+./src/R/primary-unique-select.R \
+    --ifile "$sdir/HeLa.repAll.hg38.ctss.genom-to-trans-ByExon.HeLa_transcripts.bed" \
+    --type "unique" \
+    --ofile "$sdir/HeLa.repAll.hg38.ctss.genom-to-trans-ByExon.HeLa_transcripts.unambig.bed" &
+wait
+
+echo ">>> COORDINATES OF CAGE TO META-COORDINATES ON MRNAS (CORRECTED AND DEFAULT) <<<"
+
+echo ">> FORMAT FOR PLOTTING (CORRECTED AND DEFAULT) <<"
+
+src/R/format-meta-coords-bed.R \
+    --bed "$sdir/HeLa.repAll.hg38.ctss.genom-to-trans-ByExon.HeLa_transcripts.primary.bed" \
+    --trans "$RES_DIR/coords-corrected/genic_elements.mrna.unambig.tab" \
+    --len 200 \
+    --ofile stdout \
+    | table-paste-col --table - --col-name group1 --col-val CAGE \
+    > "$sdir/coords-on-corrected-meta-mrnas.HeLa_transcripts.primary.tab" & 
+src/R/format-meta-coords-bed.R \
+    --bed "$sdir/HeLa.repAll.hg38.ctss.genom-to-trans-ByExon.HeLa_transcripts.unambig.bed" \
+    --trans "$RES_DIR/coords-corrected/genic_elements.mrna.unambig.tab" \
+    --len 200 \
+    --ofile stdout \
+    | table-paste-col --table - --col-name group1 --col-val CAGE \
+    > "$sdir/coords-on-corrected-meta-mrnas.HeLa_transcripts.unambig.tab" &    
+
+src/R/format-meta-coords-bed.R \
+    --bed "$sdir/HeLa.repAll.hg38.ctss.genom-to-trans-ByExon.HeLa_transcripts.primary.bed" \
+    --trans "$DATA_DIR/$assembly/genic_elements.mrna.bed" \
+    --len 200 \
+    --ofile stdout \
+    | table-paste-col --table - --col-name group1 --col-val CAGE \
+    > "$sdir/coords-on-meta-mrnas.HeLa_transcripts.primary.tab" &
+src/R/format-meta-coords-bed.R \
+    --bed "$sdir/HeLa.repAll.hg38.ctss.genom-to-trans-ByExon.HeLa_transcripts.unambig.bed" \
+    --trans "$DATA_DIR/$assembly/genic_elements.mrna.bed" \
+    --len 200 \
+    --ofile stdout \
+    | table-paste-col --table - --col-name group1 --col-val CAGE \
+    > "$sdir/coords-on-meta-mrnas.HeLa_transcripts.unambig.tab" &    
+wait
+
+echo ">>> PLOT META-COORDINATES OF CAGE ON MRNAS (CORRECTED AND DEFAULT) <<<"
+
+mkdir $sdir/corrected
+mkdir $sdir/uncorrected
+
+cat \
+    "$sdir/coords-on-corrected-meta-mrnas.HeLa_transcripts.unambig.tab" \
+    | src/R/plot-meta-coords.R \
+    --ifile stdin \
+    --figfile $sdir/corrected/coords-on-corrected-meta-mrnas.HeLa_transcripts.unambig.pdf &
+
+src/R/plot-meta-coords-heatmap.R \
+    --ifile "$sdir/coords-on-corrected-meta-mrnas.HeLa_transcripts.unambig.tab" \
+    --sub 50000 \
+    --figfile $sdir/corrected/coords-on-corrected-meta-mrnas-heatmap.HeLa_transcripts.unambig.pdf &
+
+cat \
+    "$sdir/coords-on-meta-mrnas.HeLa_transcripts.unambig.tab" \
+    | src/R/plot-meta-coords.R \
+    --ifile stdin \
+    --figfile $sdir/uncorrected/coords-on-meta-mrnas.HeLa_transcripts.unambig.pdf &
+
+src/R/plot-meta-coords-heatmap.R \
+    --ifile "$sdir/coords-on-meta-mrnas.HeLa_transcripts.unambig.tab" \
+    --sub 50000 \
+    --figfile $sdir/uncorrected/coords-on-corrected-meta-mrnas-heatmap.HeLa_transcripts.unambig.pdf &
+
+cat \
+    "$sdir/coords-on-corrected-meta-mrnas.HeLa_transcripts.primary.tab" \
+    | src/R/plot-meta-coords.R \
+    --ifile stdin \
+    --figfile $sdir/corrected/coords-on-corrected-meta-mrnas.HeLa_transcripts.primary.pdf &
+
+src/R/plot-meta-coords-heatmap.R \
+    --ifile "$sdir/coords-on-corrected-meta-mrnas.HeLa_transcripts.primary.tab" \
+    --sub 50000 \
+    --figfile $sdir/corrected/coords-on-corrected-meta-mrnas-heatmap.HeLa_transcripts.primary.pdf &
+
+cat \
+    "$sdir/coords-on-meta-mrnas.HeLa_transcripts.primary.tab" \
+    | src/R/plot-meta-coords.R \
+    --ifile stdin \
+    --figfile $sdir/uncorrected/coords-on-meta-mrnas.HeLa_transcripts.primary.pdf &
+
+src/R/plot-meta-coords-heatmap.R \
+    --ifile "$sdir/coords-on-meta-mrnas.HeLa_transcripts.primary.tab" \
+    --sub 50000 \
+    --figfile $sdir/uncorrected/coords-on-corrected-meta-mrnas-heatmap.HeLa_transcripts.primary.pdf &    
+wait
+
+echo "> GET DETECTED GENES, ADD LENGTHS AND DIVIDE TO QUARTILES <"
+
+for a in $sdir/coords-on-corrected-meta-mrnas*tab; do
+    outname=$(basename $a)
+    
+    src/R/add-gene-length-quart.R \
+        --ifile $sdir/$(basename $a) \
+        --ofile $sdir/${outname%.*}-inclLen.tab \
+        --gtf $gtf
+done
+
+for a in $sdir/coords-on-meta-mrnas*tab; do
+    outname=$(basename $a)
+
+    src/R/add-gene-length-quart.R \
+        --ifile $sdir/$(basename $a) \
+        --ofile $sdir/${outname%.*}-inclLen.tab \
+        --gtf $gtf
+done
+
+echo "> PLOT META MRNA DISTRIB OVER QUARTILES - CONTROL <"
+
+for a in $sdir/coords-on-corrected-meta-mrnas.*.*-inclLen.tab; do
+    name=$(basename $a)
+
+    cat $a \
+        | src/R/plot-meta-coords-inclLen.R \
+        --ifile stdin \
+        --figfile $sdir/corrected/${name%.*}-sameQuart.pdf \
+        --recalquart \
+        --addtransnum &
+done
+
+for a in $sdir/coords-on-meta-mrnas.*.*-inclLen.tab; do
+    name=$(basename $a)
+
+    cat $a \
+        | src/R/plot-meta-coords-inclLen.R \
+        --ifile stdin \
+        --figfile $sdir/uncorrected/${name%.*}-sameQuart.pdf \
+        --recalquart \
+        --addtransnum &
 done
 
 echo ">>> ALL DONE <<<"
