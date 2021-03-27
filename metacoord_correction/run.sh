@@ -634,6 +634,65 @@ for i in "${samples[@]}"; do
     wait
 done
 
+echo ">>> COORDINATES OF READS W/WO POLYA TO META-COORDINATES ON MRNAS <<<"
+echo "Note: This section will succeed only if you ran Nanopolish section in the sample processing section."
+
+samples=(
+	"hsa.dRNASeq.HeLa.total.REL5.long.REL3.X"
+)
+
+for i in "${samples[@]}"; do
+    echo " Working for" $i;
+    sdir=$RES_DIR/$i
+    mkdir -p $sdir
+
+    # Unambiguous
+    bin/coords-on-meta-feats \
+        --db $SAMPLE_DIR/$i/db/sqlite.db \
+        --table transcr \
+        --bed $RES_DIR/coords-corrected/genic_elements.mrna.unambig.tab \
+        --where "$MATE1 AND $CODINGTRANSCRIPT AND $UNAMBIG AND (rel5 IS NOT NULL) AND polya > 0" \
+        --bins 20 \
+        --min-len 200 \
+        | table-paste-col --table - --col-name group1 --col-val $i-rel5 \
+        > $sdir/coords-on-corrected-meta-mrnas.unambig.rel5.coding.w_polya.tab &
+
+    bin/coords-on-meta-feats \
+        --db $SAMPLE_DIR/$i/db/sqlite.db \
+        --table transcr \
+        --bed $RES_DIR/coords-corrected/genic_elements.mrna.unambig.tab \
+        --where "$MATE1 AND $CODINGTRANSCRIPT AND $UNAMBIG AND (rel5 IS NOT NULL) AND polya = 0" \
+        --bins 20 \
+        --min-len 200 \
+        | table-paste-col --table - --col-name group1 --col-val $i-rel5 \
+        > $sdir/coords-on-corrected-meta-mrnas.unambig.rel5.coding.wo_polya.tab &
+done
+wait
+
+echo ">>> PLOT META-COORDINATES OF READS W/WO POLYA ON MRNAS <<<"
+
+for i in "${samples[@]}"; do
+	echo " Working for" $i;
+	sdir=$RES_DIR/$i
+	mkdir -p $sdir/corrected
+
+	# Unambiguous
+    # Coding
+	cat \
+        $sdir/coords-on-corrected-meta-mrnas.unambig.rel5.coding.w_polya.tab \
+		| src/R/plot-meta-coords.R \
+			--ifile stdin \
+            --subset 0.3 \
+			--figfile $sdir/corrected/coords-on-corrected-meta-mrnas.unambig.rel5.coding.w_polya.pdf &
+	cat \
+        $sdir/coords-on-corrected-meta-mrnas.unambig.rel5.coding.wo_polya.tab \
+		| src/R/plot-meta-coords.R \
+			--ifile stdin \
+            --subset 0.3 \
+			--figfile $sdir/corrected/coords-on-corrected-meta-mrnas.unambig.rel5.coding.wo_polya.pdf &
+done
+wait
+
 echo ">>> GET DETECTED GENES, ADD LENGTHS AND DIVIDE TO QUARTILES <<<"
 
 samples=(
