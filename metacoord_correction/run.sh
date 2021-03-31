@@ -661,7 +661,7 @@ for i in "${samples[@]}"; do
         --db $SAMPLE_DIR/$i/db/sqlite.db \
         --table transcr \
         --bed $RES_DIR/coords-corrected/genic_elements.mrna.unambig.tab \
-        --where "$MATE1 AND $CODINGTRANSCRIPT AND $UNAMBIG AND (rel5 IS NOT NULL) AND polya = 0" \
+        --where "$MATE1 AND $CODINGTRANSCRIPT AND $UNAMBIG AND (rel5 IS NOT NULL) AND polya == 0" \
         --bins 20 \
         --min-len 200 \
         | table-paste-col --table - --col-name group1 --col-val $i-rel5 \
@@ -934,14 +934,14 @@ src/R/format-meta-coords-bed.R \
     --len 200 \
     --ofile stdout \
     | table-paste-col --table - --col-name group1 --col-val CAGE \
-    > "$sdir/coords-on-corrected-meta-mrnas.HeLa_transcripts.primary.tab" & 
+    > "$sdir/coords-on-corrected-meta-mrnas.HeLa_transcripts.primary.tab" &
 src/R/format-meta-coords-bed.R \
     --bed "$sdir/HeLa.repAll.hg38.ctss.genom-to-trans-ByExon.HeLa_transcripts.unambig.bed" \
     --trans "$RES_DIR/coords-corrected/genic_elements.mrna.unambig.tab" \
     --len 200 \
     --ofile stdout \
     | table-paste-col --table - --col-name group1 --col-val CAGE \
-    > "$sdir/coords-on-corrected-meta-mrnas.HeLa_transcripts.unambig.tab" &    
+    > "$sdir/coords-on-corrected-meta-mrnas.HeLa_transcripts.unambig.tab" &
 
 src/R/format-meta-coords-bed.R \
     --bed "$sdir/HeLa.repAll.hg38.ctss.genom-to-trans-ByExon.HeLa_transcripts.primary.bed" \
@@ -956,7 +956,7 @@ src/R/format-meta-coords-bed.R \
     --len 200 \
     --ofile stdout \
     | table-paste-col --table - --col-name group1 --col-val CAGE \
-    > "$sdir/coords-on-meta-mrnas.HeLa_transcripts.unambig.tab" &    
+    > "$sdir/coords-on-meta-mrnas.HeLa_transcripts.unambig.tab" &
 wait
 
 echo ">>> PLOT META-COORDINATES OF CAGE ON MRNAS (CORRECTED AND DEFAULT) <<<"
@@ -1006,14 +1006,14 @@ cat \
 src/R/plot-meta-coords-heatmap.R \
     --ifile "$sdir/coords-on-meta-mrnas.HeLa_transcripts.primary.tab" \
     --sub 50000 \
-    --figfile $sdir/uncorrected/coords-on-corrected-meta-mrnas-heatmap.HeLa_transcripts.primary.pdf &    
+    --figfile $sdir/uncorrected/coords-on-corrected-meta-mrnas-heatmap.HeLa_transcripts.primary.pdf &
 wait
 
 echo "> GET DETECTED GENES, ADD LENGTHS AND DIVIDE TO QUARTILES <"
 
 for a in $sdir/coords-on-corrected-meta-mrnas*tab; do
     outname=$(basename $a)
-    
+
     src/R/add-gene-length-quart.R \
         --ifile $sdir/$(basename $a) \
         --ofile $sdir/${outname%.*}-inclLen.tab \

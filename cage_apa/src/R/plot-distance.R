@@ -23,6 +23,9 @@ option_list <- list(
     c("-c", "--collapse"), action = "store_true", default = FALSE,
     help = "Collapse the positions (count one overlap position only once)"),
   make_option(
+    c("-z", "--zoom"), action = "store_true", default = FALSE,
+    help = "Zoom to --distance from the total distribution for the plot. Default: Consider only the --distance for the plot."),
+  make_option(
     c("-k", "--keepChr"), action = "store_true", default = FALSE,
     help = "Keep all the chromosomes, not just the \"nice ones\""),
   make_option(
@@ -35,11 +38,12 @@ opt = parse_args(OptionParser(option_list = option_list))
   # print("USING TEST VARIABLES!!!")
   # opt<-NULL
   # opt$ifile<-"/home/joppelt/projects/ribothrypsis/analysis/dist-from-annot/results/hsa.dRNASeq.HeLa.polyA.CIP.decap.REL5.long.1/reads.1.sanitize.toGenome.sorted.3p-apa-upstream.wAdapter.bed" # Table to subset from
-  # opt$ifile<-"reads.1.sanitize.toGenome.sorted.5p-cage-upstream.wAdapter.bed" # Table to subset from  
+  # opt$ifile<-"reads.1.sanitize.toGenome.sorted.5p-cage-upstream.wAdapter.bed" # Table to subset from
   # opt$distance<-10
   # opt$keepChr<-FALSE
   # opt$direction<-"up"
   # opt$collapse<-FALSE
+  # opt$zoom<-FALSE
   # opt$ofile<-"/home/joppelt/projects/ribothrypsis/analysis/dist-from-annot/results/hsa.dRNASeq.HeLa.polyA.CIP.decap.REL5.long.1/reads.1.sanitize.toGenome.sorted.3p-apa.TEST.pdf" # Table to subset by
   # opt$ofile<-"test.pdf"
   # print("USING TEST VARIABLES!!!")
@@ -131,26 +135,28 @@ plot_bed$Var1<-as.numeric(as.character(plot_bed$Var1))
 plot_bed$dataset<-factor(plot_bed$dataset, levels = unique(plot_bed$dataset))
 
 # Add cummulative sum only for the selected span
-if(opt$direction=="up"){
-  plot_bed_cum<-plot_bed %>%
+if (opt$direction == "up") {
+  plot_bed_cum <- plot_bed %>%
     group_by(dataset) %>%
-    filter(Var1 <= 0) %>%    
+    filter(if (!!opt$zoom == FALSE) Var1 <= 0 & Var1 >= (-opt$distance) else Var1 <= 0) %>%
     mutate(cumsum = cumsum(perc)) %>%
     ungroup()
-}else if(opt$direction=="down"){
-  plot_bed_cum<-plot_bed %>%
+} else if (opt$direction == "down") {
+  plot_bed_cum <- plot_bed %>%
     group_by(dataset) %>%
-    filter(Var1 >= 0) %>%    
+    filter(if (!!opt$zoom == FALSE) Var1 >= 0 & Var1 <= opt$distance else Var1 >= 0) %>%
     mutate(cumsum = cumsum(perc)) %>%
     ungroup()
-}else if(opt$direction=="both"){
-  plot_bed_cum<-plot_bed %>%
+} else if (opt$direction == "both") {
+  plot_bed_cum <- plot_bed %>%
     group_by(dataset) %>%
+    filter(if (!!opt$zoom == FALSE) Var1 <= opt$distance & Var1 >= (-opt$distance)) %>%
     mutate(cumsum = cumsum(perc)) %>%
     ungroup()
-}else{
+} else {
   stop("Don't know the direction. Please select one of the [\"up\", \"down\", \"both\"]")
 }
+
 # Uncomment this if you want to extend the plotting limits (not the stats limits, just the plotting limits)
 # if(opt$direction == "up"){
 #   xlims_plot<-seq(-(ceiling(opt$distance/2))-opt$distance, 0, by=1)
@@ -184,7 +190,7 @@ if(output_type=="pdf"){
   # "raw"
   p <- ggplot(plot_bed, aes(x = Var1, y = perc, color = dataset, shape = dataset)) +
     geom_line(size = 0.8, alpha = alpha_plot) +
-    coord_cartesian(xlim = c(min(xlims_plot), max(xlims_plot))) +
+    scale_y_continuous(breaks = seq(0, 100, by = 10)) +
     ggtitle("Distance to the annotated feature(s)") +
     xlab("Distance (bp)") +
     ylab("Percentage of reads (%)") +
@@ -201,8 +207,6 @@ if(output_type=="pdf"){
   # cummulative
   p1 <- ggplot(plot_bed_cum, aes(x = Var1, y = cumsum, color = dataset, shape = dataset)) +
     geom_line(size = 0.8, alpha = alpha_plot) +
-    coord_cartesian(xlim = c(min(xlims_plot), max(xlims_plot))) +
-    coord_cartesian(ylim = c(0, 100)) +
     scale_y_continuous(breaks = seq(0, 100, by = 10)) +
     ggtitle("Distance to the annotated feature(s)") +
     xlab("Distance (bp)") +
@@ -216,6 +220,20 @@ if(output_type=="pdf"){
       panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"),
       axis.text.x = element_text(size = text_size)
     )
+
+  if(opt$zoom == TRUE){
+    p <- p +
+      coord_cartesian(ylim = c(0, 100),
+                      xlim = c(min(xlims_plot), max(xlims_plot)))
+    p1 <- p1 +
+      coord_cartesian(ylim = c(0, 100),
+                      xlim = c(min(xlims_plot), max(xlims_plot)))
+  }else{
+    p <- p +
+      coord_cartesian(xlim = c(min(xlims_plot), max(xlims_plot)))
+    p1 <- p1 +
+      coord_cartesian(xlim = c(min(xlims_plot), max(xlims_plot)))
+  }
 
 	if(length(xlims_plot)<=100){
 		p <- p +
