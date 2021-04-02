@@ -19,7 +19,7 @@ mkdir cutadapt-2.5/
 cd cutadapt-2.5/
 python3 -m venv venv # Make Python virtual environment
 source venv/bin/activate
-pip3 install cutadapt==2.5
+pip3 install cutadapt==2.5 pysam numpy pandas matplotlib seaborn
 which cutadapt # Check installation
 cutadapt --version
 deactivate
@@ -56,10 +56,11 @@ mkdir $CONDA_PREFIX/share/jvarkit # the git commit version
 ln -s $INSTALL/jvarkit/dist/biostar84452.jar $CONDA_PREFIX/share/jvarkit/remove-softlip.jar
 #ln -s $INSTALL/tools/utils/biostar84452.jar $CONDA_PREFIX/share/jvarkit/remove-softlip.jar # Use this to link the used commit instead of the recent one
 
-CONDA_BIN=$CONDA_PREFIX/bin
+echo ">>> INSTALL NANOPOLISH <<<"
+
+CONDA_BIN="$CONDA_PREFIX/bin"
 conda deactivate
 
-echo ">>> INSTALL NANOPOLISH <<<"
 # version used for polya tail estimates
 cd $INSTALL/
 git clone --recursive https://github.com/jts/nanopolish.git

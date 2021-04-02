@@ -342,6 +342,7 @@ dependencies:
   - trimmomatic=0.39=1
   - ucsc-bedgraphtobigwig=377=h446ed27_1
   - ucsc-bedtobigbed=377=h446ed27_1
+  - ucsc-bigbedtobed=377=h446ed27_1
   - ucsc-genepredtobed=377=h446ed27_3
   - ucsc-gtftogenepred=377=h446ed27_3
   - ucsc-liftover=377=h446ed27_2

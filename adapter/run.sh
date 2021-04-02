@@ -8,7 +8,7 @@ source ../PARAMS.sh
 adapter_orig="AATGATACGGCGACCACCGAGATCTACACTCTTTCCCTACACGACGCTCTTCCGATCT" # original, full-length REL5.long
 ad_name="REL5.long" # adapter name
 
-threads=16
+threads=8
 assembly="hg38"
 
 RES_DIR="results"
@@ -95,10 +95,10 @@ for sample in ${samples[@]}; do
             done
         done
     done
-done > run/cmds.txt
+done > $RES_DIR/cmds.txt
 
-cat run/cmds.txt | parallel --eta -j $threads --load 95% --noswap '{}'
-rm run/cmds.txt
+cat $RES_DIR/cmds.txt | parallel --eta -j $threads --load 95% --noswap '{}'
+rm $RES_DIR/cmds.txt
 
 echo ">>> VISUALIZE TRIMMING - TRANSCRIPTS <<<"
 
@@ -171,5 +171,7 @@ for i in "${samples[@]}"; do
     conda activate teraseq
 done
 wait
+
+rmdir tmp
 
 echo ">>> ALL DONE <<<"

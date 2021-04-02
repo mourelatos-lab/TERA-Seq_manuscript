@@ -1,3 +1,4 @@
+
 # TERA-Seq analysis and methods
 This repository contains all the main tools and scripts needed to reproduce analysis used in publication **TERA-Seq: True end-to-end sequencing of native RNA molecules for comprehensive transcriptome characterization** (Ibrahim, F., Oppelt, J., Maragkakis, M. and Mourelatos, Z., YEAR, JOURNAL, DOI: XXX).
 
@@ -45,10 +46,11 @@ In case you need a manual installation, you can also use:
     r-ggridges r-corrplot r-rsqlite r-futile.logger r-plyr r-readr r-scales r-viridis \
     r-data.table r-yaml r-treemap r-venndiagram r-extrafont r-hdf5r \
     bioconductor-ensembldb bioconductor-tximport bioconductor-dupradar bioconductor-gviz bioconductor-deseq2 \
-    fastqc STAR=2.7.2b samtools">=1.10" bedtools=2.29.0 samblaster trimmomatic=0.39 perl-cpan-shell \
-    perl-app-cpanminus umi_tools fastx_toolkit bbmap=38.67 minimap2=2.17 subread=2.0.0 pigz \
-    seqtk picard=2.20.8 sambamba gmap=2019.09.12 gffread \
-    ucsc-bedgraphtobigwig ucsc-bedtobigbed ucsc-genePredToBed ucsc-gtfToGenePred \
+    fastqc STAR=2.7.2b samtools">=1.10" bedtools=2.29.0 samblaster trimmomatic=0.39 \
+    perl-cpan-shell perl-app-cpanminus \
+    umi_tools fastx_toolkit bbmap=38.67 minimap2=2.17 subread=2.0.0 pigz \
+    seqtk picard=2.20.8 sambamba=0.7.1 gmap=2019.09.12 gffread \
+    ucsc-bedgraphtobigwig ucsc-bedtobigbed ucsc-genePredToBed ucsc-gtfToGenePred ucsc-liftover ucsc-bigbedtobed \
     qualimap rseqc cd-hit bedops parallel
 
 Note: If you get a lot of `ClobberError: This transaction has incompatible packages due to a shared path.` errors try to restart your Conda environment and/or exectue `conda clean --all` to [clean the Conda cache](https://github.com/conda/conda/issues/7038).
@@ -58,6 +60,8 @@ Note: If you get a lot of `ClobberError: This transaction has incompatible packa
 
     cd tools/
     ./run.sh
+    cd ../
+
 #### Guppy basecaller
 Guppy basecaller must be obtained from [Nanopore community](https://community.nanoporetech.com/downloads) section and must be installed in case you want to re-basecall the data. Please use **Guppy 3.2.2 GPU** version to replicate the basecall. The CPU version should provide the same results. Installation manual is provided in the same link.
 To test the Guppy basecalling we only provide a small subset of 10 fast5 files in the `test_data/Guppy` directory.
@@ -79,7 +83,7 @@ If you wish to run only selected analyses you can go to the individual directori
 
 Each analysis directory contains main `run.sh` script which shows how to reproduce the analysis and visualization if applicable. Visuzalization and other additional scripts (for example R visualization) can be found in `src` directory.  In most cases, executing the `run.sh` should be enough to reproduce the analysis. However, if this fails, the content of `run.sh` script should be comment enough for you to see where the error comes from. The `run.sh` also contains information about how to to execute the individual scripts in the `src` directory. `dev` directory contains additional used tools.
 
-Most of the analyses has been created by [Jan Oppelt](mailto:jan.oppelt@pennmedicine.upenn.edu) ([Mourelatos lab](http://mourelatos.med.upenn.edu/), Department of Pathology and Laboratory Medicine,  Perelman School of Medicine, University of Pennsylvania). Most of the `dev` tools have been developed by [Emmanouil "Manolis" Maragkakis](mailto:emmanouil.maragkakis@nih.gov) (currently [Laboratory of Genetics and Genomics, National Institute on Aging](https://www.nia.nih.gov/research/labs/lgg/computational-genomics-unit), NIH, USA) or [Panagiotis Alexiou](mailto:panagiotis.alexiou@ceitec.muni.cz) (currently [RBP Bioinformatics](https://www.ceitec.eu/rbp-bioinformatics-panagiotis-alexiou/rg281) & [Bioinformatics Core Facility](https://www.ceitec.eu/bioinformatics-core-facility/cf284), CEITEC, CZE).
+Most of the analyses has been created by [Jan Oppelt](mailto:jan.oppelt@pennmedicine.upenn.edu) ([Mourelatos lab](http://mourelatos.med.upenn.edu/), Department of Pathology and Laboratory Medicine,  Perelman School of Medicine, University of Pennsylvania, USA). Most of the `dev` tools have been developed by [Emmanouil "Manolis" Maragkakis](mailto:emmanouil.maragkakis@nih.gov) (currently [Laboratory of Genetics and Genomics, National Institute on Aging](https://www.nia.nih.gov/research/labs/lgg/computational-genomics-unit), NIH, USA) or [Panagiotis Alexiou](mailto:panagiotis.alexiou@ceitec.muni.cz) (currently [RBP Bioinformatics](https://www.ceitec.eu/rbp-bioinformatics-panagiotis-alexiou/rg281) & [Bioinformatics Core Facility](https://www.ceitec.eu/bioinformatics-core-facility/cf284), CEITEC, CZE).
 
 ### Data and preprocessing
 #### Data preparation
@@ -93,25 +97,29 @@ The `samples` directory contains several run scripts additonal to the main `run.
 ### Analysis
 #### Alignment statistics
 The `align-stats` directory contains code to reproduce analysis summarized in: **Supplementary Table 2**.
+#### Adapter length
+The `adapter` directory contains code and scripts to reproduce analysis summarized in: **Supplementary Figure 1b**.
 #### Meta-coordinates, re-annotation and heatmap
-The `metacoord_correction` directory contains code and scripts to reproduce analysis summarized in: **Figure 1b,c,d**; **Figure 2b**; **Figure 5c**; **Supplementary Figure2a,b,c,d**.
+The `metacoord_correction` directory contains code and scripts to reproduce analysis summarized in: **Figure 1b,c,d**; **Figure 3b**; **Figure 5c**; **Supplementary Figure2a,b,c,d**.
 #### Changes after re-annotation
 The `reannot-change` directory contains code and scripts to reproduce analysis summarized in: **Figure 1b,c**.
 #### Transcript coverage - transcriptome & genome
 The `trans-coverage` directory contains code and scripts to reproduce analysis summarized in: **Figure 2b,c**; **Figure 3c**; **Figure 4b**; **Figure 5d**.
 #### Poly(A) tail length
-The `polya` directory contains code and scripts to reproduce analysis summarized in: **Figure 4a**; **Figure 5b**.
+The `polya` directory contains code and scripts to reproduce analysis summarized in: **Figure 4a**; **Figure 5b**; **Supplementary Figure 5**.
 #### CAGE and APA
 The `cage_apa` directory contains code and scripts to reproduce analysis summarized in: **Figure 2a (CAGE)**; **Figure 3d (APA)**; **Supplementary Figure 3a,b (CAGE)**.
+#### Promoter signal
+The `promoter-heatmap` directory contains code and scripts to reproduce analysis summazired in: **Figure 2d**.
 #### Relative position distribution
 The `relative-pos-distro` directory contains code and scripts to reproduce analysis summarized in: **Figure 6b,c,d**.
-#### Adapter length
-The `adapter` directory contains code and scripts to reproduce analysis summarized in: **Supplementary Figure 1b**.
+#### Conservation around cuts
+The `conservation` directory contains code and scripts to reproduce analysis summarized in: **Figure 6e**.
 #### SIRV expression distribution and alignment
 The `sirv` directory contains code and scripts to reproduce analysis summarized in: **Supplementary Figure 1c,e**.
 #### Meta-coordinates and poly(A) tail length correlation
 The `metacoord-vs-polya` directory contains code and scripts to reproduce analysis summarized in: **Figure 3c,d**.
 #### Expression correlation
-The `expression` directory contains code and scripts to reproduce analysis summarized in: **Supplementary Figure 4**.
+The `expression` directory contains code and scripts to reproduce analysis summarized in: **Supplementary Figure 6**.
 
 > Written with [StackEdit](https://stackedit.io/).

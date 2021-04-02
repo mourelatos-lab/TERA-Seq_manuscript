@@ -290,14 +290,13 @@ for i in NET-CAGE/*.bed.gz; do
     rm tmp.$RND
 done
 
-
 # Get conversion of UCSC->Ensembl
-wget https://raw.githubusercontent.com/dpryan79/ChromosomeMappings/master/GRCh38_UCSC2ensembl.txt -O UCSC2ensembl.txt
+wget https://raw.githubusercontent.com/dpryan79/ChromosomeMappings/master/GRCh38_UCSC2ensembl.txt -O $DATA_DIR/$assembly/UCSC2ensembl.txt
 
 # Get cis-regions from ENCODE SEARCH/UCSC http://genome.ucsc.edu/cgi-bin/hgTrackUi?db=hg38&g=encodeCcreCombined
-mkdir meth
-wget http://hgdownload.soe.ucsc.edu/gbdb/hg38/encode3/ccre/encodeCcreCombined.bb -O meth/encodeCcreCombined.bigBed
-bigBedToBed meth/encodeCcreCombined.bigBed meth/encodeCcreCombined.bed
+mkdir $DATA_DIR/$assembly/meth
+wget http://hgdownload.soe.ucsc.edu/gbdb/hg38/encode3/ccre/encodeCcreCombined.bb -O $DATA_DIR/$assembly/meth/encodeCcreCombined.bigBed
+bigBedToBed $DATA_DIR/$assembly/meth/encodeCcreCombined.bigBed $DATA_DIR/$assembly/meth/encodeCcreCombined.bed
 # cat meth/encodeCcreCombined.bed | cut -f 11 | sort | uniq -c
 #  56766 CTCF-only
 # 667599 dELS
@@ -305,8 +304,8 @@ bigBedToBed meth/encodeCcreCombined.bigBed meth/encodeCcreCombined.bed
 # 141830 pELS
 #  34803 PLS
 # Use mark "type" as name, not unique but easier to process
-cat meth/encodeCcreCombined.bed | awk 'BEGIN{FS="\t"; OFS="\t"} {print $1, $2, $3, $11, $5, $6}' \
-| substitute-in-column.py --table UCSC2ensembl.txt > meth/encodeCcreCombined.genome.bed # Convert UCSC chr to Ensembl
+cat $DATA_DIR/$assembly/meth/encodeCcreCombined.bed | awk 'BEGIN{FS="\t"; OFS="\t"} {print $1, $2, $3, $11, $5, $6}' \
+    | substitute-in-column.py --table $DATA_DIR/$assembly/UCSC2ensembl.txt > $DATA_DIR/$assembly/meth/encodeCcreCombined.genome.bed # Convert UCSC chr to Ensembl
 
 echo ">>> MAKE MM10 REFERENCES <<<"
 

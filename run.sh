@@ -7,8 +7,6 @@
 
 main_dir=$(dirname "$0") # Save location of this script to a variable
 
-cd $main_dir/
-
 echo ">>> INSTALLING ADDITIONAL SOFTWARE <<<"
 cd tools/
 ./run.sh
