@@ -6,9 +6,9 @@
 # for data.frame: https://www.biostars.org/p/230758/
 #
 
+library(optparse)
 library(tibble)
 suppressPackageStartupMessages(library(dplyr))
-library(optparse)
 suppressPackageStartupMessages(library(GenomicFeatures))
 library(rtracklayer)
 
@@ -70,7 +70,8 @@ if(opt$left>0 | opt$right>0){
   gencodeTx<-append(gencodeTxPlus, gencodeTxMinus)
 }
 
-names (gencodeTx) <- id2name(gencodeTxDb, "tx")
+names(genomicLocus)<-genomicLocus$name
+names(gencodeTx) <- id2name(gencodeTxDb, "tx")
 mappedLocusTrans <- mapToTranscripts(x=genomicLocus, transcripts=gencodeTx, ignore.strand = F)
 
 rtracklayer::export(object = mappedLocusTrans, gsub(".bed", "-ByTranscript.bed", opt$ofile), format = "bed")
@@ -137,7 +138,6 @@ if(opt$left>0 | opt$right>0){
 mappedLocusExon <- mapToTranscripts(x=genomicLocus, transcripts=gencodeExons, ignore.strand = F)
 
 rtracklayer::export(object = mappedLocusExon, gsub(".bed", "-ByExon.bed", opt$ofile), format = "bed")
-
 
 sink(file = gsub(".bed", "-check.txt", opt$ofile))
   print("Exon coordinates of ENST00000616125.")

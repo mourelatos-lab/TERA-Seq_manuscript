@@ -269,8 +269,7 @@ done
 
 # Note: If you have the fast5 files you can remove the "exit" and continue with the analysis
 echo "This section will fail unless you ran Nanopolish poly(A) estimate. If you have fast5 files please comment out line with \"exit"\"
-echo ">>> ALL DONE<<<"
-exit
+echo ">>> ALL DONE<<<" && exit
 
 echo ">>> NANOPOLISH INDEX <<<"
 

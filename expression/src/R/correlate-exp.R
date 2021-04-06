@@ -11,7 +11,7 @@ library("optparse")
 library("data.table")
 library("ggplot2")
 library("plyr")
-library("corrplot")
+suppressPackageStartupMessages(library("corrplot"))
 
 # Read command line options and arguments
 option_list <- list(
@@ -32,7 +32,7 @@ exp_table<-fread(opt$ifile)
 
 exp_table<-exp_table[TPM>0] # Also remove 0 expressed transcripts - most likely from the Salmon quantification as it reports all transcript in the annotation and not just the detected ones
 
-head(exp_table)
+#head(exp_table)
 unique(exp_table$lib_name)
 
 ### Expressions
@@ -93,7 +93,7 @@ corr_table.in<-corr_table.in[rowSums(is.na(corr_table.in))<ncol(corr_table.in)] 
 
 Mp.pairwise<-cor(corr_table.in, method="pearson", use = "na.or.complete") # Spearman = rank, pearson = value
 
-pdf(paste0(gsub(".pdf", "", opt$figfile), ".samples_correlation-pearson.pdf"), width = 12, height = 10)
+pdf(paste0(gsub(".pdf", "", opt$figfile), "-pearson.pdf"), width = 12, height = 10)
   corrplot(Mp.pairwise, addCoef.col = "black", number.digits = 2, number.cex = 2,
            type = "upper", cl.pos = "r", tl.col = "black",  cl.cex = 1.2, tl.cex = 1.2, tl.srt = 45,
            main=paste0("\nPearson - all vs. all (exp. limit: " , opt$exp_limit, ")"))
@@ -105,7 +105,7 @@ corr_table.in<-corr_table.in.bckp
 
 Mp.pairwise<-cor(corr_table.in, method="spearman", use = "na.or.complete") # Spearman = rank, pearson = value
 
-pdf(paste0(gsub(".pdf", "", opt$figfile), ".samples_correlation-spearman.pdf"), width = 12, height = 10)
+pdf(paste0(gsub(".pdf", "", opt$figfile), "-spearman.pdf"), width = 12, height = 10)
   # Publication read plot
   corrplot(Mp.pairwise, method="circle", addCoef.col = "black", number.digits = 2, number.cex = 2,
            type = "upper", cl.pos = "r", tl.col = "black",  cl.cex = 1.2, tl.cex = 1.2, tl.srt = 45,
@@ -139,7 +139,7 @@ corr_table.in<-corr_table.in.bckp
 if(length(grep("REL5", colnames(corr_table.in)))>1){
   corr_table.in.rel5<-corr_table.in[, grep("REL5", colnames(corr_table.in)), with=FALSE]
 
-  png(paste0(gsub(".pdf", "", opt$figfile), ".samples_pairs-REL5.png"), width = 1200, height = 1200)
+  png(paste0(gsub(".pdf", "", opt$figfile), "-pearson.pairs-REL5.png"), width = 1200, height = 1200)
   pairs(corr_table.in.rel5,
         lower.panel = panel.cor,
         upper.panel = upper.panel,
@@ -150,7 +150,7 @@ if(length(grep("REL5", colnames(corr_table.in)))>1){
 if(length(grep("REL3", colnames(corr_table.in)))>1){
   corr_table.in.rel3<-corr_table.in[, grep("REL3", colnames(corr_table.in)), with=FALSE]
 
-  png(paste0(gsub(".pdf", "", opt$figfile), ".samples_pairs-REL3.png"), width = 1200, height = 1200)
+  png(paste0(gsub(".pdf", "", opt$figfile), "-pearson.pairs-REL3.png"), width = 1200, height = 1200)
   pairs(corr_table.in.rel3,
         lower.panel = panel.cor,
         upper.panel = upper.panel,

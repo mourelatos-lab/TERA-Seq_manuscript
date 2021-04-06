@@ -76,7 +76,7 @@ for i in "${samples[@]}"; do
 	bedtools closest -s -D a -id -t first -mdb all \
 		-names fantom5.rep1 fantom5.rep2 fantom5.rep3 \
 		-a $sdir/reads.1.sanitize.toGenome.sorted.5p.bed \
-		-b $DATA_DIR/fantom5/HeLa.rep1.hg38.ctss.bed $DATA_DIR/fantom5/HeLa.rep2.hg38.ctss.bed $DATA_DIR/fantom5/HeLa.rep3.hg38.ctss.bed \
+		-b $DATA_DIR/$assembly/fantom5/HeLa.rep1.hg38.ctss.bed $DATA_DIR/$assembly/fantom5/HeLa.rep2.hg38.ctss.bed $DATA_DIR/$assembly/fantom5/HeLa.rep3.hg38.ctss.bed \
 		| paste-table-col --ifile - \
 		--col-val $i.5p \
 		> $sdir/reads.1.sanitize.toGenome.sorted.5p-cage-upstream.bed &
@@ -88,8 +88,12 @@ echo ">>> GENERATE CONTROLS - RANDOM <<<"
 sdir=$RES_DIR/common
 mkdir -p $sdir
 
-cat $DATA_DIR/$assembly/genes.gtf | grep -P "\texon\t" \
-    | grep -w -f data/HeLa_transcripts.all.txt > $sdir/genes.exon.sub.gtf
+export LC_ALL=C # speed up for string grep search https://stackoverflow.com/questions/9066609/fastest-possible-grep
+xargs -I{} -P$threads grep -w -F {} $DATA_DIR/$assembly/genes.gtf < data/HeLa_transcripts.txt \
+    > $sdir/genes.exon.sub.gtf # multithreaded grep https://stackoverflow.com/questions/56211845/how-to-select-a-subset-of-file-based-on-ids-in-other-file
+cat $sdir/genes.exon.sub.gtf | grep -v "^#" \
+    | sort --parallel=$threads -T $sdir -k1,1 -k4,4n \
+    > $sdir/genes.exon.sub.gtf.tmp && mv $sdir/genes.exon.sub.gtf.tmp $sdir/genes.exon.sub.gtf # resort gtf since xargs doesn't keep order
 
 lines=10000000
 bedtools random -l 1 -n $lines -seed $RANDOM -g $DATA_DIR/$assembly/genome/genome.fa.fai \
@@ -129,29 +133,29 @@ for i in "${samples[@]}"; do
 		sed -i "s/${i}/${i}.woAd/g" $sdir/reads.1.sanitize.toGenome.sorted.5p-cage-upstream.woAdapter.bed
 
 	cat $sdir/reads.1.sanitize.toGenome.sorted.5p-cage-upstream.wAdapter.bed $sdir/reads.1.sanitize.toGenome.sorted.5p-cage-upstream.woAdapter.bed \
-		| src/R/plot-distance.R --ifile stdin --direction up --distance $dist_cage --ofile $sdir/5p-cage-upstream.w_vs_woAdapter.pdf \
-        > $sdir/5p-cage-upstream.w_vs_woAdapter.txt &
+		| src/R/plot-distance.R --ifile stdin --direction up --distance $dist_cage --ofile $sdir/5p-cage-upstream.w_vs_wo_adapter.pdf \
+        > $sdir/5p-cage-upstream.w_vs_wo_adapter.txt &
 
-    cat $sdir/reads.1.sanitize.toGenome.sorted.5p-cage-upstream.wAdapter.bed $RES_DIR/common/genes.exon.sub.random.5p-cage-upstream.be \
-        | src/R/plot-distance.R --ifile stdin --direction up --distance $dist_cage --ofile $sdir/5p-cage-upstream.w_vs_controlAdapter.pdf \
-        > $sdir/5p-cage-upstream.w_vs_controlAdapter.txt &
+    cat $sdir/reads.1.sanitize.toGenome.sorted.5p-cage-upstream.wAdapter.bed $RES_DIR/common/genes.exon.sub.random.5p-cage-upstream.bed \
+        | src/R/plot-distance.R --ifile stdin --direction up --distance $dist_cage --ofile $sdir/5p-cage-upstream.w_adapter_vs_control.pdf \
+        > $sdir/5p-cage-upstream.w_adapter_vs_control.txt &
 
-    cat $sdir/reads.1.sanitize.toGenome.sorted.5p-cage-upstream.woAdapter.bed $RES_DIR/common/genes.exon.sub.random.5p-cage-upstream.be \
-        | src/R/plot-distance.R --ifile stdin --direction up --distance $dist_cage --ofile $sdir/5p-cage-upstream.wo_vs_controlAdapter.pdf \
-        > $sdir/5p-cage-upstream.wo_vs_controlAdapter.txt &
+    cat $sdir/reads.1.sanitize.toGenome.sorted.5p-cage-upstream.woAdapter.bed $RES_DIR/common/genes.exon.sub.random.5p-cage-upstream.bed \
+        | src/R/plot-distance.R --ifile stdin --direction up --distance $dist_cage --ofile $sdir/5p-cage-upstream.wo_adapter_vs_control.pdf \
+        > $sdir/5p-cage-upstream.wo_adapter_vs_control.txt &
 
     # wider span
     cat $sdir/reads.1.sanitize.toGenome.sorted.5p-cage-upstream.wAdapter.bed $sdir/reads.1.sanitize.toGenome.sorted.5p-cage-upstream.woAdapter.bed \
-        | src/R/plot-distance.R --ifile stdin --direction up --distance 500 --zoom --ofile $sdir/5p-cage-upstream.w_vs_woAdapter.500.pdf \
-        > $sdir/5p-cage-upstream.w_vs_woAdapter.500.txt &
+        | src/R/plot-distance.R --ifile stdin --direction up --distance 500 --zoom --ofile $sdir/5p-cage-upstream.w_vs_wo_adapter.500.pdf \
+        > $sdir/5p-cage-upstream.w_vs_wo_adapter.500.txt &
 
-    cat $sdir/reads.1.sanitize.toGenome.sorted.5p-cage-upstream.wAdapter.bed $RES_DIR/common/genes.exon.sub.random.5p-cage-upstream.be \
-        | src/R/plot-distance.R --ifile stdin --direction up --distance 500 --zoom --ofile $sdir/5p-cage-upstream.w_vs_controlAdapter.500.pdf \
-        > $sdir/5p-cage-upstream.w_vs_controlAdapter.500.txt &
+    cat $sdir/reads.1.sanitize.toGenome.sorted.5p-cage-upstream.wAdapter.bed $RES_DIR/common/genes.exon.sub.random.5p-cage-upstream.bed \
+        | src/R/plot-distance.R --ifile stdin --direction up --distance 500 --zoom --ofile $sdir/5p-cage-upstream.w_adapter_vs_control.500.pdf \
+        > $sdir/5p-cage-upstream.w_adapter_vs_control.500.txt &
 
-    cat $sdir/reads.1.sanitize.toGenome.sorted.5p-cage-upstream.woAdapter.bed $RES_DIR/common/genes.exon.sub.random.5p-cage-upstream.be \
-        | src/R/plot-distance.R --ifile stdin --direction up --distance 500 --zoom --ofile $sdir/5p-cage-upstream.wo_vs_controlAdapter.500.pdf \
-        > $sdir/5p-cage-upstream.wo_vs_controlAdapter.500.txt &
+    cat $sdir/reads.1.sanitize.toGenome.sorted.5p-cage-upstream.woAdapter.bed $RES_DIR/common/genes.exon.sub.random.5p-cage-upstream.bed \
+        | src/R/plot-distance.R --ifile stdin --direction up --distance 500 --zoom --ofile $sdir/5p-cage-upstream.wo_adapter_vs_control.500.pdf \
+        > $sdir/5p-cage-upstream.wo_adapter_vs_control.500.txt &
     wait
 done
 wait
@@ -163,7 +167,7 @@ echo ">>> GET OVERLAPS - APA (ALT. POLYA SITES) <<<"
 
 # Make a temporary subset of the polyasite db since it has more columns than cage and we want to keep the consisency
 mkdir $RES_DIR/common
-cat $DATA_DIR/polyasite-2.0/atlas.clusters.hg38.2-0.bed | cut -f1-6 > $RES_DIR/common/polyasite-2.0.bed
+cat $DATA_DIR/$assembly/polyasite-2.0/atlas.clusters.hg38.2-0.bed | cut -f1-6 > $RES_DIR/common/polyasite-2.0.bed
 
 samples=(
     "hsa.dRNASeq.HeLa.polyA.CIP.decap.REL5.long.1"
@@ -248,29 +252,29 @@ for i in "${samples[@]}"; do
 	sed -i "s/${i}/${i}.woAd/g" $sdir/reads.1.sanitize.toGenome.sorted.3p-apa-upstream.woAdapter.bed
 
 	cat $sdir/reads.1.sanitize.toGenome.sorted.3p-apa-upstream.wAdapter.bed $sdir/reads.1.sanitize.toGenome.sorted.3p-apa-upstream.woAdapter.bed \
-		| src/R/plot-distance.R --ifile stdin --direction up --distance $dist_apa --ofile $sdir/3p-apa-upstream.w_vs_woAdapter.pdf \
-        > $sdir/3p-apa-upstream.w_vs_woAdapter.txt &
+		| src/R/plot-distance.R --ifile stdin --direction up --distance $dist_apa --ofile $sdir/3p-apa-upstream.w_vs_wo_adapter.pdf \
+        > $sdir/3p-apa-upstream.w_vs_wo_adapter.txt &
 
     cat $sdir/reads.1.sanitize.toGenome.sorted.3p-apa-upstream.wAdapter.bed $RES_DIR/common/genes.exon.sub.random.3p-apa-upstream.bed \
-        | src/R/plot-distance.R --ifile stdin --direction up --distance $dist_apa --ofile $sdir/3p-apa-upstream.w_vs_controlAdapter.pdf \
-        > $sdir/3p-apa-upstream.w_vs_controlAdapter.txt &
+        | src/R/plot-distance.R --ifile stdin --direction up --distance $dist_apa --ofile $sdir/3p-apa-upstream.w_adapter_vs_control.pdf \
+        > $sdir/3p-apa-upstream.w_adapter_vs_control.txt &
 
     cat $sdir/reads.1.sanitize.toGenome.sorted.3p-apa-upstream.woAdapter.bed $RES_DIR/common/genes.exon.sub.random.3p-apa-upstream.bed \
-        | src/R/plot-distance.R --ifile stdin --direction up --distance $dist_apa --ofile $sdir/3p-apa-upstream.wo_vs_controlAdapter.pdf \
-        > $sdir/3p-apa-upstream.wo_vs_controlAdapter.txt &
+        | src/R/plot-distance.R --ifile stdin --direction up --distance $dist_apa --ofile $sdir/3p-apa-upstream.wo_adapter_vs_control.pdf \
+        > $sdir/3p-apa-upstream.wo_adapter_vs_control.txt &
 
     # wider span
     cat $sdir/reads.1.sanitize.toGenome.sorted.3p-apa-upstream.wAdapter.bed $sdir/reads.1.sanitize.toGenome.sorted.3p-apa-upstream.woAdapter.bed \
-        | src/R/plot-distance.R --ifile stdin --direction up --distance 500 --zoom --ofile $sdir/3p-apa-upstream.w_vs_woAdapter.500.pdf \
-        > $sdir/3p-apa-upstream.w_vs_woAdapter.500.txt &
+        | src/R/plot-distance.R --ifile stdin --direction up --distance 500 --zoom --ofile $sdir/3p-apa-upstream.w_vs_wo_adapter.500.pdf \
+        > $sdir/3p-apa-upstream.w_vs_wo_adapter.500.txt &
 
     cat $sdir/reads.1.sanitize.toGenome.sorted.3p-apa-upstream.wAdapter.bed $RES_DIR/common/genes.exon.sub.random.3p-apa-upstream.bed \
-        | src/R/plot-distance.R --ifile stdin --direction up --distance 500 --zoom --ofile $sdir/3p-apa-upstream.w_vs_controlAdapter.500.pdf \
-        > $sdir/3p-apa-upstream.w_vs_controlAdapter.500.txt &
+        | src/R/plot-distance.R --ifile stdin --direction up --distance 500 --zoom --ofile $sdir/3p-apa-upstream.w_adapter_vs_control.500.pdf \
+        > $sdir/3p-apa-upstream.w_adapter_vs_control.500.txt &
 
     cat $sdir/reads.1.sanitize.toGenome.sorted.3p-apa-upstream.woAdapter.bed $RES_DIR/common/genes.exon.sub.random.3p-apa-upstream.bed \
-        | src/R/plot-distance.R --ifile stdin --direction up --distance 500 --zoom --ofile $sdir/3p-apa-upstream.wo_vs_controlAdapter.500.pdf \
-        > $sdir/3p-apa-upstream.wo_vs_controlAdapter.500.txt &
+        | src/R/plot-distance.R --ifile stdin --direction up --distance 500 --zoom --ofile $sdir/3p-apa-upstream.wo_adapter_vs_control.500.pdf \
+        > $sdir/3p-apa-upstream.wo_adapter_vs_control.500.txt &
 	wait
 done
 

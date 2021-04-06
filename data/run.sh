@@ -232,8 +232,6 @@ cat tRNA.bed rRNA.bed > rRNA_tRNA.bed
 
 echo ">>> GET POLYA DATABASE <<<"
 
-cd $DATA_DIR/
-
 # PolyASite v2.0 (released 2019-08-13)
 # IMPORTANT: PolyASite v2.0 is in GRCh38-96 Ensembl coordinates
 mkdir -p polyasite-2.0
@@ -249,10 +247,10 @@ wget http://fantom.gsc.riken.jp/5/datafiles/latest/basic/human.cell_line.hCAGE/e
 wget http://fantom.gsc.riken.jp/5/datafiles/latest/basic/human.cell_line.hCAGE/epitheloid%2520carcinoma%2520cell%2520line%253a%2520HelaS3%2520ENCODE%252c%2520biol_rep3.CNhs12327.10817-111B7.hg19.ctss.bed.gz -O fantom5/HeLa.rep3.hg19.ctss_chr.bed.gz
 
 ## Download required files for liftover from hg19 to hg38
-wget http://hgdownload.cse.ucsc.edu/goldenPath/hg19/liftOver/hg19ToHg38.over.chain.gz -O $assembly/hg19ToHg38.over.chain.gz
-liftOver fantom5/HeLa.rep1.hg19.ctss_chr.bed.gz $assembly/hg19ToHg38.over.chain.gz fantom5/HeLa.rep1.hg38.ctss_chr.bed fantom5/HeLa.rep1.hg19tohg38unmap.ctss_chr.bed &
-liftOver fantom5/HeLa.rep2.hg19.ctss_chr.bed.gz $assembly/hg19ToHg38.over.chain.gz fantom5/HeLa.rep2.hg38.ctss_chr.bed fantom5/HeLa.rep2.hg19tohg38unmap.ctss_chr.bed &
-liftOver fantom5/HeLa.rep3.hg19.ctss_chr.bed.gz $assembly/hg19ToHg38.over.chain.gz fantom5/HeLa.rep3.hg38.ctss_chr.bed fantom5/HeLa.rep3.hg19tohg38unmap.ctss_chr.bed &
+wget http://hgdownload.cse.ucsc.edu/goldenPath/hg19/liftOver/hg19ToHg38.over.chain.gz -O hg19ToHg38.over.chain.gz
+liftOver fantom5/HeLa.rep1.hg19.ctss_chr.bed.gz hg19ToHg38.over.chain.gz fantom5/HeLa.rep1.hg38.ctss_chr.bed fantom5/HeLa.rep1.hg19tohg38unmap.ctss_chr.bed &
+liftOver fantom5/HeLa.rep2.hg19.ctss_chr.bed.gz hg19ToHg38.over.chain.gz fantom5/HeLa.rep2.hg38.ctss_chr.bed fantom5/HeLa.rep2.hg19tohg38unmap.ctss_chr.bed &
+liftOver fantom5/HeLa.rep3.hg19.ctss_chr.bed.gz hg19ToHg38.over.chain.gz fantom5/HeLa.rep3.hg38.ctss_chr.bed fantom5/HeLa.rep3.hg19tohg38unmap.ctss_chr.bed &
 wait
 
 # Sort
@@ -281,7 +279,7 @@ wget ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM3318nnn/GSM3318230/suppl/GSM33182
 
 # Convert to hg19 to hg38
 for i in NET-CAGE/*.bed.gz; do
-    liftOver $i $assembly/hg19ToHg38.over.chain.gz ${i%.ctss*}.hg38.ctss_chr.bed ${i%.ctss*}.hg38.unmap.ctss_chr.bed
+    liftOver $i hg19ToHg38.over.chain.gz ${i%.ctss*}.hg38.ctss_chr.bed ${i%.ctss*}.hg38.unmap.ctss_chr.bed
 
     cat ${i%.ctss*}.hg38.ctss_chr.bed | sort --parallel=$threads -T . -k1,1 -k2,2n > tmp.$RND
     # Convert from UCSC to Ensembl chromosomes naming
@@ -291,12 +289,12 @@ for i in NET-CAGE/*.bed.gz; do
 done
 
 # Get conversion of UCSC->Ensembl
-wget https://raw.githubusercontent.com/dpryan79/ChromosomeMappings/master/GRCh38_UCSC2ensembl.txt -O $DATA_DIR/$assembly/UCSC2ensembl.txt
+wget https://raw.githubusercontent.com/dpryan79/ChromosomeMappings/master/GRCh38_UCSC2ensembl.txt -O UCSC2ensembl.txt
 
 # Get cis-regions from ENCODE SEARCH/UCSC http://genome.ucsc.edu/cgi-bin/hgTrackUi?db=hg38&g=encodeCcreCombined
-mkdir $DATA_DIR/$assembly/meth
-wget http://hgdownload.soe.ucsc.edu/gbdb/hg38/encode3/ccre/encodeCcreCombined.bb -O $DATA_DIR/$assembly/meth/encodeCcreCombined.bigBed
-bigBedToBed $DATA_DIR/$assembly/meth/encodeCcreCombined.bigBed $DATA_DIR/$assembly/meth/encodeCcreCombined.bed
+mkdir meth
+wget http://hgdownload.soe.ucsc.edu/gbdb/hg38/encode3/ccre/encodeCcreCombined.bb -O meth/encodeCcreCombined.bigBed
+bigBedToBed meth/encodeCcreCombined.bigBed meth/encodeCcreCombined.bed
 # cat meth/encodeCcreCombined.bed | cut -f 11 | sort | uniq -c
 #  56766 CTCF-only
 # 667599 dELS
@@ -304,8 +302,8 @@ bigBedToBed $DATA_DIR/$assembly/meth/encodeCcreCombined.bigBed $DATA_DIR/$assemb
 # 141830 pELS
 #  34803 PLS
 # Use mark "type" as name, not unique but easier to process
-cat $DATA_DIR/$assembly/meth/encodeCcreCombined.bed | awk 'BEGIN{FS="\t"; OFS="\t"} {print $1, $2, $3, $11, $5, $6}' \
-    | substitute-in-column.py --table $DATA_DIR/$assembly/UCSC2ensembl.txt > $DATA_DIR/$assembly/meth/encodeCcreCombined.genome.bed # Convert UCSC chr to Ensembl
+cat meth/encodeCcreCombined.bed | awk 'BEGIN{FS="\t"; OFS="\t"} {print $1, $2, $3, $11, $5, $6}' \
+    | substitute-in-column.py --table UCSC2ensembl.txt > meth/encodeCcreCombined.genome.bed # Convert UCSC chr to Ensembl
 
 echo ">>> MAKE MM10 REFERENCES <<<"
 

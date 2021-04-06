@@ -48,7 +48,7 @@ for i in "${samples[@]}"; do
 
 	lib_size=`cat $sdir/quant.short.sf.raw | awk -F' ' '{sum+=$1;} END{print sum/1000000;}'` # Get library size
 
-	echo $lib_size
+	echo "Normalization factor is $lib_size"
 
     lib_name=`echo $i | sed 's/hsa.dRNASeq.HeLa.//g'`
 	awk -v var=$lib_size 'BEGIN{FS=" ";OFS="\t";}{print $2,$1/var;}' $sdir/quant.short.sf.raw | \
@@ -89,6 +89,6 @@ table-cat \
 echo ">>> PLOT CORRELATION <<<"
 
 src/R/correlate-exp.R --ifile $RES_DIR/quant.w_len.tsv \
-	--figfile $RES_DIR/quant.allExp.pdf # colnames to input to R script: transcript_id\tlib_name\tTPM\tcdna_len
+	--figfile $RES_DIR/correlation.pdf # colnames to input to R script: transcript_id\tlib_name\tTPM\tcdna_len
 
 echo ">>> ALL DONE <<<"

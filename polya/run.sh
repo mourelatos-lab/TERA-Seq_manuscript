@@ -241,6 +241,9 @@ for sample in ${samples[@]}; do
             --figfile $sdir/polya_length.wo_histones.all.pdf &           
 done
 
+echo "This section will fail unless you ran Nanopolish poly(A) estimate and you have the fast5 files. If have both please comment out the next line"
+echo ">>> ALL DONE <<<" && exit
+
 echo ">>> CHECK NANOPOLISH POLYA SEGMENTATION <<<"
 #https://github.com/jts/nanopolish/issues/882
 #https://github.com/jts/nanopolish/blob/master/scripts/polya_training/workflow.md

@@ -57,7 +57,7 @@ uniq <- isUnique(bed$V4)
 
 otab <- bed[uniq]
 
-if(opt$type!="unique"){
+if(opt$type != "unique"){
   # Assign random number to non-unique positions
   dupl <- bed[!uniq]
   setDT(dupl)[, random := sample(.N, .N), V4]

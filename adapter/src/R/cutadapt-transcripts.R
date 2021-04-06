@@ -15,7 +15,7 @@ library("ggplot2")
 # library("stringr")
 
 indir <- args[1] # "results/transcripts/REL5.long/logfiles"
-ofile <- args[2] "results/transcripts/REL5.long/cutadapt-heatmap.png"
+ofile <- args[2] # "results/transcripts/REL5.long/cutadapt-heatmap.png"
 
 input_files <- list.files(path = indir, pattern = "cutadapt..*\\.log$", full.names = T)
 

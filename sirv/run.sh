@@ -17,6 +17,7 @@ echo ">>> SIRV MOUSE ANALYSIS <<<"
 # Getting only forward/sense mapping reads
 
 conda activate teraseq
+
 source $INSTALL/perl-virtualenv/teraseq/bin/activate
 
 samples=(

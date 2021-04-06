@@ -106,7 +106,7 @@ corr_stats<-corr_stats %>%
 
 corr_stats$Ends<-factor(corr_stats$Ends, levels=unique(corr_stats$Ends)) # Put back the factors
 
-print(corr_stat)
+print(corr_stats)
 
 #pdf(paste0(sub("^(.*)[.].*", "\\1", opt$ofile), "-stats.pdf"), height=6, width = 8)
 #  ggplot(data=corr_stats, aes(x=Length, y=Count, colour=Ends)) +

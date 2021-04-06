@@ -67,6 +67,8 @@ def reads_with_adapter_from_cutadapt(filename, adaptor):
         print(res.stdout, file=sys.stderr)
         exit(1)
 
+    os.remove("foo.txt") # Clean
+
     return int(m.group(1))
 
 
@@ -96,6 +98,7 @@ for ln in fa:
     if ln[0] != '>':
         continue
     name = ln[1:].strip()
+    name = name.split()[0] # Split name after first space
     seq = next(fa).strip()
     ref_seqs[name] = seq.upper()
 

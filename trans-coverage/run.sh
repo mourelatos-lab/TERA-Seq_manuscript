@@ -68,21 +68,21 @@ mkdir $RES_DIR/common
 
 # fantom5 cage
 # Note: this is identical to metacoord_correction conversion
-./src/R/genomic-to-transcriptomic-coord.R --ifile $DATA_DIR/fantom5/HeLa.rep1.hg38.ctss.bed \
+./src/R/genomic-to-transcriptomic-coord.R --ifile $DATA_DIR/$assembly/fantom5/HeLa.rep1.hg38.ctss.bed \
 	--ofile $RES_DIR/common/HeLa.rep1.hg38.ctss.genom-to-trans.bed --annot $DATA_DIR/$assembly/genes.gtf &
-./src/R/genomic-to-transcriptomic-coord.R --ifile $DATA_DIR/fantom5/HeLa.rep2.hg38.ctss.bed \
+./src/R/genomic-to-transcriptomic-coord.R --ifile $DATA_DIR/$assembly/fantom5/HeLa.rep2.hg38.ctss.bed \
 	--ofile $RES_DIR/common/HeLa.rep2.hg38.ctss.genom-to-trans.bed --annot $DATA_DIR/$assembly/genes.gtf &
-./src/R/genomic-to-transcriptomic-coord.R --ifile $DATA_DIR/fantom5/HeLa.rep3.hg38.ctss.bed \
+./src/R/genomic-to-transcriptomic-coord.R --ifile $DATA_DIR/$assembly/fantom5/HeLa.rep3.hg38.ctss.bed \
 	--ofile $RES_DIR/common/HeLa.rep3.hg38.ctss.genom-to-trans.bed --annot $DATA_DIR/$assembly/genes.gtf &
 
 # net-cage
-./src/R/genomic-to-transcriptomic-coord.R --ifile $DATA_DIR/NET-CAGE/Rep1-HeLaS3-NETCAGE-1M_AGT.hg38.ctss_chr.bed \
+./src/R/genomic-to-transcriptomic-coord.R --ifile $DATA_DIR/$assembly/NET-CAGE/Rep1-HeLaS3-NETCAGE-1M_AGT.hg38.ctss_chr.bed \
 	--ofile $RES_DIR/common/Rep1-HeLaS3-NETCAGE-1M.hg38.genom-to-trans.bed --annot $DATA_DIR/$assembly/genes.gtf &
-./src/R/genomic-to-transcriptomic-coord.R --ifile $DATA_DIR/NET-CAGE/Rep2-HeLaS3-NETCAGE-1M_ACG.hg38.ctss_chr.bed \
+./src/R/genomic-to-transcriptomic-coord.R --ifile $DATA_DIR/$assembly/NET-CAGE/Rep2-HeLaS3-NETCAGE-1M_ACG.hg38.ctss_chr.bed \
 	--ofile $RES_DIR/common/Rep2-HeLaS3-NETCAGE-1M.hg38.genom-to-trans.bed --annot $DATA_DIR/$assembly/genes.gtf &
 
 # polya
-cat $DATA_DIR/polyasite-2.0/atlas.clusters.hg38.2-0.bed | cut -f1-6 > $RES_DIR/common/polyasite-2.0.bed
+cat $DATA_DIR/$assembly/polyasite-2.0/atlas.clusters.hg38.2-0.bed | cut -f1-6 > $RES_DIR/common/polyasite-2.0.bed
 cat $RES_DIR/common/polyasite-2.0.bed | \
 	./src/R/genomic-to-transcriptomic-coord.R --ifile stdin \
 	--ofile $RES_DIR/common/atlas.clusters.hg38.2-0.genom-to-trans.bed --annot $DATA_DIR/$assembly/genes.gtf &
@@ -109,16 +109,16 @@ wait
 
 # Merge genomic CAGE/NET-CAGE signals
 cat \
-    $DATA_DIR/fantom5/HeLa.rep1.hg38.ctss.bed \
-    $DATA_DIR/fantom5/HeLa.rep2.hg38.ctss.bed \
-    $DATA_DIR/fantom5/HeLa.rep3.hg38.ctss.bed \
+    $DATA_DIR/$assembly/fantom5/HeLa.rep1.hg38.ctss.bed \
+    $DATA_DIR/$assembly/fantom5/HeLa.rep2.hg38.ctss.bed \
+    $DATA_DIR/$assembly/fantom5/HeLa.rep3.hg38.ctss.bed \
     | sort --parallel=$threads -T $RES_DIR/common -k 1,1 -k2,2n \
     | uniq \
     > $RES_DIR/common/HeLa.repAll.hg38.ctss.bed &
 
 cat \
-    $DATA_DIR/NET-CAGE/Rep1-HeLaS3-NETCAGE-1M_AGT.hg38.ctss_chr.bed \
-    $DATA_DIR/NET-CAGE/Rep2-HeLaS3-NETCAGE-1M_ACG.hg38.ctss_chr.bed \
+    $DATA_DIR/$assembly/NET-CAGE/Rep1-HeLaS3-NETCAGE-1M_AGT.hg38.ctss_chr.bed \
+    $DATA_DIR/$assembly/NET-CAGE/Rep2-HeLaS3-NETCAGE-1M_ACG.hg38.ctss_chr.bed \
     | sort --parallel=$threads -T $RES_DIR/common -k 1,1 -k2,2n \
     | uniq \
     > $RES_DIR/common/RepAll-HeLaS3-NETCAGE-1M.hg38.bed

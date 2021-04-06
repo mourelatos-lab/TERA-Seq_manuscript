@@ -18,10 +18,11 @@ mkdir -p $RES_DIR
 echo ">>> RELATIVE POS DISTRO 5p-5p - AKRON5 VS 5TERA W ADAPTER <<<"
 
 conda activate teraseq
+
 source $INSTALL/perl-virtualenv/teraseq/bin/activate
 
 pairs=(
-	"hsa.dRNASeq.HeLa.polyA.CIP.decap.REL5.long.1" "hsa.Akron5Seq.HeLa.whole.2"
+    "hsa.dRNASeq.HeLa.polyA.CIP.decap.REL5.long.1" "hsa.Akron5Seq.HeLa.whole.2"
     "hsa.dRNASeq.HeLa.polyA.decap.REL5.long.1" "hsa.Akron5Seq.HeLa.whole.2"
     "hsa.dRNASeq.HeLa.polyA.REL5.long.1" "hsa.Akron5Seq.HeLa.whole.2"
     "hsa.dRNASeq.HeLa.polyA.REL5OH.long.1" "hsa.Akron5Seq.HeLa.whole.2"
@@ -64,7 +65,7 @@ wait
 echo ">>> RELATIVE POS DISTRO 5p-5p - RIBOSEQ VS 5TERA W ADAPTER <<<"
 
 pairs=(
-	"hsa.dRNASeq.HeLa.polyA.CIP.decap.REL5.long.1" "hsa.RiboSeq.HeLa.async.2"
+    "hsa.dRNASeq.HeLa.polyA.CIP.decap.REL5.long.1" "hsa.RiboSeq.HeLa.async.2"
     "hsa.dRNASeq.HeLa.polyA.decap.REL5.long.1" "hsa.RiboSeq.HeLa.async.2"
     "hsa.dRNASeq.HeLa.polyA.REL5.long.1" "hsa.RiboSeq.HeLa.async.2"
     "hsa.dRNASeq.HeLa.polyA.REL5OH.long.1" "hsa.RiboSeq.HeLa.async.2"   

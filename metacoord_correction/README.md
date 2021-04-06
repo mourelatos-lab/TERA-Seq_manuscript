@@ -55,5 +55,8 @@ Visualization of 5TERA3 read distribution of reads **with** and **without poly(A
 
 The same naming scheme applies to **TERA3** libraries.
 
+#### CAGE signals distribution
+The same naming scheme applies for **CAGE** signals/positions. Since it is not possible to properly distinguish *unmabiguous* positions we used **primary** positions (=each position used only once; random selection). The figure used in the publication can be found in `results/CAGE/coords-on-corrected-meta-mrnas.HeLa_transcripts.primary-inclLen-sameQuart.pdf`. 
+
 ## Note
 Alternative corrections and plots using *primary* alignments instead *unambigous* is available as well for all the analyses (look for *primary* instead of *unambig* in the file name).

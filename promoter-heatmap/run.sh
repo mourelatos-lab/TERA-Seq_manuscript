@@ -127,7 +127,7 @@ for i in "${samples[@]}"; do
     cat $sdir/reads.1.sanitize.toGenome.sorted.wo_rel5.plus.collaps.bed $sdir/reads.1.sanitize.toGenome.sorted.wo_rel5.minus.collaps.bed \
         | sort -k 1,1 -k2,2n -T $sdir > $sdir/reads.1.sanitize.toGenome.sorted.wo_rel5.collaps.bed
     gzip $sdir/reads.1.sanitize.toGenome.sorted.wo_rel5.plus.collaps.bed &
-    gzip $sdir/reads.1.sanitize.toGenome.sorted.wo_rel5.plus.minus.bed &
+    gzip $sdir/reads.1.sanitize.toGenome.sorted.wo_rel5.minus.collaps.bed &
 done
 wait
 
@@ -135,7 +135,6 @@ echo ">> MAKE HEATMAPS - REL5 <<"
 
 conda deactivate
 source $INSTALL/deepTools-3.5.0/venv/bin/activate
-deeptools --version >> run/conda_environment.txt
 
 # Set temp dirs for DeepTools, one of them should work; otherwise it might fail because of an empty tmp dir
 mkdir $RES_DIR/tmpdir
@@ -279,6 +278,8 @@ for i in "${samples[@]}"; do
     done
 
     rm $sdir/reads.1.sanitize.toGenome.sorted.*_rel5.collaps.chunks${rnd}*
+
+    wait
 done
 
 echo ">>> ALL DONE <<<"

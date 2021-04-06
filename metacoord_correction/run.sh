@@ -887,11 +887,11 @@ echo ">> CONVERT COORDS FROM GENOMIC TO TRANSCRIPTOMIC <<"
 mkdir $RES_DIR/common
 
 # fantom5 cage
-./src/R/genomic-to-transcriptomic-coord.R --ifile $DATA_DIR/fantom5/HeLa.rep1.hg38.ctss.bed \
+./src/R/genomic-to-transcriptomic-coord.R --ifile $DATA_DIR/$assembly/fantom5/HeLa.rep1.hg38.ctss.bed \
     --ofile $RES_DIR/common/HeLa.rep1.hg38.ctss.genom-to-trans.bed --annot $DATA_DIR/$assembly/genes.gtf &
-./src/R/genomic-to-transcriptomic-coord.R --ifile $DATA_DIR/fantom5/HeLa.rep2.hg38.ctss.bed \
+./src/R/genomic-to-transcriptomic-coord.R --ifile $DATA_DIR/$assembly/fantom5/HeLa.rep2.hg38.ctss.bed \
     --ofile $RES_DIR/common/HeLa.rep2.hg38.ctss.genom-to-trans.bed --annot $DATA_DIR/$assembly/genes.gtf &
-./src/R/genomic-to-transcriptomic-coord.R --ifile $DATA_DIR/fantom5/HeLa.rep3.hg38.ctss.bed \
+./src/R/genomic-to-transcriptomic-coord.R --ifile $DATA_DIR/$assembly/fantom5/HeLa.rep3.hg38.ctss.bed \
     --ofile $RES_DIR/common/HeLa.rep3.hg38.ctss.genom-to-trans.bed --annot $DATA_DIR/$assembly/genes.gtf &
 wait
 
@@ -909,7 +909,7 @@ subset-table \
     -i "$RES_DIR/common/HeLa.repAll.hg38.ctss.genom-to-trans-ByExon.bed" \
     --nonames \
     -c 1 \
-    -l data/HeLa_transcripts.all.txt \
+    -l data/HeLa_transcripts.txt \
     -o $sdir/HeLa.repAll.hg38.ctss.genom-to-trans-ByExon.HeLa_transcripts.bed
 
 echo ">> SELECT PRIMARY AND UNIQUE (=UNAMBIG) POSITONS <<"
@@ -927,6 +927,8 @@ wait
 echo ">>> COORDINATES OF CAGE TO META-COORDINATES ON MRNAS (CORRECTED AND DEFAULT) <<<"
 
 echo ">> FORMAT FOR PLOTTING (CORRECTED AND DEFAULT) <<"
+
+source $INSTALL/perl-virtualenv/teraseq/bin/activate
 
 src/R/format-meta-coords-bed.R \
     --bed "$sdir/HeLa.repAll.hg38.ctss.genom-to-trans-ByExon.HeLa_transcripts.primary.bed" \

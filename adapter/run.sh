@@ -115,8 +115,8 @@ for i in ${samples[@]}; do
     sdir=$RES_DIR/$i
     mkdir -p $sdir
 
-    ./src/R/cutadapt-libraries.R "sdir/cutadapt/logfiles" \
-        "sdir/cutadapt/cutadapt-heatmap.png" \
+    ./src/R/cutadapt-libraries.R "$sdir/cutadapt/logfiles" \
+        "$sdir/cutadapt/cutadapt-heatmap.png" \
         "$RES_DIR/transcripts/${ad_name}/cutadapt-heatmap.tsv"
 done
 
