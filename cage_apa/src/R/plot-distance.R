@@ -63,12 +63,12 @@ if(opt$keepChr==FALSE){
   input_bed$chr<-droplevels(input_bed$chr) # remove unused chromosome levels
 }
 
-if(opt$collapse==TRUE){
+if (opt$collapse == TRUE) {
   print("Collapsing positions.")
-  input_bed$dupl<-paste(input_bed$dataset, input_bed$chr, input_bed$start, input_bed$end, input_bed$strand, sep=".")
-  input_bed<-input_bed[!duplicated(input_bed$dupl),]
-  input_bed$dupl<-NULL
-}else{
+  input_bed$dupl <- paste(input_bed$dataset, input_bed$chr, input_bed$start, input_bed$end, input_bed$strand, sep = ".")
+  input_bed <- input_bed[!duplicated(input_bed$dupl), ]
+  input_bed$dupl <- NULL
+} else {
   print("Keeping all positions.")
 }
 

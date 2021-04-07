@@ -89,8 +89,8 @@ sdir=$RES_DIR/common
 mkdir -p $sdir
 
 export LC_ALL=C # speed up for string grep search https://stackoverflow.com/questions/9066609/fastest-possible-grep
-xargs -I{} -P$threads grep -w -F {} $DATA_DIR/$assembly/genes.gtf < data/HeLa_transcripts.txt \
-    > $sdir/genes.exon.sub.gtf # multithreaded grep https://stackoverflow.com/questions/56211845/how-to-select-a-subset-of-file-based-on-ids-in-other-file
+cat data/HeLa_transcripts.txt | parallel -j $threads grep -w -F {} $DATA_DIR/$assembly/genes.gtf > $sdir/genes.exon.sub.gtf
+
 cat $sdir/genes.exon.sub.gtf | grep -v "^#" \
     | sort --parallel=$threads -T $sdir -k1,1 -k4,4n \
     > $sdir/genes.exon.sub.gtf.tmp && mv $sdir/genes.exon.sub.gtf.tmp $sdir/genes.exon.sub.gtf # resort gtf since xargs doesn't keep order
