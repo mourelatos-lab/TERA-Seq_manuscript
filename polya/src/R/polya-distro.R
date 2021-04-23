@@ -151,7 +151,8 @@ pdf(opt$figfile, width = 7)
       xlab("Poly(A) length (nt)") +
       theme_classic()
   }
-  print(a)
+  print(a +
+    scale_x_continuous(breaks = seq(0, 300, by=100), labels = seq(0, 300, by=100), limits = c(0, 300)))
 
   if(change_col==TRUE){
    a<-ggplot(dt, aes(x=polya_length, color = sample, fill=sample)) +
@@ -176,10 +177,11 @@ pdf(opt$figfile, width = 7)
       ggtitle("Poly(A) length (bin 10 nt) densities\n with median") +
       theme_classic()
   }
-  print(a)
+  print(a +
+    scale_x_continuous(breaks = seq(0, 300, by=100), labels = seq(0, 300, by=100), limits = c(0, 300)))
 
   if(change_col==TRUE){
-    ggplot(dt, aes(x=polya_length, color = sample, fill=sample)) +
+    a<-ggplot(dt, aes(x=polya_length, color = sample, fill=sample)) +
       geom_histogram(position="identity", binwidth=10, alpha=.25)  +
       geom_vline(data=polya_stats, aes(xintercept=len_median, color=sample),
                  linetype="dashed") +
@@ -190,7 +192,7 @@ pdf(opt$figfile, width = 7)
       ggtitle("Poly(A) length (bin 10 nt) total counts\n with median") +
       theme_classic()
   }else{
-    ggplot(dt, aes(x=polya_length, color = sample, fill=sample)) +
+    a<-ggplot(dt, aes(x=polya_length, color = sample, fill=sample)) +
       geom_histogram(position="identity", binwidth=10, alpha=.25)  +
       geom_vline(data=polya_stats, aes(xintercept=len_median, color=sample),
                  linetype="dashed") +
@@ -199,6 +201,9 @@ pdf(opt$figfile, width = 7)
       ggtitle("Poly(A) length (bin 10 nt) total counts\n with median") +
       theme_classic()
   }
+  print(a +
+    scale_x_continuous(breaks = seq(0, 300, by=100), labels = seq(0, 300, by=100))) +
+	coord_cartesian(xlim = c(0, 300))
 
   if(change_col==TRUE){
     print(polya_box + scale_colour_manual(values = cols))

@@ -23,7 +23,7 @@ feats=(
 )
 
 for i in "${feats[@]}"; do
-    grep -w $i $DATA_DIR/$assembly/meth/encodeCcreCombined.genome.bed > $RES_DIR/common/encodeCcreCombined.genome.$i.bed
+    grep -w $i $DATA_DIR/$assembly/meth/encodeCcreHela.genome.bed > $RES_DIR/common/encodeCcreHela.genome.$i.bed
 done
 
 echo ">> MAKE BIGWIG FROM BED <<"
@@ -180,7 +180,7 @@ for i in "${samples[@]}"; do
             computeMatrix reference-point \
                 --referencePoint TSS \
                 -R $chunk \
-                -S $RES_DIR/common/encodeCcreCombined.genome.${feat}.bw \
+                -S $RES_DIR/common/encodeCcreHela.genome.${feat}.bw \
                 --samplesLabel ${feat} \
                 -b 500 -a 500 \
                 --skipZeros \
@@ -218,7 +218,7 @@ for i in "${samples[@]}"; do
             computeMatrix reference-point \
                 --referencePoint TSS \
                 -R $chunk \
-                -S $RES_DIR/common/encodeCcreCombined.genome.${feat}.bw \
+                -S $RES_DIR/common/encodeCcreHela.genome.${feat}.bw \
                 --samplesLabel ${feat} \
                 -b 500 -a 500 \
                 --skipZeros \

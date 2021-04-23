@@ -291,19 +291,33 @@ done
 # Get conversion of UCSC->Ensembl
 wget https://raw.githubusercontent.com/dpryan79/ChromosomeMappings/master/GRCh38_UCSC2ensembl.txt -O UCSC2ensembl.txt
 
-# Get cis-regions from ENCODE SEARCH/UCSC http://genome.ucsc.edu/cgi-bin/hgTrackUi?db=hg38&g=encodeCcreCombined
+# Get cis-regions from ENCODE SEARCH https://screen.wenglab.org/
 mkdir meth
-wget http://hgdownload.soe.ucsc.edu/gbdb/hg38/encode3/ccre/encodeCcreCombined.bb -O meth/encodeCcreCombined.bigBed
-bigBedToBed meth/encodeCcreCombined.bigBed meth/encodeCcreCombined.bed
-# cat meth/encodeCcreCombined.bed | cut -f 11 | sort | uniq -c
-#  56766 CTCF-only
-# 667599 dELS
-#  25537 DNase-H3K4me3
-# 141830 pELS
-#  34803 PLS
+wget wget https://api.wenglab.org/screen_v13/fdownloads/Seven-Group/ENCFF977IGB_ENCFF489CIY_ENCFF194XTD_ENCFF836JPY.7group.bed -O meth/encodeCcreHela.bed
+#cat meth/encodeCcreHela.bed | cut -f 10 | sort | uniq -c
+#  20023 CTCF-only,CTCF-bound
+#  31295 dELS
+#   4169 dELS,CTCF-bound
+#   2222 DNase-H3K4me3
+#   1305 DNase-H3K4me3,CTCF-bound
+#  35142 DNase-only
+# 788464 Low-DNase
+#  23551 pELS
+#   4492 pELS,CTCF-bound
+#  13231 PLS
+#   2641 PLS,CTCF-bound
 # Use mark "type" as name, not unique but easier to process
-cat meth/encodeCcreCombined.bed | awk 'BEGIN{FS="\t"; OFS="\t"} {print $1, $2, $3, $11, $5, $6}' \
-    | substitute-in-column.py --table UCSC2ensembl.txt > meth/encodeCcreCombined.genome.bed # Convert UCSC chr to Ensembl
+cat meth/encodeCcreHela.bed | cut -f 10 | tr ',' '\t' > meth/tmp
+paste meth/encodeCcreHela.bed meth/tmp | awk 'BEGIN{FS="\t"; OFS="\t"} {print $1, $2, $3, $12, $5, $6}' \
+    | substitute-in-column.py --table UCSC2ensembl.txt > meth/encodeCcreHela.genome.bed && rm meth/tmp # Convert UCSC chr to Ensembl
+#cat meth/encodeCcreHela.genome.bed | cut -f 4 | sort | uniq -c
+#  20023 CTCF-only
+#  35464 dELS
+#   3527 DNase-H3K4me3
+#  35142 DNase-only
+# 788464 Low-DNase
+#  28043 pELS
+#  15872 PLS
 
 echo ">>> MAKE MM10 REFERENCES <<<"
 

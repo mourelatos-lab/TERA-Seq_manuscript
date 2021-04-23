@@ -133,15 +133,15 @@ for i in "${samples[@]}"; do
 		sed -i "s/${i}/${i}.woAd/g" $sdir/reads.1.sanitize.toGenome.sorted.5p-cage-upstream.woAdapter.bed
 
 	cat $sdir/reads.1.sanitize.toGenome.sorted.5p-cage-upstream.wAdapter.bed $sdir/reads.1.sanitize.toGenome.sorted.5p-cage-upstream.woAdapter.bed \
-		| src/R/plot-distance.R --ifile stdin --direction up --distance $dist_cage --ofile $sdir/5p-cage-upstream.w_vs_wo_adapter.pdf \
+		| src/R/plot-distance.R --ifile stdin --direction up --distance $dist_cage --zoom --ofile $sdir/5p-cage-upstream.w_vs_wo_adapter.pdf \
         > $sdir/5p-cage-upstream.w_vs_wo_adapter.txt &
 
     cat $sdir/reads.1.sanitize.toGenome.sorted.5p-cage-upstream.wAdapter.bed $RES_DIR/common/genes.exon.sub.random.5p-cage-upstream.bed \
-        | src/R/plot-distance.R --ifile stdin --direction up --distance $dist_cage --ofile $sdir/5p-cage-upstream.w_adapter_vs_control.pdf \
+        | src/R/plot-distance.R --ifile stdin --direction up --distance $dist_cage --zoom --ofile $sdir/5p-cage-upstream.w_adapter_vs_control.pdf \
         > $sdir/5p-cage-upstream.w_adapter_vs_control.txt &
 
     cat $sdir/reads.1.sanitize.toGenome.sorted.5p-cage-upstream.woAdapter.bed $RES_DIR/common/genes.exon.sub.random.5p-cage-upstream.bed \
-        | src/R/plot-distance.R --ifile stdin --direction up --distance $dist_cage --ofile $sdir/5p-cage-upstream.wo_adapter_vs_control.pdf \
+        | src/R/plot-distance.R --ifile stdin --direction up --distance $dist_cage --zoom --ofile $sdir/5p-cage-upstream.wo_adapter_vs_control.pdf \
         > $sdir/5p-cage-upstream.wo_adapter_vs_control.txt &
 
     # wider span
@@ -252,15 +252,15 @@ for i in "${samples[@]}"; do
 	sed -i "s/${i}/${i}.woAd/g" $sdir/reads.1.sanitize.toGenome.sorted.3p-apa-upstream.woAdapter.bed
 
 	cat $sdir/reads.1.sanitize.toGenome.sorted.3p-apa-upstream.wAdapter.bed $sdir/reads.1.sanitize.toGenome.sorted.3p-apa-upstream.woAdapter.bed \
-		| src/R/plot-distance.R --ifile stdin --direction up --distance $dist_apa --ofile $sdir/3p-apa-upstream.w_vs_wo_adapter.pdf \
+		| src/R/plot-distance.R --ifile stdin --direction up --distance $dist_apa --zoom --ofile $sdir/3p-apa-upstream.w_vs_wo_adapter.pdf \
         > $sdir/3p-apa-upstream.w_vs_wo_adapter.txt &
 
     cat $sdir/reads.1.sanitize.toGenome.sorted.3p-apa-upstream.wAdapter.bed $RES_DIR/common/genes.exon.sub.random.3p-apa-upstream.bed \
-        | src/R/plot-distance.R --ifile stdin --direction up --distance $dist_apa --ofile $sdir/3p-apa-upstream.w_adapter_vs_control.pdf \
+        | src/R/plot-distance.R --ifile stdin --direction up --distance $dist_apa --zoom --ofile $sdir/3p-apa-upstream.w_adapter_vs_control.pdf \
         > $sdir/3p-apa-upstream.w_adapter_vs_control.txt &
 
     cat $sdir/reads.1.sanitize.toGenome.sorted.3p-apa-upstream.woAdapter.bed $RES_DIR/common/genes.exon.sub.random.3p-apa-upstream.bed \
-        | src/R/plot-distance.R --ifile stdin --direction up --distance $dist_apa --ofile $sdir/3p-apa-upstream.wo_adapter_vs_control.pdf \
+        | src/R/plot-distance.R --ifile stdin --direction up --distance $dist_apa --zoom --ofile $sdir/3p-apa-upstream.wo_adapter_vs_control.pdf \
         > $sdir/3p-apa-upstream.wo_adapter_vs_control.txt &
 
     # wider span

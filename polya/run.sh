@@ -205,40 +205,95 @@ echo ">> GET HISTONE GENES <<"
 mkdir $RES_DIR/common
 
 cat $DATA_DIR/$assembly/ensembl_genes.gtf | grep "gene_name \"HIST" | cut -f 9 | tr ';' '\n' \
-    | grep "transcript_id" | cut -d ' ' -f 3 | sed 's/"//g' | sort | uniq > $RES_DIR/common/histones-transcripts.txt
+	| grep "transcript_id" | cut -d ' ' -f 3 | sed 's/"//g' | sort | uniq > $RES_DIR/common/histones-transcripts.txt
 
-samples=(
-    "hsa.dRNASeq.HeLa.total.REL3.1"
-    "hsa.dRNASeq.HeLa.total.REL3.2"
-    "hsa.dRNASeq.HeLa.total.REL3.3"
+libraries=( 
+	"hsa.dRNASeq.HeLa.total.REL3.1"
+	"hsa.dRNASeq.HeLa.total.REL3.2"
+	"hsa.dRNASeq.HeLa.total.REL3.3"
 )
 
-for sample in ${samples[@]}; do
+for sample in ${libraries[@]}; do
+	echo $sample
+	sdir=$RES_DIR/$sample/nanopolish
+	mkdir -p $sdir
 
-    echo $sample
-    sdir=$RES_DIR/$sample
-    mkdir -p $sdir
+#    # rel3 and norel3
+#    /home/mns/bin/table-cat \
+#		$sdir/rna_tails.rel3.tsv \
+#		$sdir/rna_tails.norel3.tsv \
+#        > $sdir/rna_tails.tab
 
-    # get only histone transcripts
-    head -1 $sdir/polya_length.tab > $sdir/polya_length.histones.tab  
-    grep -wf $RES_DIR/common/histones-transcripts.txt $sdir/polya_length.tab >> $sdir/polya_length.histones.tab
- 
-    # get all but histone transcripts   
-    grep -v -wf $RES_DIR/common/histones-transcripts.txt $sdir/polya_length.tab > $sdir/polya_length.wo_histones.tab
+#	head -1 $sdir/rna_tails.tab > $sdir/rna_tails.histones.tab	
+#	grep -wf $RES_DIR/common/histones-transcripts.txt $sdir/rna_tails.tab >> $sdir/rna_tails.histones.tab
+#	grep -v -wf $RES_DIR/common/histones-transcripts.txt $sdir/rna_tails.tab > $sdir/rna_tails.wo_histones.tab
 
-    cat $sdir/polya_length.histones.tab \
-        | src/R/polya-distro.R \
-            --ifile stdin \
-            --software "nanopolish" \
-            --maxL 300 \
-            --figfile $sdir/polya_length.histones.all.pdf &
+    # rel3
+	head -1 $sdir/rna_tails.rel3.tsv > $sdir/rna_tails.histones.rel3.tsv	
+	grep -w -F -f $RES_DIR/common/histones-transcripts.txt $sdir/rna_tails.rel3.tsv >> $sdir/rna_tails.histones.rel3.tsv
+	grep -v -w -F -f $RES_DIR/common/histones-transcripts.txt $sdir/rna_tails.rel3.tsv > $sdir/rna_tails.wo_histones.rel3.tsv
 
-    cat $sdir/polya_length.wo_histones.tab \
-        | src/R/polya-distro.R \
-            --ifile stdin \
-            --software "nanopolish" \
-            --maxL 300 \
-            --figfile $sdir/polya_length.wo_histones.all.pdf &           
+#    # rel3 and norel3
+#	cat $sdir/rna_tails.histones.tab \
+#		| src/R/polya-distro.R \
+#			--ifile stdin \
+#			--software "nanopolish" \
+#			--maxL 300 \
+#			--removezero \
+#			--figfile $sdir/rna_tails.histones.nozero.pdf &
+
+#	cat $sdir/rna_tails.histones.tab \
+#		| src/R/polya-distro.R \
+#			--ifile stdin \
+#			--software "nanopolish" \
+#			--maxL 300 \
+#			--figfile $sdir/rna_tails.histones.all.pdf &
+
+#	cat $sdir/rna_tails.wo_histones.tab \
+#		| src/R/polya-distro.R \
+#			--ifile stdin \
+#			--software "nanopolish" \
+#			--maxL 300 \
+#			--removezero \
+#			--figfile $sdir/rna_tails.wo_histones.nozero.pdf &
+
+#	cat $sdir/rna_tails.wo_histones.tab \
+#		| src/R/polya-distro.R \
+#			--ifile stdin \
+#			--software "nanopolish" \
+#			--maxL 300 \
+#			--figfile $sdir/rna_tails.wo_histones.all.pdf &
+
+    # rel3
+	cat $sdir/rna_tails.histones.rel3.tsv \
+		| src/R/polya-distro.R \
+			--ifile stdin \
+			--software "nanopolish" \
+			--maxL 300 \
+			--removezero \
+			--figfile $sdir/rna_tails.histones.rel3.nozero.pdf &
+
+	cat $sdir/rna_tails.histones.rel3.tsv \
+		| src/R/polya-distro.R \
+			--ifile stdin \
+			--software "nanopolish" \
+			--maxL 300 \
+			--figfile $sdir/rna_tails.histones.rel3.all.pdf &
+
+	cat $sdir/rna_tails.wo_histones.rel3.tsv \
+		| src/R/polya-distro.R \
+			--ifile stdin \
+			--software "nanopolish" \
+			--maxL 300 \
+			--removezero \
+			--figfile $sdir/rna_tails.wo_histones.rel3.nozero.pdf &
+
+	cat $sdir/rna_tails.wo_histones.rel3.tsv \
+		| src/R/polya-distro.R \
+			--ifile stdin \
+			--software "nanopolish" \
+			--maxL 300 \
+			--figfile $sdir/rna_tails.wo_histones.rel3.all.pdf &			
 done
 
 echo "This section will fail unless you ran Nanopolish poly(A) estimate and you have the fast5 files. If have both please comment out the next line"
