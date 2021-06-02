@@ -100,7 +100,7 @@ The `align-stats` directory contains code to reproduce analysis summarized in: *
 #### Adapter length
 The `adapter` directory contains code and scripts to reproduce analysis summarized in: **Supplementary Figure 1b**.
 #### Meta-coordinates, re-annotation and heatmap
-The `metacoord_correction` directory contains code and scripts to reproduce analysis summarized in: **Figure 1b,c,d**; **Figure 3b**; **Figure 5c**; **Supplementary Figure2a,b,c,d**.
+The `metacoord_correction` directory contains code and scripts to reproduce analysis summarized in: **Figure 1b,c,d**; **Figure 3b**; **Figure 5c**; **Supplementary Figure 2a,b,c,d**.
 #### Changes after re-annotation
 The `reannot-change` directory contains code and scripts to reproduce analysis summarized in: **Figure 1b,c**.
 #### Transcript coverage - transcriptome & genome
@@ -116,7 +116,7 @@ The `relative-pos-distro` directory contains code and scripts to reproduce analy
 #### Conservation around cuts
 The `conservation` directory contains code and scripts to reproduce analysis summarized in: **Figure 6e**.
 #### SIRV expression distribution and alignment
-The `sirv` directory contains code and scripts to reproduce analysis summarized in: **Supplementary Figure 1c,e**.
+The `sirv` directory contains code and scripts to reproduce analysis summarized in: **Supplementary Figure 1c**.
 #### Meta-coordinates and poly(A) tail length correlation
 The `metacoord-vs-polya` directory contains code and scripts to reproduce analysis summarized in: **Figure 3c,d**.
 #### Expression correlation

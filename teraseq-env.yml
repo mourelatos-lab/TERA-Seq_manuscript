@@ -255,6 +255,7 @@ dependencies:
   - r-openssl=1.4.1=r35he5c4762_0
   - r-openxlsx=4.1.4=r35h0357c0b_0
   - r-optparse=1.6.2=r35h6115d3f_1
+  - r-patchwork=1.0.0=r35h6115d3f_0
   - r-pillar=1.4.3=r35h6115d3f_0
   - r-pkgbuild=1.0.7=r35h6115d3f_0
   - r-pkgconfig=2.0.3=r35h6115d3f_0
