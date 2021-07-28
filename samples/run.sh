@@ -20,8 +20,6 @@ echo ">> RUNNING 5TERA3 <<"
 ./run_5TERA3.sh
 echo ">> MERGING 5TERA3 <<"
 ./run_5TERA3-merge.sh
-echo ">> RUNNING 5TERA-SIRV <<"
-./run_5TERA-SIRV.sh
 echo ">> RUNNING MOUSE SIRV <<"
 ./run_mouse_SIRV.sh
 echo ">> RUNNING AKRON5 <<"

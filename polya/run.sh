@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Analyza and plot poly(A) tail 
+# Analyza and plot poly(A) tail
 #
 
 source ../PARAMS.sh
@@ -62,7 +62,7 @@ for sample in ${samples[@]}; do
 	# w adapter
 	sqlite3 $SAMPLE_DIR/$sample/db/sqlite.db 'SELECT qname FROM transcr WHERE (rel5 IS NOT NULL AND ((flag & 1) == 0 OR (flag & 64) == 64) AND ((flag & 256) == 0) AND (coding_transcript IS NOT NULL AND noncoding_transcript IS NULL));' > $sdir/reads.rel5.txt &
 done
-wait	
+wait
 
 for sample in ${samples[@]}; do
 	echo $sample
@@ -73,15 +73,15 @@ for sample in ${samples[@]}; do
 		--ifile $sdir/polya_length.tab \
 		--column "readname" \
 		--ilist $sdir/reads.norel5.txt \
-		--ofile $sdir/rna_tails.norel5.tsv 
-	
+		--ofile $sdir/rna_tails.norel5.tsv
+
 	sed -i "s/$sample\t/${sample}.norel5\t/g" $sdir/rna_tails.norel5.tsv
 
 	subset-table \
 		--ifile $sdir/polya_length.tab \
 		--column "readname" \
 		--ilist $sdir/reads.rel5.txt \
-		--ofile $sdir/rna_tails.rel5.tsv 
+		--ofile $sdir/rna_tails.rel5.tsv
 
 	sed -i "s/$sample\t/${sample}.rel5\t/g" $sdir/rna_tails.rel5.tsv
 
@@ -137,15 +137,15 @@ for sample in ${samples[@]}; do
 		--ifile $sdir/polya_length.tab \
 		--column "readname" \
 		--ilist $sdir/reads.norel3.txt \
-		--ofile $sdir/rna_tails.norel3.tsv 
-	
+		--ofile $sdir/rna_tails.norel3.tsv
+
 	sed -i "s/$sample\t/${sample}.norel3\t/g" $sdir/rna_tails.norel3.tsv
 
 	subset-table \
 		--ifile $sdir/polya_length.tab \
 		--column "readname" \
 		--ilist $sdir/reads.rel3.txt \
-		--ofile $sdir/rna_tails.rel3.tsv 
+		--ofile $sdir/rna_tails.rel3.tsv
 
 	sed -i "s/$sample\t/${sample}.rel3\t/g" $sdir/rna_tails.rel3.tsv
 
@@ -207,7 +207,7 @@ mkdir $RES_DIR/common
 cat $DATA_DIR/$assembly/ensembl_genes.gtf | grep "gene_name \"HIST" | cut -f 9 | tr ';' '\n' \
 	| grep "transcript_id" | cut -d ' ' -f 3 | sed 's/"//g' | sort | uniq > $RES_DIR/common/histones-transcripts.txt
 
-libraries=( 
+libraries=(
 	"hsa.dRNASeq.HeLa.total.REL3.1"
 	"hsa.dRNASeq.HeLa.total.REL3.2"
 	"hsa.dRNASeq.HeLa.total.REL3.3"
@@ -218,51 +218,10 @@ for sample in ${libraries[@]}; do
 	sdir=$RES_DIR/$sample/nanopolish
 	mkdir -p $sdir
 
-#    # rel3 and norel3
-#    /home/mns/bin/table-cat \
-#		$sdir/rna_tails.rel3.tsv \
-#		$sdir/rna_tails.norel3.tsv \
-#        > $sdir/rna_tails.tab
-
-#	head -1 $sdir/rna_tails.tab > $sdir/rna_tails.histones.tab	
-#	grep -wf $RES_DIR/common/histones-transcripts.txt $sdir/rna_tails.tab >> $sdir/rna_tails.histones.tab
-#	grep -v -wf $RES_DIR/common/histones-transcripts.txt $sdir/rna_tails.tab > $sdir/rna_tails.wo_histones.tab
-
     # rel3
-	head -1 $sdir/rna_tails.rel3.tsv > $sdir/rna_tails.histones.rel3.tsv	
+	head -1 $sdir/rna_tails.rel3.tsv > $sdir/rna_tails.histones.rel3.tsv
 	grep -w -F -f $RES_DIR/common/histones-transcripts.txt $sdir/rna_tails.rel3.tsv >> $sdir/rna_tails.histones.rel3.tsv
 	grep -v -w -F -f $RES_DIR/common/histones-transcripts.txt $sdir/rna_tails.rel3.tsv > $sdir/rna_tails.wo_histones.rel3.tsv
-
-#    # rel3 and norel3
-#	cat $sdir/rna_tails.histones.tab \
-#		| src/R/polya-distro.R \
-#			--ifile stdin \
-#			--software "nanopolish" \
-#			--maxL 300 \
-#			--removezero \
-#			--figfile $sdir/rna_tails.histones.nozero.pdf &
-
-#	cat $sdir/rna_tails.histones.tab \
-#		| src/R/polya-distro.R \
-#			--ifile stdin \
-#			--software "nanopolish" \
-#			--maxL 300 \
-#			--figfile $sdir/rna_tails.histones.all.pdf &
-
-#	cat $sdir/rna_tails.wo_histones.tab \
-#		| src/R/polya-distro.R \
-#			--ifile stdin \
-#			--software "nanopolish" \
-#			--maxL 300 \
-#			--removezero \
-#			--figfile $sdir/rna_tails.wo_histones.nozero.pdf &
-
-#	cat $sdir/rna_tails.wo_histones.tab \
-#		| src/R/polya-distro.R \
-#			--ifile stdin \
-#			--software "nanopolish" \
-#			--maxL 300 \
-#			--figfile $sdir/rna_tails.wo_histones.all.pdf &
 
     # rel3
 	cat $sdir/rna_tails.histones.rel3.tsv \
@@ -293,10 +252,39 @@ for sample in ${libraries[@]}; do
 			--ifile stdin \
 			--software "nanopolish" \
 			--maxL 300 \
-			--figfile $sdir/rna_tails.wo_histones.rel3.all.pdf &			
+			--figfile $sdir/rna_tails.wo_histones.rel3.all.pdf &
 done
 
-echo "This section will fail unless you ran Nanopolish poly(A) estimate and you have the fast5 files. If have both please comment out the next line"
+echo "This section will fail unless you ran Nanopolish poly(A) estimate and you ran metacoord_correction analysis. If have both please comment out the next line."
+echo ">>> ALL DONE <<<" && exit
+
+echo ">>> COMPARE POLYA TAIL LENGTHS <<<"
+
+libraries=(
+	"hsa.dRNASeq.HeLa.polyA.CIP.decap.REL5.long.1"
+	"hsa.dRNASeq.HeLa.polyA.REL5.long.1"
+	"hsa.dRNASeq.HeLa.total.REL3.3"
+)
+
+echo ">> GET READS REACHING THE 5' END (bin 19) <<"
+
+for sample in ${libraries[@]}; do
+
+	echo $sample
+	sdir=$RES_DIR/$sample
+	mkdir -p $sdir
+
+	tail -n+2 ../metacoord_correction/results/$sample/coords-on-corrected-meta-mrnas.primary.*rel[5,3].tab \
+		| grep -P "\t19$" | cut -f2 \
+		> $sdir/coords-on-corrected-meta-mrnas.primary.19bin.names.txt &
+done
+wait
+
+echo ">> COMPARE POLYA TAILS <<"
+
+R --no-save < src/R/nanopolish-lengths.R
+
+echo "This section will fail unless you ran Nanopolish poly(A) estimate and you have the fast5 files. If have both please comment out the next line."
 echo ">>> ALL DONE <<<" && exit
 
 echo ">>> CHECK NANOPOLISH POLYA SEGMENTATION <<<"
@@ -309,7 +297,7 @@ samples=(
     "hsa.dRNASeq.HeLa.total.REL3.3"
 )
 
-conda deactivate    
+conda deactivate
 
 for i in ${samples[@]}; do
     echo $i
@@ -351,7 +339,7 @@ for i in ${samples[@]}; do
     rmdir $SAMPLE_DIR/$i/fastq/tmp
 
     conda deactivate
-    source $INSTALL/ont-fast5-api/bin/activate    
+    source $INSTALL/ont-fast5-api/bin/activate
 
     # Plot the chosen reads
     cd $CUR_DIR/$sdir/PASS/

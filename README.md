@@ -1,12 +1,13 @@
-
 # TERA-Seq analysis and methods
-This repository contains all the main tools and scripts needed to reproduce analysis used in publication **TERA-Seq: True end-to-end sequencing of native RNA molecules for comprehensive transcriptome characterization** (Ibrahim, F., Oppelt, J., Maragkakis, M. and Mourelatos, Z., YEAR, JOURNAL, DOI: XXX).
+This repository contains all the main tools and scripts needed to reproduce analysis used in publication **TERA-Seq: True end-to-end sequencing of native RNA molecules for transcriptome characterization** (Ibrahim, F., Oppelt, J., Maragkakis, M. and Mourelatos, Z., YEAR, JOURNAL, DOI: XXX).
+
+**fast5** (basecalled, untrimmed) files can be found in [`samples`](samples/README.md) directory.
 
 This repository will be archived as soon as the publication is accepted to keep the code in the same *version* as in the time of publication.
 
 ## General information
 
-The analysis was tested on Ubuntu 16.04 LTS, 16 threads, 32 GB RAM, xxx GB HDD. The only exception is `STAR` indexing and mapping which needs ~32GB RAM for human-sized genome. If you need to run `STAR` on a machine with lower amount of RAM, you can add `--genomeSAsparseD 2` (or higher value) to `STAR` genome indexings to decrease RAM requirements for at a cost of speed reduction.
+The analysis was tested on Ubuntu 16.04 LTS, 16 threads, 32 GB RAM, 2 TB HDD. The only exception is `STAR` indexing and mapping which needs ~32GB RAM for human-sized genome. If you need to run `STAR` on a machine with lower amount of RAM, you can add `--genomeSAsparseD 2` (or higher value) to `STAR` genome indexings to decrease RAM requirements for at a cost of speed reduction.
 
 ## Requirements
 
@@ -64,7 +65,7 @@ Note: If you get a lot of `ClobberError: This transaction has incompatible packa
 
 #### Guppy basecaller
 Guppy basecaller must be obtained from [Nanopore community](https://community.nanoporetech.com/downloads) section and must be installed in case you want to re-basecall the data. Please use **Guppy 3.2.2 GPU** version to replicate the basecall. The CPU version should provide the same results. Installation manual is provided in the same link.
-To test the Guppy basecalling we only provide a small subset of 10 fast5 files in the `test_data/Guppy` directory.
+
 ### Miscellaneous scripts
 `misc` directory contains various miscellaneous scripts and sources.
 
@@ -96,19 +97,19 @@ The `samples` directory contains several run scripts additonal to the main `run.
 
 ### Analysis
 #### Alignment statistics
-The `align-stats` directory contains code to reproduce analysis summarized in: **Supplementary Table 2**.
+The `align-stats` directory contains code to reproduce analysis summarized in: **Supplementary Table 2**; **Supplementary Figure 1d**.
 #### Adapter length
 The `adapter` directory contains code and scripts to reproduce analysis summarized in: **Supplementary Figure 1b**.
 #### Meta-coordinates, re-annotation and heatmap
-The `metacoord_correction` directory contains code and scripts to reproduce analysis summarized in: **Figure 1b,c,d**; **Figure 3b**; **Figure 5c**; **Supplementary Figure 2a,b,c,d**.
+The `metacoord_correction` directory contains code and scripts to reproduce analysis summarized in: **Figure 1b,c,d** (left part of Figures 1b,c); **Figure 3b**; **Figure 5c**; **Supplementary Figure 2a,b,c,d**.
 #### Changes after re-annotation
-The `reannot-change` directory contains code and scripts to reproduce analysis summarized in: **Figure 1b,c**.
-#### Transcript coverage - transcriptome & genome
-The `trans-coverage` directory contains code and scripts to reproduce analysis summarized in: **Figure 2b,c**; **Figure 3c**; **Figure 4b**; **Figure 5d**.
+The `reannot-change` directory contains code and scripts to reproduce analysis summarized in: **Figure 1b,c** (right part of the figures).
+#### Transcript coverage (transcriptome and genome)
+The `trans-coverage` directory contains code and scripts to reproduce analysis summarized in: **Figure 2b,c**; **Figure 3c**; **Figure 4b**; **Figure 5d**; **Supplementary Figure 5**.
 #### Poly(A) tail length
-The `polya` directory contains code and scripts to reproduce analysis summarized in: **Figure 4a**; **Figure 5b**; **Supplementary Figure 5**.
+The `polya` directory contains code and scripts to reproduce analysis summarized in: **Figure 4a**; **Figure 5b**; **Supplementary Figure 4b,c,d,e**.
 #### CAGE and APA
-The `cage_apa` directory contains code and scripts to reproduce analysis summarized in: **Figure 2a (CAGE)**; **Figure 3d (APA)**; **Supplementary Figure 3a,b (CAGE)**.
+The `cage_apa` directory contains code and scripts to reproduce analysis summarized in: **Figure 2a (CAGE)**; **Figure 3d (APA)**; **Supplementary Figure 3a,b,c (CAGE)**, **Supplementary Figure 4a (APA)**.
 #### Promoter signal
 The `promoter-heatmap` directory contains code and scripts to reproduce analysis summazired in: **Figure 2d**.
 #### Relative position distribution
@@ -118,7 +119,7 @@ The `conservation` directory contains code and scripts to reproduce analysis sum
 #### SIRV expression distribution and alignment
 The `sirv` directory contains code and scripts to reproduce analysis summarized in: **Supplementary Figure 1c**.
 #### Meta-coordinates and poly(A) tail length correlation
-The `metacoord-vs-polya` directory contains code and scripts to reproduce analysis summarized in: **Figure 3c,d**.
+The `metacoord-vs-polya` directory contains code and scripts to reproduce analysis summarized in: **Figure 4c,d**.
 #### Expression correlation
 The `expression` directory contains code and scripts to reproduce analysis summarized in: **Supplementary Figure 6**.
 

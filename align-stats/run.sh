@@ -21,6 +21,7 @@ samples=(
     "hsa.dRNASeq.HeLa.polyA.REL5OH.long.1"
     "hsa.dRNASeq.HeLa.polyA.REL5.1"
     "hsa.dRNASeq.HeLa.polyA.PNK.REL5.1"
+    "hsa.dRNASeq.HeLa.polyA.1"
     "hsa.dRNASeq.HeLa.total.REL3.1"
     "hsa.dRNASeq.HeLa.total.REL3.2"
     "hsa.dRNASeq.HeLa.total.REL3.3"
@@ -79,6 +80,10 @@ for i in $RES_DIR/lengths/*.alignedReadPart.*.full.txt; do
     echo -ne "$lib_name\t$ref_name\t" >> $RES_DIR/longest-alignedReadPart.tsv
     cat ${i%.full.txt}.txt | sed 's/ \+/\t/g' | sed 's/^\t//g' | cut -f2 | sort -nr | head -1 >> $RES_DIR/longest-alignedReadPart.tsv
 done
+
+echo ">> SIMPLE COMPARION OF TWO LIBS <<"
+
+
 
 echo ">>> MAPPING STATS - 5TERA & 5TERA3 (REL5) <<<"
 
