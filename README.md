@@ -1,9 +1,10 @@
 # TERA-Seq analysis and methods
 This repository contains all the main tools and scripts needed to reproduce analysis used in publication **TERA-Seq: True end-to-end sequencing of native RNA molecules for transcriptome characterization** (Ibrahim, F., Oppelt, J., Maragkakis, M. and Mourelatos, Z., YEAR, JOURNAL, DOI: XXX).
 
-**fast5** (basecalled, untrimmed) files can be found in [`samples`](samples/README.md) directory.
-
 This repository will be archived as soon as the publication is accepted to keep the code in the same *version* as in the time of publication.
+
+## Samples
+**fast5** (basecalled, untrimmed) and **fastq** files can be found in the [samples](samples) directory.
 
 ## General information
 

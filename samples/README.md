@@ -1,27 +1,27 @@
 # Samples
-To be able to fully re-analyze the data, please the full TERA-Seq dataset from SRA BioProject accession: [PRJNA673166](https://www.ncbi.nlm.nih.gov/bioproject/673166), put the downloaded *fastq.gz* files to directories names by `Library name/fastq` (please see the table bellow) in this directory and rename the downloaded *fastq.gz* files to `reads.1.fastq.gz`.
+To be able to fully re-analyze the data, please the full TERA-Seq dataset from SRA BioProject accession: [PRJNA673166](https://www.ncbi.nlm.nih.gov/bioproject/PRJNA673166), put the downloaded *fastq.gz* files to directories names by `Library name/fastq` (please see the table bellow) in this directory and rename the downloaded *fastq.gz* files to `reads.1.fastq.gz`.
 
 For example, the prepared Cap-Poly(A) *fastq.gz* have to be placed in `hsa.dRNASeq.HeLa.polyA.CIP.decap.REL5.long.1/fastq/reads.1.fastq.gz` in this directory. The analysis will not work without the samples directory populated exactly this way!
 
-For basecalling and analysis of poly(A) tails you need to download the corresponding fast5 files and place them in `fast5` directory for each of the libraries. Please note the provided fast5 files are already basecalled so you can skip the basecalling step to save time and resources.
+For basecalling and analysis of poly(A) tails you need to download the corresponding fast5 files and place them in `fast5` directory for each of the libraries. Please note the provided fast5 files are already basecalled (`Guppy 3.3.2-1`) so you can skip the basecalling step to save time and resources. Please note the basecalling was run **without** RTA trimming. For more details on basecalling please see [`run_Guppy.sh`](run_Guppy.sh).
 
 After you prepared the input samples/files you can run `run.sh` script to process the sample files.
 
 | Library type | Sample name | fast5 | DB id | Library name |
 |--|--|--|--|--|
-| 5TERA | Cap-Poly(A) | [fast5](http://mourelatos.med.upenn.edu/teraseq/fast5/hsa.dRNASeq.HeLa.polyA.CIP.decap.REL5.long.1.tar.gz) | [TBU]() | hsa.dRNASeq.HeLa.polyA.CIP.decap.REL5.long.1 |
-| 5TERA | Cap & 5P-Poly(A) | [fast5](http://mourelatos.med.upenn.edu/teraseq/fast5/hsa.dRNASeq.HeLa.polyA.decap.REL5.long.1.tar.gz) | [TBU]() | hsa.dRNASeq.HeLa.polyA.decap.REL5.long.1 |
-| 5TERA | 5P-Poly(A) | [fast5](http://mourelatos.med.upenn.edu/teraseq/fast5/hsa.dRNASeq.HeLa.polyA.REL5.long.1.tar.gz) | [TBU]() | hsa.dRNASeq.HeLa.polyA.REL5.long.1 |
-| 5TERA | 5OH-Poly(A) | [fast5](http://mourelatos.med.upenn.edu/teraseq/fast5/hsa.dRNASeq.HeLa.polyA.REL5OH.long.1.tar.gz) | [TBU]() | hsa.dRNASeq.HeLa.polyA.REL5OH.long.1 |
-| 5TERA-short | 5P short-Poly(A) | [fast5](http://mourelatos.med.upenn.edu/teraseq/fast5/hsa.dRNASeq.HeLa.polyA.REL5.1.tar.gz) | [TBU]() | hsa.dRNASeq.HeLa.polyA.REL5.1 |
-| 5TERA-short | 5 short-PNK-Poly(A) | [fast5](http://mourelatos.med.upenn.edu/teraseq/fast5/hsa.dRNASeq.HeLa.polyA.PNK.REL5.1.tar.gz) | [TBU]() | hsa.dRNASeq.HeLa.polyA.PNK.REL5.1 |
-| TERA3 | TERA3_replicate1 | [fast5](http://mourelatos.med.upenn.edu/teraseq/fast5/hsa.dRNASeq.HeLa.total.REL3.1.tar.gz) | [TBU]() | hsa.dRNASeq.HeLa.total.REL3.1 |
-| TERA3 | TERA3_replicate2 | [fast5](http://mourelatos.med.upenn.edu/teraseq/fast5/hsa.dRNASeq.HeLa.total.REL3.2.tar.gz) | [TBU]() | hsa.dRNASeq.HeLa.total.REL3.2 |
-| TERA3 | TERA3_replicate3 | [fast5](http://mourelatos.med.upenn.edu/teraseq/fast5/hsa.dRNASeq.HeLa.total.REL3.3.tar.gz) | [TBU]() | hsa.dRNASeq.HeLa.total.REL3.3 |
-| 5TERA3 | 5TERA3 | [fast5](http://mourelatos.med.upenn.edu/teraseq/fast5/hsa.dRNASeq.HeLa.total.REL5.long.REL3.4.tar.gz) | [TBU]() | hsa.dRNASeq.HeLa.total.REL5.long.REL3.4 |
-| 5TERA3 | 5TERA3 | [fast5](http://mourelatos.med.upenn.edu/teraseq/fast5/hsa.dRNASeq.HeLa.total.REL5.long.REL3.5.tar.gz) | [TBU]() | hsa.dRNASeq.HeLa.total.REL5.long.REL3.5 |
-| 5TERA3 | 5TERA3 | [fast5](http://mourelatos.med.upenn.edu/teraseq/fast5/hsa.dRNASeq.HeLa.total.REL5.long.REL3.6.tar.gz) | [TBU]() | hsa.dRNASeq.HeLa.total.REL5.long.REL3.6 |
-| Standard dRNA | CTRL-poly(A) | [fast5](http://mourelatos.med.upenn.edu/teraseq/fast5/hsa.dRNASeq.HeLa.polyA.1.tar.gz) | [TBU]() | hsa.dRNASeq.HeLa.polyA.1 |
+| 5TERA | Cap-Poly(A) | [download](http://mourelatos.med.upenn.edu/teraseq/fast5/hsa.dRNASeq.HeLa.polyA.CIP.decap.REL5.long.1.tar.gz) | [TBU]() | hsa.dRNASeq.HeLa.polyA.CIP.decap.REL5.long.1 |
+| 5TERA | Cap & 5P-Poly(A) | [download](http://mourelatos.med.upenn.edu/teraseq/fast5/hsa.dRNASeq.HeLa.polyA.decap.REL5.long.1.tar.gz) | [TBU]() | hsa.dRNASeq.HeLa.polyA.decap.REL5.long.1 |
+| 5TERA | 5P-Poly(A) | [download](http://mourelatos.med.upenn.edu/teraseq/fast5/hsa.dRNASeq.HeLa.polyA.REL5.long.1.tar.gz) | [TBU]() | hsa.dRNASeq.HeLa.polyA.REL5.long.1 |
+| 5TERA | 5OH-Poly(A) | [fadownloadst5](http://mourelatos.med.upenn.edu/teraseq/fast5/hsa.dRNASeq.HeLa.polyA.REL5OH.long.1.tar.gz) | [TBU]() | hsa.dRNASeq.HeLa.polyA.REL5OH.long.1 |
+| 5TERA-short | 5P short-Poly(A) | [download](http://mourelatos.med.upenn.edu/teraseq/fast5/hsa.dRNASeq.HeLa.polyA.REL5.1.tar.gz) | [TBU]() | hsa.dRNASeq.HeLa.polyA.REL5.1 |
+| 5TERA-short | 5 short-PNK-Poly(A) | [download](http://mourelatos.med.upenn.edu/teraseq/fast5/hsa.dRNASeq.HeLa.polyA.PNK.REL5.1.tar.gz) | [TBU]() | hsa.dRNASeq.HeLa.polyA.PNK.REL5.1 |
+| TERA3 | TERA3_replicate1 | [download](http://mourelatos.med.upenn.edu/teraseq/fast5/hsa.dRNASeq.HeLa.total.REL3.1.tar.gz) | [TBU]() | hsa.dRNASeq.HeLa.total.REL3.1 |
+| TERA3 | TERA3_replicate2 | [download](http://mourelatos.med.upenn.edu/teraseq/fast5/hsa.dRNASeq.HeLa.total.REL3.2.tar.gz) | [TBU]() | hsa.dRNASeq.HeLa.total.REL3.2 |
+| TERA3 | TERA3_replicate3 | [download](http://mourelatos.med.upenn.edu/teraseq/fast5/hsa.dRNASeq.HeLa.total.REL3.3.tar.gz) | [TBU]() | hsa.dRNASeq.HeLa.total.REL3.3 |
+| 5TERA3 | 5TERA3_replicate1 | [download](http://mourelatos.med.upenn.edu/teraseq/fast5/hsa.dRNASeq.HeLa.total.REL5.long.REL3.4.tar.gz) | [TBU]() | hsa.dRNASeq.HeLa.total.REL5.long.REL3.4 |
+| 5TERA3 | 5TERA3_replicate2 | [download](http://mourelatos.med.upenn.edu/teraseq/fast5/hsa.dRNASeq.HeLa.total.REL5.long.REL3.5.tar.gz) | [TBU]() | hsa.dRNASeq.HeLa.total.REL5.long.REL3.5 |
+| 5TERA3 | 5TERA3_replicate3 | [download](http://mourelatos.med.upenn.edu/teraseq/fast5/hsa.dRNASeq.HeLa.total.REL5.long.REL3.6.tar.gz) | [TBU]() | hsa.dRNASeq.HeLa.total.REL5.long.REL3.6 |
+| Standard dRNA | CTRL-poly(A) | [download](http://mourelatos.med.upenn.edu/teraseq/fast5/hsa.dRNASeq.HeLa.polyA.1.tar.gz) | [TBU]() | hsa.dRNASeq.HeLa.polyA.1 |
 
 Note: The direct link to the TERA-Seq datasets will be updated once the manuscript has been published. Until then, the datasets are available only for reviewers.
 
