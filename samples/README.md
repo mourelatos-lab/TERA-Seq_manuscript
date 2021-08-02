@@ -8,7 +8,7 @@ For basecalling and analysis of poly(A) tails you need to download the correspon
 After you prepared the input samples/files you can run `run.sh` script to process the sample files.
 
 | Library type | Sample name | fast5 | fastq | SRA | Library name |
-|--|--|--|--|--|
+|--|--|--|--|--|--|
 | 5TERA | Cap-Poly(A) | [download](http://mourelatos.med.upenn.edu/teraseq/fast5/hsa.dRNASeq.HeLa.polyA.CIP.decap.REL5.long.1.tar.gz) | [download]() | [link](https://www.ncbi.nlm.nih.gov/sra/SRX9413813) | hsa.dRNASeq.HeLa.polyA.CIP.decap.REL5.long.1 |
 | 5TERA | Cap & 5P-Poly(A) | [download](http://mourelatos.med.upenn.edu/teraseq/fast5/hsa.dRNASeq.HeLa.polyA.decap.REL5.long.1.tar.gz) | [download]() | [link](https://www.ncbi.nlm.nih.gov/sra/SRX9413814) | hsa.dRNASeq.HeLa.polyA.decap.REL5.long.1 |
 | 5TERA | 5P-Poly(A) | [download](http://mourelatos.med.upenn.edu/teraseq/fast5/hsa.dRNASeq.HeLa.polyA.REL5.long.1.tar.gz) | [download]() | [link](https://www.ncbi.nlm.nih.gov/sra/SRX9413817) | hsa.dRNASeq.HeLa.polyA.REL5.long.1 |
