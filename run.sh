@@ -15,6 +15,10 @@ echo ">>> COMPILING REFERENCES <<<"
 cd ../data/
 ./run.sh &> log.out
 
+#echo ">>> BASECALL FAST5 <<<"
+#cd ../samples/
+#./run_Guppy.sh
+
 #echo ">>> POPULATING SAMPLES DIRECTORY <<<"
 #cd ../samples/
 #./run-populate.sh

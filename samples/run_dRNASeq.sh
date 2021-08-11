@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Run 5TERA preprocessing, alignment, and postprocessing
+# Run dRNA preprocessing, alignment, and postprocessing
 #
 
 source ../PARAMS.sh
@@ -11,10 +11,7 @@ assembly="hg38"
 ####################################################################################################
 
 samples=(
-	"hsa.dRNASeq.HeLa.polyA.CIP.decap.REL5.long.1"
-	"hsa.dRNASeq.HeLa.polyA.decap.REL5.long.1"
-	"hsa.dRNASeq.HeLa.polyA.REL5.long.1"
-	"hsa.dRNASeq.HeLa.polyA.REL5OH.long.1"
+	"hsa.dRNASeq.HeLa.polyA.1"
 )
 
 echo ">>> MAKE DIRECTORY STRUCTURE <<<"
@@ -45,44 +42,55 @@ wait
 
 deactivate
 
-echo ">>> REMOVE REL5 ADAPTOR <<<"
+#echo ">>> REMOVE REL5 ADAPTOR - ONLY FOR QC TESTING PURPOSES - LIBRARY DOESN'T HAVE ADAPTER <<<"
+#
+conda activate teraseq
+#source $INSTALL/cutadapt-2.5/venv/bin/activate
+#
+#for i in "${samples[@]}"; do
+#	sdir=$SAMPLE_DIR/$i
+#	echo " Working for" $i
+#
+#	cutadapt \
+#		-g XAATGATACGGCGACCACCGAGATCTACACTCTTTCCCTACACGACGCTCTTCCGATCT \
+#		--overlap 31 \
+#		--minimum-length 25 \
+#		--error-rate 0.29 \
+#		--output $sdir/fastq/reads.1.sanitize.w_rel5.fastq.gz \
+#		--untrimmed-output $sdir/fastq/reads.1.sanitize.wo_rel5.fastq.gz \
+#		$sdir/fastq/reads.1.sanitize.fastq.gz \
+#		&> $sdir/logfiles/cutadapt.rel5.log &
+#done
+#wait
+#
+#deactivate
+#
+#echo ">>> MERGE READS WITH AND WITHOUT REL5 ADAPTOR <<<"
+#
+#for i in "${samples[@]}"; do
+#	sdir=$SAMPLE_DIR/$i
+#	echo " Working for" $i
+#
+#	zcat $sdir/fastq/reads.1.sanitize.w_rel5.fastq.gz | paste - - - - | cut -f1 | sed 's/^@//g' \
+#		> $sdir/fastq/reads.1.sanitize.w_rel5.names.txt &
+#	zcat $sdir/fastq/reads.1.sanitize.wo_rel5.fastq.gz | paste - - - - | cut -f1 | sed 's/^@//g' \
+#		> $sdir/fastq/reads.1.sanitize.wo_rel5.names.txt &
+#
+#	cat $sdir/fastq/reads.1.sanitize.w_rel5.fastq.gz $sdir/fastq/reads.1.sanitize.wo_rel5.fastq.gz \
+#		> $sdir/fastq/reads.1.sanitize.rel5_trim.fastq.gz &
+#done
+#wait
 
 conda activate teraseq
-source $INSTALL/cutadapt-2.5/venv/bin/activate
+
+echo ">>> HOMOGENIZE NAMES <<<"
 
 for i in "${samples[@]}"; do
 	sdir=$SAMPLE_DIR/$i
 	echo " Working for" $i
 
-	cutadapt \
-		-g XAATGATACGGCGACCACCGAGATCTACACTCTTTCCCTACACGACGCTCTTCCGATCT \
-		--overlap 31 \
-		--minimum-length 25 \
-		--error-rate 0.29 \
-		--output $sdir/fastq/reads.1.sanitize.w_rel5.fastq.gz \
-		--untrimmed-output $sdir/fastq/reads.1.sanitize.wo_rel5.fastq.gz \
-		$sdir/fastq/reads.1.sanitize.fastq.gz \
-		&> $sdir/logfiles/cutadapt.rel5.log &
+	ln -s $sdir/fastq/reads.1.sanitize.fastq.gz $sdir/fastq/reads.1.sanitize.rel5_trim.fastq.gz
 done
-wait
-
-deactivate
-
-echo ">>> MERGE READS WITH AND WITHOUT REL5 ADAPTOR <<<"
-
-for i in "${samples[@]}"; do
-	sdir=$SAMPLE_DIR/$i
-	echo " Working for" $i
-
-	zcat $sdir/fastq/reads.1.sanitize.w_rel5.fastq.gz | paste - - - - | cut -f1 | sed 's/^@//g' \
-		> $sdir/fastq/reads.1.sanitize.w_rel5.names.txt &
-	zcat $sdir/fastq/reads.1.sanitize.wo_rel5.fastq.gz | paste - - - - | cut -f1 | sed 's/^@//g' \
-		> $sdir/fastq/reads.1.sanitize.wo_rel5.names.txt &
-
-	cat $sdir/fastq/reads.1.sanitize.w_rel5.fastq.gz $sdir/fastq/reads.1.sanitize.wo_rel5.fastq.gz \
-		> $sdir/fastq/reads.1.sanitize.rel5_trim.fastq.gz &
-done
-wait
 
 echo ">>> ALIGN READS TO RIBOSOMAL (ALL ENSEMBL + SILVA-HUMAN) <<<"
 
@@ -314,33 +322,6 @@ done
 wait
 
 deactivate
-
-echo ">>> ANNOTATE WITH REL5 <<<"
-
-conda activate teraseq
-
-for i in "${samples[@]}"; do
-	sdir=$SAMPLE_DIR/$i
-	echo " Working for" $i
-
-	echo ">> ANNOTATE WITH REL5 (TRANSCRIPTOME) <<"
-
-	annotate-sqlite-with-fastq \
-		--database $sdir/db/sqlite.db \
-		--db_col_bind "qname" \
-		--db_col_add "rel5" \
-		--db_tables "transcr" \
-		--ifile $sdir/fastq/reads.1.sanitize.w_rel5.fastq.gz
-
-	echo ">> ANNOTATE W/WO REL5 (GENOME) <<"
-
-	annotate-sqlite-with-fastq \
-		--database $sdir/db/sqlite.db \
-		--db_col_bind "qname" \
-		--db_col_add "rel5" \
-		--db_tables "genome" \
-		--ifile $sdir/fastq/reads.1.sanitize.w_rel5.fastq.gz
-done
 
 # Note: If you have the fast5 files you can remove the "exit" and continue with the analysis
 echo "This section will fail unless you ran Nanopolish poly(A) estimate. If you have fast5 files please comment out line with \"exit"\"

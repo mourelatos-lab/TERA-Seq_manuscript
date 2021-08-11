@@ -3,10 +3,10 @@
 # Prepare references and annotations
 #
 
+source ../PARAMS.sh
+
 threads=8
 assembly="hg38"
-
-source ../PARAMS.sh
 
 ####################################################################################################
 echo " >>> GET SILVA rRNA DATABASE <<<"
@@ -161,7 +161,7 @@ cd $DATA_DIR/
 mkdir -p spikein/sirv
 cd spikein/sirv/
 
-wget https://www.lexogen.com/wp-content/uploads/2018/08/SIRV_Set1_Sequences_170612a-ZIP.zip
+#wget https://www.lexogen.com/wp-content/uploads/2018/08/SIRV_Set1_Sequences_170612a-ZIP.zip # The original download link
 unzip SIRV_Set1_Sequences_170612a-ZIP.zip
 mv SIRV_Set1_Sequences_170612a\ \(ZIP\) SIRV_Set1_Sequences_170612a
 for i in SIRV_Set1_Sequences_170612a/*; do
@@ -293,7 +293,7 @@ wget https://raw.githubusercontent.com/dpryan79/ChromosomeMappings/master/GRCh38
 
 # Get cis-regions from ENCODE SEARCH https://screen.wenglab.org/
 mkdir meth
-wget wget https://api.wenglab.org/screen_v13/fdownloads/Seven-Group/ENCFF977IGB_ENCFF489CIY_ENCFF194XTD_ENCFF836JPY.7group.bed -O meth/encodeCcreHela.bed
+wget https://api.wenglab.org/screen_v13/fdownloads/Seven-Group/ENCFF977IGB_ENCFF489CIY_ENCFF194XTD_ENCFF836JPY.7group.bed -O meth/encodeCcreHela.bed
 #cat meth/encodeCcreHela.bed | cut -f 10 | sort | uniq -c
 #  20023 CTCF-only,CTCF-bound
 #  31295 dELS

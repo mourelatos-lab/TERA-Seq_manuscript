@@ -1,10 +1,10 @@
 # TERA-Seq analysis and methods
-This repository contains all the main tools and scripts needed to reproduce analysis used in publication **TERA-Seq: True end-to-end sequencing of native RNA molecules for transcriptome characterization** (Ibrahim, F., Oppelt, J., Maragkakis, M. and Mourelatos, Z., YEAR, JOURNAL, DOI: XXX).
+This repository contains all the main tools and scripts needed to reproduce analysis used in publication **TERA-Seq: True end-to-end sequencing of native RNA molecules for transcriptome characterization** (Ibrahim, F., Oppelt, J., Maragkakis, M. and Mourelatos, Z., 2021, NAR (accepted for publication), DOI: XXX, PMID: XXX). If you use any part of the analysis, code or samples we kindly ask you to cite this publication.
 
 This repository will be archived as soon as the publication is accepted to keep the code in the same *version* as in the time of publication.
 
 ## Samples
-**fast5** (basecalled, untrimmed) and **fastq** files can be found in the [samples](samples) directory.
+**fast5** (basecalled, untrimmed) and **fastq** files can be found in the [`samples`](samples) directory.
 
 ## General information
 
@@ -31,6 +31,9 @@ Once you installed Conda manager (tested with `conda 4.9.0`) you can use the `te
     conda env create -f teraseq-env.yml
 
 This will install `teraseq` environment. In case yml installation doesn't work you can try to install the environment using the provided `teraseq-env.txt` using the same command.
+
+Note: To speed up the installation I would strongly recommend you to use [mamba](https://github.com/mamba-org/mamba).
+
 In case you need a manual installation, you can also use:
 
     # Intiate environment
@@ -46,7 +49,7 @@ In case you need a manual installation, you can also use:
     r=3.5.1 r-base \
     r-optparse=1.6.2 r-dplyr r-rio r-ggplot2 r-bit64 r-reshape2 r-devtools r-ggpubr \
     r-ggridges r-corrplot r-rsqlite r-futile.logger r-plyr r-readr r-scales r-viridis \
-    r-data.table r-yaml r-treemap r-venndiagram r-extrafont r-hdf5r \
+    r-data.table r-yaml r-treemap r-venndiagram r-extrafont r-hdf5r r-patchwork \
     bioconductor-ensembldb bioconductor-tximport bioconductor-dupradar bioconductor-gviz bioconductor-deseq2 \
     fastqc STAR=2.7.2b samtools">=1.10" bedtools=2.29.0 samblaster trimmomatic=0.39 \
     perl-cpan-shell perl-app-cpanminus \
@@ -71,12 +74,14 @@ Guppy basecaller must be obtained from [Nanopore community](https://community.na
 `misc` directory contains various miscellaneous scripts and sources.
 
 ## Sample data
-To re-analyze the data **please populate** the `samples` directory **first**. For more information see `samples` directory README.
+To re-analyze the data **please populate** the `samples` directory **first**. For more information see [`samples`](samples) directory [`README`](samples/README.md).
 
 Note:  5TERA 5' adapter might and will be called *REL5/rel5*, and TERA3 3' end adapter might and will be called *REL3/rel3* throughout the analyses.
 
 ## Data and Analysis
-The main `run.sh` in the cloned `TERA-Seq_manuscript` directory should **execute all the analyses** used in the manuscript including the installation of additional software and preparing the references. Reminder: The only two exceptions are the installation of `teraseq` Conda environment and populating the samples directory which you have to do **before** you can run the analyses.
+The main `run.sh` in the cloned `TERA-Seq_manuscript` directory should **execute all the analyses** used in the manuscript including the installation of additional software and preparing the references.
+
+**Reminder**: The only two exceptions are the **installation of `teraseq` Conda** environment and **populating the samples directory** which you have to do **before** you can run the analyses.
 
 If you wish to run only selected analyses you can go to the individual directories and execute the *local* `run.sh`. Simply go to the selected analysis and run the `run.sh` script. For example:
 

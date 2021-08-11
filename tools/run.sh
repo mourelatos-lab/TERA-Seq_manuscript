@@ -19,6 +19,7 @@ mkdir cutadapt-2.5/
 cd cutadapt-2.5/
 python3 -m venv venv # Make Python virtual environment
 source venv/bin/activate
+python3 -m pip install --upgrade pip
 pip3 install cutadapt==2.5 pysam numpy pandas matplotlib seaborn
 which cutadapt # Check installation
 cutadapt --version
@@ -30,6 +31,8 @@ mkdir deepTools-3.5.0
 cd deepTools-3.5.0/
 python3 -m venv venv
 source venv/bin/activate
+python3 -m pip install --upgrade pip
+pip3 install wheel
 pip3 install deeptools==3.5.0
 # pip3 install -Iv deeptools==3.5.0
 deeptools --version
@@ -114,6 +117,7 @@ cpanm Params::Util
 cpanm Sub::Install
 cpanm Modern::Perl
 cpanm MooseX::App::Simple
+cpanm --force MooseX::App::Command
 cpanm MooseX::Getopt::Meta::Attribute::Trait::NoGetopt
 
 echo ">> INSTALL PERL - GENOO <<"

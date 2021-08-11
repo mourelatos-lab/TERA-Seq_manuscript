@@ -12,11 +12,11 @@
 #	-x "auto"
 #
 
+source ../PARAMS.sh
+
 threads=8
 
 basecall="GPU" # [GPU|CPU]
-
-source ../PARAMS.sh
 
 ################################################################################
 
@@ -25,17 +25,17 @@ echo ">>> GUPPY BASECALLING - RTA TRIMMING OFF <<<"
 samples=(
     "hsa.dRNASeq.HeLa.polyA.CIP.decap.REL5.long.1"
     "hsa.dRNASeq.HeLa.polyA.decap.REL5.long.1"
+    "hsa.dRNASeq.HeLa.polyA.PNK.REL5.1"
+    "hsa.dRNASeq.HeLa.polyA.REL5.1"
     "hsa.dRNASeq.HeLa.polyA.REL5.long.1"
     "hsa.dRNASeq.HeLa.polyA.REL5OH.long.1"
-    "hsa.dRNASeq.HeLa.polyA.REL5.1"
-    "hsa.dRNASeq.HeLa.polyA.PNK.REL5.1"
     "hsa.dRNASeq.HeLa.total.REL3.1"
     "hsa.dRNASeq.HeLa.total.REL3.2"
     "hsa.dRNASeq.HeLa.total.REL3.3"
     "hsa.dRNASeq.HeLa.total.REL5.long.REL3.4"
     "hsa.dRNASeq.HeLa.total.REL5.long.REL3.5"
     "hsa.dRNASeq.HeLa.total.REL5.long.REL3.6"
-    "hsa.dRNASeq.SIRV.polyA.REL5.long.2"
+    "hsa.dRNASeq.HeLa.polyA.1"
 )
 
 for i in "${samples[@]}"; do
@@ -86,13 +86,16 @@ for i in "${samples[@]}"; do
 	fi
 
 	cat $(ls $sdir/guppy/fastq_runid_*.fastq.gz) > $sdir/guppy/reads.fastq.gz # Merge all fastq files from separate workers
+
 	# Link basecalled data
-        mkdir $sdir/fastq
-	ln -s ../guppy/reads.fastq.gz $sdir/fastq/reads.1.fastq.gz
-        # Link basecalled fast5
-        mkdir $sdir/fast5
-	for a in $(ls $sdir/guppy/workspace/*/*.fast5); do
+	mkdir $sdir/fastq
+	ln -sf ../guppy/reads.fastq.gz $sdir/fastq/reads.1.fastq.gz
+
+	# Link basecalled fast5
+	mkdir $sdir/fast5
+    dir=$(find $sdir/guppy/workspace/ -type d -name fast5)
+	for a in $(ls $dir/*.fast5); do
 		name=`echo $a | sed "s#$sdir#..#"`
-		ln -s $name $sdir/fast5/$(basename $a)
+		ln -sf $name $sdir/fast5/$(basename $a)
 	done
 done
