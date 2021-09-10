@@ -1,5 +1,5 @@
 # TERA-Seq analysis and methods
-This repository contains all the main tools and scripts needed to reproduce analysis used in publication **TERA-Seq: True end-to-end sequencing of native RNA molecules for transcriptome characterization** (Ibrahim, F., Oppelt, J., Maragkakis, M. and Mourelatos, Z., 2021, NAR (accepted for publication), DOI: XXX, PMID: XXX). If you use any part of the analysis, code or samples we kindly ask you to cite this publication.
+This repository contains all the main tools and scripts needed to reproduce analysis used in publication **TERA-Seq: True end-to-end sequencing of native RNA molecules for transcriptome characterization** (Ibrahim, F.\*, Oppelt, J.\*, Maragkakis, M.\* and Mourelatos, Z., 2021, Nucleic Acids Research, DOI: [10.1093/nar/gkab713](https://doi.org/10.1093/nar/gkab713), PMID: [34428294](https://pubmed.ncbi.nlm.nih.gov/34428294/). \* The authors wish it to be known that, in their opinion, the first three authors should be regarded as Joint First Authors. If you use any part of the analysis, code or samples we kindly ask you to cite this publication.
 
 This repository will be archived as soon as the publication is accepted to keep the code in the same *version* as in the time of publication.
 
