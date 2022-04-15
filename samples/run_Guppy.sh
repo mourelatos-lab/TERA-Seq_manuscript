@@ -3,13 +3,13 @@
 # Basecalling using guppy on GPU
 #
 # If Guppy cannot find your GPU first check CUDA and Nvida drivers are ready
-# 	$ nvidia-smi $ nvidia drivers installation
-# 	$ nvcc -V # CUDA installation
+#     $ nvidia-smi $ nvidia drivers installation
+#     $ nvcc -V # CUDA installation
 #
 # If both are working tell Guppy to find your GPU card, most likely at "channel" 0 adding
-#	-x "cuda:0"
-# 	to the guppy command OR
-#	-x "auto"
+#    -x "cuda:0"
+#     to the guppy command OR
+#    -x "auto"
 #
 
 source ../PARAMS.sh
@@ -39,63 +39,65 @@ samples=(
 )
 
 for i in "${samples[@]}"; do
-	echo "Sample: $i"
-	sdir=$SAMPLE_DIR/$i
-	mkdir -p $sdir/guppy
+    echo "Sample: $i"
+    sdir=$SAMPLE_DIR/$i
+    mkdir -p $sdir/guppy
 
-	# --trim_strategy none # Turn off trimming by guppy; we can also --trim_strategy rna or --trim_strategy dna to remove adapters specific to rna or dna
-	# --reverse_sequence true # Already in the RNA basecalling model config
+    # --trim_strategy none # Turn off trimming by guppy; we can also --trim_strategy rna or --trim_strategy dna to remove adapters specific to rna or dna
+    # --reverse_sequence true # Already in the RNA basecalling model config
 
-	if [ "$basecall" == "GPU" ]; then
-		echo "Using GPU Guppy basecalling"
+    if [ "$basecall" == "GPU" ]; then
+        echo "Using GPU Guppy basecalling"
 
-		guppy_basecaller \
-			-x "auto" \
-			--flowcell FLO-MIN106 \
-		 	--kit SQK-RNA002 \
-		 	--hp_correct on \
-		 	--records_per_fastq 0 \
-		 	--u_substitution off \
-			--trim_strategy none \
-		 	--input_path $sdir/raw/ \
-			--save_path $sdir/guppy/ \
-		 	--recursive \
-		 	--compress_fastq \
-		 	--fast5_out
+        guppy_basecaller \
+            -x "auto" \
+            --flowcell FLO-MIN106 \
+            --kit SQK-RNA002 \
+            --hp_correct on \
+            --records_per_fastq 0 \
+            --u_substitution off \
+            --trim_strategy none \
+            --input_path $sdir/raw/ \
+            --save_path $sdir/guppy/ \
+            --recursive \
+            --compress_fastq \
+            --fast5_out
 
-	elif [ "$basecall" == "CPU" ]; then
-		echo "Using CPU Guppy basecalling"
+    elif [ "$basecall" == "CPU" ]; then
+        echo "Using CPU Guppy basecalling"
 
-		guppy_basecaller \
-			--num_callers $threads \
-			--cpu_threads_per_caller 1 \
-			--flowcell FLO-MIN106 \
-		 	--kit SQK-RNA002 \
-		 	--hp_correct on \
-		 	--records_per_fastq 0 \
-		 	--u_substitution off \
-			--trim_strategy none \
-		 	--input_path $sdir/raw/ \
-			--save_path $sdir/guppy/ \
-		 	--recursive \
-		 	--compress_fastq \
-		 	--fast5_out
-	else
-		echo "Please specify 'GPU' or 'CPU' in \$basecall variable"
-		exit
-	fi
+        guppy_basecaller \
+            --num_callers $threads \
+            --cpu_threads_per_caller 1 \
+            --flowcell FLO-MIN106 \
+            --kit SQK-RNA002 \
+            --hp_correct on \
+            --records_per_fastq 0 \
+            --u_substitution off \
+            --trim_strategy none \
+            --input_path $sdir/raw/ \
+            --save_path $sdir/guppy/ \
+            --recursive \
+            --compress_fastq \
+            --fast5_out
+    else
+        echo "Please specify 'GPU' or 'CPU' in \$basecall variable"
+        exit
+    fi
 
-	cat $(ls $sdir/guppy/fastq_runid_*.fastq.gz) > $sdir/guppy/reads.fastq.gz # Merge all fastq files from separate workers
+    cat $(ls $sdir/guppy/fastq_runid_*.fastq.gz) > $sdir/guppy/reads.fastq.gz # Merge all fastq files from separate workers
 
-	# Link basecalled data
-	mkdir $sdir/fastq
-	ln -sf ../guppy/reads.fastq.gz $sdir/fastq/reads.1.fastq.gz
+    # Link basecalled data
+    mkdir $sdir/fastq
+    ln -sf ../guppy/reads.fastq.gz $sdir/fastq/reads.1.fastq.gz
 
-	# Link basecalled fast5
-	mkdir $sdir/fast5
+    # Link basecalled fast5
+    mkdir $sdir/fast5
     dir=$(find $sdir/guppy/workspace/ -type d -name fast5)
-	for a in $(ls $dir/*.fast5); do
-		name=`echo $a | sed "s#$sdir#..#"`
-		ln -sf $name $sdir/fast5/$(basename $a)
-	done
+    for a in $(ls $dir/*.fast5); do
+        name=`echo $a | sed "s#$sdir#..#"`
+        ln -sf $name $sdir/fast5/$(basename $a)
+    done
 done
+
+echo ">>> ALL DONE <<<"

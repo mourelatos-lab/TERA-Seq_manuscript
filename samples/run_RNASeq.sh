@@ -11,18 +11,43 @@ assembly="hg38"
 ####################################################################################################
 
 samples=(
-	"hsa.RNASeq.HeLa.xxx.polyA.ENCSR000CPR.1"
+    "hsa.RNASeq.HeLa.xxx.polyA.ENCSR000CPR.1"
 )
 
 echo ">>> MAKE DIRECTORY STRUCTURE <<<"
 
 for i in "${samples[@]}"; do
-	sdir=$SAMPLE_DIR/$i
-	echo " Working for" $i
+    sdir=$SAMPLE_DIR/$i
+    echo " Working for" $i
 
-	mkdir -p $sdir/logfiles
-	mkdir $sdir/align
-	mkdir $sdir/db
+    mkdir -p $sdir/logfiles
+    mkdir $sdir/align
+    mkdir $sdir/db
+done
+
+echo ">>> CHECK FASTQ <<<"
+
+for i in "${samples[@]}"; do
+    sdir=$SAMPLE_DIR/$i
+    echo " Working for" $i
+
+    if [ -f "$sdir/fastq/reads.1.fastq.gz" ]; then
+        echo "$sdir/fastq/reads.1.fastq.gz is present, continue."
+    else
+        echo "$sdir/fastq/reads.1.fastq.gz does not exist, trying to download."
+        download=$(cat README.md | grep download | grep $i | cut -d '|' -f 4 | cut -d ',' -f1 | cut -d '(' -f2  | sed 's/)//')
+        mkdir $sdir/fastq
+        curl $download > $sdir/fastq/reads.1.fastq.gz
+    fi
+
+    if [ -f "$sdir/fastq/reads.2.fastq.gz" ]; then
+        echo "$sdir/fastq/reads.2.fastq.gz is present, continue."
+    else
+        echo "$sdir/fastq/reads.2.fastq.gz does not exist, trying to download."
+        download=$(cat README.md | grep download | grep $i | cut -d '|' -f 4 | cut -d ',' -f2 | cut -d '(' -f2  | sed 's/)//')
+        mkdir $sdir/fastq
+        curl $download > $sdir/fastq/reads.2.fastq.gz
+    fi
 done
 
 echo ">>> TRIM 3' ADAPTOR AND LOW QUALITY ENDS <<<"
@@ -31,22 +56,22 @@ conda activate teraseq
 source $INSTALL/cutadapt-2.5/venv/bin/activate
 
 for i in "${samples[@]}"; do
-	sdir=$SAMPLE_DIR/$i
-	echo " Working for" $i
+    sdir=$SAMPLE_DIR/$i
+    echo " Working for" $i
 
-	cutadapt \
-		-a AGATCGGAAGAGCGGTTCAG \
-		-A AGATCGGAAGAGCGTCGTGT \
-		--overlap 3 \
-		-q 5,5 \
-		--trim-n \
-		--minimum-length 15 \
-		--error-rate 0.1 \
-		-o $sdir/fastq/reads.1.adtrim.fastq.gz \
-		-p $sdir/fastq/reads.2.adtrim.fastq.gz \
-		$sdir/fastq/reads.1.fastq.gz \
-		$sdir/fastq/reads.2.fastq.gz \
-		&> $sdir/logfiles/cutadapt.log &
+    cutadapt \
+        -a AGATCGGAAGAGCGGTTCAG \
+        -A AGATCGGAAGAGCGTCGTGT \
+        --overlap 3 \
+        -q 5,5 \
+        --trim-n \
+        --minimum-length 15 \
+        --error-rate 0.1 \
+        -o $sdir/fastq/reads.1.adtrim.fastq.gz \
+        -p $sdir/fastq/reads.2.adtrim.fastq.gz \
+        $sdir/fastq/reads.1.fastq.gz \
+        $sdir/fastq/reads.2.fastq.gz \
+        &> $sdir/logfiles/cutadapt.log &
 done
 wait
 
@@ -55,74 +80,74 @@ deactivate
 echo ">>> ALIGN READS <<<"
 
 for i in "${samples[@]}"; do
-	sdir=$SAMPLE_DIR/$i
-	echo " Working for" $i
+    sdir=$SAMPLE_DIR/$i
+    echo " Working for" $i
 
-	STAR \
-		--genomeDir $DATA_DIR/$assembly/STAR-2.7.2b-annot/ \
-		--readFilesIn $sdir/fastq/reads.1.adtrim.fastq.gz $sdir/fastq/reads.2.adtrim.fastq.gz \
-		--readFilesCommand zcat \
-		--runThreadN $threads \
-		--outSAMunmapped Within \
-		--outSAMattributes All \
-		--outSAMheaderHD @HD VN:1.4 SO:coordinate \
-		--outSAMattrRGline ID:${name} PL:Illumina PU:${name} SM:${name} \
-		--outSAMtype BAM SortedByCoordinate \
-		--outMultimapperOrder Random \
-		--outFilterMultimapScoreRange 1 \
-		--alignMatesGapMax 1000000 \
-		--alignIntronMax 1000000 \
-		--outFilterIntronMotifs RemoveNoncanonicalUnannotated \
-		--alignIntronMin 20 \
-		--alignSJoverhangMin 5 \
-		--alignSJDBoverhangMin 3 \
-		--twopassMode Basic \
-		--outFilterType BySJout \
-		--outFilterMatchNmin 10 \
-		--outFilterMultimapNmax 20 \
-		--outFilterMismatchNmax 999 \
-		--outFilterMismatchNoverReadLmax 1.0 \
-		--outFilterMismatchNoverLmax 0.05 \
-		--outFilterScoreMinOverLread 0.66 \
-		--outFilterMatchNminOverLread 0.66 \
-		--sjdbOverhang 100 \
-		--sjdbGTFfile $DATA_DIR/$assembly/genes.gtf \
-		--quantMode GeneCounts TranscriptomeSAM \
-		--outFileNamePrefix $sdir/align/reads.12. \
-		&> $sdir/logfiles/star.log
+    STAR \
+        --genomeDir $DATA_DIR/$assembly/STAR-2.7.2b-annot/ \
+        --readFilesIn $sdir/fastq/reads.1.adtrim.fastq.gz $sdir/fastq/reads.2.adtrim.fastq.gz \
+        --readFilesCommand zcat \
+        --runThreadN $threads \
+        --outSAMunmapped Within \
+        --outSAMattributes All \
+        --outSAMheaderHD @HD VN:1.4 SO:coordinate \
+        --outSAMattrRGline ID:${name} PL:Illumina PU:${name} SM:${name} \
+        --outSAMtype BAM SortedByCoordinate \
+        --outMultimapperOrder Random \
+        --outFilterMultimapScoreRange 1 \
+        --alignMatesGapMax 1000000 \
+        --alignIntronMax 1000000 \
+        --outFilterIntronMotifs RemoveNoncanonicalUnannotated \
+        --alignIntronMin 20 \
+        --alignSJoverhangMin 5 \
+        --alignSJDBoverhangMin 3 \
+        --twopassMode Basic \
+        --outFilterType BySJout \
+        --outFilterMatchNmin 10 \
+        --outFilterMultimapNmax 20 \
+        --outFilterMismatchNmax 999 \
+        --outFilterMismatchNoverReadLmax 1.0 \
+        --outFilterMismatchNoverLmax 0.05 \
+        --outFilterScoreMinOverLread 0.66 \
+        --outFilterMatchNminOverLread 0.66 \
+        --sjdbOverhang 100 \
+        --sjdbGTFfile $DATA_DIR/$assembly/genes.gtf \
+        --quantMode GeneCounts TranscriptomeSAM \
+        --outFileNamePrefix $sdir/align/reads.12. \
+        &> $sdir/logfiles/star.log
 done
 
 echo ">>>> SORT TRANSCRIPTOME ALIGNMENT <<<<"
 
 for i in "${samples[@]}"; do
-	sdir=$SAMPLE_DIR/$i
-	echo " Working for" $i
+    sdir=$SAMPLE_DIR/$i
+    echo " Working for" $i
 
-	samtools sort --threads $threads -T $sdir/align/deleteme \
-		$sdir/align/reads.12.Aligned.toTranscriptome.out.bam \
-	> $sdir/align/reads.12.Aligned.toTranscriptome.sortedByCoord.out.bam && mv $sdir/align/reads.12.Aligned.toTranscriptome.sortedByCoord.out.bam $sdir/align/reads.12.Aligned.toTranscriptome.out.bam
+    samtools sort --threads $threads -T $sdir/align/deleteme \
+        $sdir/align/reads.12.Aligned.toTranscriptome.out.bam \
+    > $sdir/align/reads.12.Aligned.toTranscriptome.sortedByCoord.out.bam && mv $sdir/align/reads.12.Aligned.toTranscriptome.sortedByCoord.out.bam $sdir/align/reads.12.Aligned.toTranscriptome.out.bam
 done
 
 echo ">>>> HOMOGENIZE ALIGNMENT FILES <<<<"
 
 for i in "${samples[@]}"; do
-	sdir=$SAMPLE_DIR/$i
-	echo " Working for" $i
+    sdir=$SAMPLE_DIR/$i
+    echo " Working for" $i
 
-	ln -s $sdir/align/reads.12.Aligned.sortedByCoord.out.bam \
-		$sdir/align/reads.1.Aligned.sortedByCoord.out.bam
-	ln -s $sdir/align/reads.12.Aligned.toTranscriptome.out.bam \
-		$sdir/align/reads.1.Aligned.toTranscriptome.out.bam
+    ln -s $sdir/align/reads.12.Aligned.sortedByCoord.out.bam \
+        $sdir/align/reads.1.Aligned.sortedByCoord.out.bam
+    ln -s $sdir/align/reads.12.Aligned.toTranscriptome.out.bam \
+        $sdir/align/reads.1.Aligned.toTranscriptome.out.bam
 done
 
 echo ">>>> INDEX BAM FILES <<<<"
 
 for i in "${samples[@]}"; do
-	sdir=$SAMPLE_DIR/$i
-	echo " Working for" $i
+    sdir=$SAMPLE_DIR/$i
+    echo " Working for" $i
 
-	samtools index -@ $threads $sdir/align/reads.1.Aligned.sortedByCoord.out.bam
-	samtools index -@ $threads $sdir/align/reads.1.Aligned.toTranscriptome.out.bam
+    samtools index -@ $threads $sdir/align/reads.1.Aligned.sortedByCoord.out.bam
+    samtools index -@ $threads $sdir/align/reads.1.Aligned.toTranscriptome.out.bam
 done
 
 echo ">>> ALL DONE<<<"

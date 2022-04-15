@@ -4,9 +4,11 @@
 #
 ################################################################################
 
-# If you have fast5 files you can re-run basecalling
+# If you have fast5 files you can re-basecall
 #echo ">>> GUPPY BASECALLING <<<"
 #./run_Guppy.sh
+
+# If you want to run poly(A) tail estimates, you must download fast5 files and/or re-basecall them.
 
 echo ">>> SAMPLES PROCESSING <<<"
 

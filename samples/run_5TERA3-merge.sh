@@ -154,37 +154,40 @@ cat $sdir/db/sqlite.genome.sql.tail.tmp >> $sdir/db/sqlite.genome.sql && rm $sdi
 # Make the "final" db
 cat $sdir/db/sqlite.genome.sql $sdir/db/sqlite.transcr.sql | sqlite3 $sdir/db/sqlite.db && rm $sdir/db/sqlite.genome.sql $sdir/db/sqlite.transcr.sql
 
-# Note: If you have the fast5 files you can remove the "exit" and continue with the analysis
-echo "This section will fail unless you ran Nanopolish poly(A) estimate. If you have please comment out line with \"exit"\"
-echo ">>> ALL DONE<<<" && exit
+# Note: If you have the fast5 files you can continue with the analysis. Check https://github.com/mourelatos-lab/TERA-Seq_manuscript/samples/README.md for the location where to download them.
 
 echo ">>> MERGE NANOPOLISH POLYA <<<"
 
-source $INSTALL/perl-virtualenv/teraseq/bin/activate
-
 inlist="reads.1.sanitize.noribo.toTranscriptome.sorted.polya.tab"
 
-table-cat \
-    hsa.dRNASeq.HeLa.total.REL5.long.REL3.4/align/$inlist \
-    hsa.dRNASeq.HeLa.total.REL5.long.REL3.5/align/$inlist \
-    hsa.dRNASeq.HeLa.total.REL5.long.REL3.6/align/$inlist \
-    > $sdir/align/$inlist
+if [ `ls -1 -a hsa.dRNASeq.HeLa.total.REL5.long.REL3.[4,5,6]/fastq/.txt 2>/dev/null | wc -l` -eq 3 ]; then
+    source $INSTALL/perl-virtualenv/teraseq/bin/activate
 
-echo ">>> ANNOTATE WITH POLYA <<<"
-### Make list of polyA reads (>=0) to append them to db
-# From Nanopolish:
-#	qc_tag is an additional flag used to indicate the validity of the estimate. Generally speaking, you should only use rows of the output file with
-#	this value set to PASS; all other rows with (e.g.) the qc_tag set to SUFFCLIP, ADAPTER, etc. display signs of irregularity that indicate that we believe the estimate to be unreliable.
-inlist="reads.1.sanitize.noribo.toTranscriptome.sorted.polya.tab"
+    table-cat \
+        hsa.dRNASeq.HeLa.total.REL5.long.REL3.4/align/$inlist \
+        hsa.dRNASeq.HeLa.total.REL5.long.REL3.5/align/$inlist \
+        hsa.dRNASeq.HeLa.total.REL5.long.REL3.6/align/$inlist \
+        > $sdir/align/$inlist
 
-tail -n+2 $sdir/align/$inlist | egrep -w "PASS|NOREGION" | cut -f1,9 > $sdir/align/${inlist%.tab}.filt.tab
+    echo ">>> ANNOTATE WITH POLYA <<<"
+    ### Make list of polyA reads (>=0) to append them to db
+    # From Nanopolish:
+    #    qc_tag is an additional flag used to indicate the validity of the estimate. Generally speaking, you should only use rows of the output file with
+    #    this value set to PASS; all other rows with (e.g.) the qc_tag set to SUFFCLIP, ADAPTER, etc. display signs of irregularity that indicate that we believe the estimate to be unreliable.
+    inlist="reads.1.sanitize.noribo.toTranscriptome.sorted.polya.tab"
 
-annotate-sqlite-with-file --db_col_add "polya" --db_col_bind "qname" \
-    --db_tables "genome" --database "$sdir/db/sqlite.db" --ifile "$sdir/align/reads.1.sanitize.noribo.toTranscriptome.sorted.polya.filt.tab" \
-    --round
+    tail -n+2 $sdir/align/$inlist | egrep -w "PASS|NOREGION" \
+        | cut -f1,9 > $sdir/align/${inlist%.tab}.filt.tab
 
-annotate-sqlite-with-file --db_col_add "polya" --db_col_bind "qname" \
-    --db_tables "transcr" --database "$sdir/db/sqlite.db" --ifile "$sdir/align/reads.1.sanitize.noribo.toTranscriptome.sorted.polya.filt.tab" \
-    --round
+    annotate-sqlite-with-file --db_col_add "polya" --db_col_bind "qname" \
+        --db_tables "genome" --database "$sdir/db/sqlite.db" --ifile "$sdir/align/reads.1.sanitize.noribo.toTranscriptome.sorted.polya.filt.tab" \
+        --round
+
+    annotate-sqlite-with-file --db_col_add "polya" --db_col_bind "qname" \
+        --db_tables "transcr" --database "$sdir/db/sqlite.db" --ifile "$sdir/align/reads.1.sanitize.noribo.toTranscriptome.sorted.polya.filt.tab" \
+        --round
+else
+    echo "It seems that $inlist doesn't exist for at least one of the samples. Please check you created hsa.dRNASeq.HeLa.total.REL5.long.REL3.[4,5,6]/fast5, downloaded and uncompressed fast5 tar.gz and placed the files in hsa.dRNASeq.HeLa.total.REL5.long.REL3.[4,5,6]/fast5 directories."
+fi
 
 echo ">>> ALL DONE <<<"

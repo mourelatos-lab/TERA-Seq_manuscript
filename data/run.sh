@@ -52,9 +52,8 @@ grep -A 1 --no-group-separator "Homo sapiens" ribosomal.fa \
 
 echo ">>> GET GENOME AND REFERENCES <<<"
 # Download and prepare the genome FASTA file from Ensembl
-cd $DATA_DIR/
-mkdir -p $assembly/genome
-cd $assembly/
+mkdir -p $DATA_DIR/$assembly/genome
+cd $DATA_DIR/$assembly/
 
 wget -qO- ftp://ftp.ensembl.org/pub/release-91/fasta/homo_sapiens/dna/Homo_sapiens.GRCh38.dna_sm.primary_assembly.fa.gz \
     | gunzip -c \
@@ -115,6 +114,7 @@ gffread -w transcripts-total.fa -g genome/genome.fa genes-total.gtf # Total
 echo ">>> ADD RRNA ANNOTATION <<<"
 ## Remove rRNA annotation from Ensembl and replace it with SILVA rRNA db annotation
 # Make SILVA rRNA db to genome mapping
+
 mkdir gmap-2019-09-12
 gmap_build -d genome -D gmap-2019-09-12 genome/genome.fa # Make index
 gmap -d genome -D gmap-2019-09-12 ../silva/ribosomal.hsa.fa -t $threads \
@@ -154,70 +154,6 @@ minimap2 -k 12 -d minimap2.17/transcripts.k12.mmi minimap2.17/transcripts.fa &
 minimap2 -k 12 -d minimap2.17/transcripts-total.k12.mmi minimap2.17/transcripts-total.fa &
 minimap2 -k 12 -d minimap2.17/ensembl-transcripts-wRibo.k12.mmi minimap2.17/ensembl-transcripts-wRibo.fa &
 wait
-
-echo ">>> GET SIRV E2 REFERENCES <<<"
-# Download Lexogen information
-cd $DATA_DIR/
-mkdir -p spikein/sirv
-cd spikein/sirv/
-
-#wget https://www.lexogen.com/wp-content/uploads/2018/08/SIRV_Set1_Sequences_170612a-ZIP.zip # The original download link
-unzip SIRV_Set1_Sequences_170612a-ZIP.zip
-mv SIRV_Set1_Sequences_170612a\ \(ZIP\) SIRV_Set1_Sequences_170612a
-for i in SIRV_Set1_Sequences_170612a/*; do
-    dos2unix $i
-done
-sed -i 's/SIRVome_isoforms/SIRV/' SIRV_Set1_Sequences_170612a/SIRVome_isoforms_170612a.fasta
-
-# Get only annotation and fasta E2 from SIRV Set 1
-# IMPORTANT: transcript fields in SIRV annotation often DON'T have correct strand
-# This is how we can fix it
-cat SIRV_Set1_Sequences_170612a/SIRVome_isoforms_C_170612a.gtf | grep -P "\ttranscript\t|\texon\t" > SIRV_Set1_Sequences_170612a/SIRVome_isoforms_C_170612a.gtf.tmp
-fix-transcript-field-gtf SIRV_Set1_Sequences_170612a/SIRVome_isoforms_C_170612a.gtf.tmp SIRV_Set1_Sequences_170612a/SIRVome_isoforms_C_170612a.fixed.gtf && rm SIRV_Set1_Sequences_170612a/SIRVome_isoforms_C_170612a.gtf.tmp
-ln -s SIRVome_isoforms_C_170612a.fixed.gtf SIRV_Set1_Sequences_170612a/SIRVome_isoforms_C_170612a.E2.gtf
-cat SIRV_Set1_Sequences_170612a/SIRVome_isoforms_C_170612a.E2.gtf | awk -v var="exon" 'BEGIN {FS="\t";OFS="\t"} {if ($3==var) {print $1, $4-1,$5, ".", ".", $7, $3, $9}}' \
-    | sort -k1,1 -k2,2n > SIRV_Set1_Sequences_170612a/SIRVome_isoforms_C_170612a.E2.bed
-gtf2bed12 SIRV_Set1_Sequences_170612a/SIRVome_isoforms_C_170612a.E2.gtf > SIRV_Set1_Sequences_170612a/SIRVome_isoforms_C_170612a.E2.bed12
-ln -s SIRV_isoforms_multi-fasta-annotation_C_170612a.gtf SIRV_Set1_Sequences_170612a/SIRV_isoforms_multi-fasta-annotation_C_170612a.E2.gtf
-
-gffread -w SIRV_Set1_Sequences_170612a/SIRVome_isoforms_170612a.transcripts_sirv1.E2.fa \
-    -g SIRV_Set1_Sequences_170612a/SIRVome_isoforms_170612a.fasta SIRV_Set1_Sequences_170612a/SIRVome_isoforms_C_170612a.E2.gtf # Poly(A)
-
-samtools faidx SIRV_Set1_Sequences_170612a/SIRVome_isoforms_170612a.transcripts_sirv1.E2.fa
-cat SIRV_Set1_Sequences_170612a/SIRVome_isoforms_170612a.transcripts_sirv1.E2.fa.fai | cut -f1-2 \
-    | sed '1i transcript_id\tlength' > SIRV_Set1_Sequences_170612a/SIRVome_isoforms_170612a.transcripts_sirv1.E2.length.tab
-
-mkdir SIRV_Set1_Sequences_170612a/minimap2.17
-ln -s ../SIRVome_isoforms_170612a.fasta SIRV_Set1_Sequences_170612a/minimap2.17/
-ln -s ../SIRVome_isoforms_170612a.transcripts_sirv1.E2.fa SIRV_Set1_Sequences_170612a/minimap2.17/
-
-minimap2 -k 12 -d SIRV_Set1_Sequences_170612a/minimap2.17/transcripts_sirv1.E2.k12.mmi SIRV_Set1_Sequences_170612a/minimap2.17/SIRVome_isoforms_170612a.transcripts_sirv1.E2.fa &
-minimap2 -k 12 -d SIRV_Set1_Sequences_170612a/minimap2.17/genome.k12.mmi SIRV_Set1_Sequences_170612a/minimap2.17/SIRVome_isoforms_170612a.fasta &
-wait
-
-echo ">>> MAKE STAR INDEX <<<"
-# Build STAR index on the genome without gene annotation
-
-cd $DATA_DIR/$assembly/
-
-mkdir STAR-2.7.2b
-STAR \
-    --runMode genomeGenerate \
-    --runThreadN $threads \
-    --genomeDir STAR-2.7.2b/ \
-    --genomeFastaFiles genome/genome.fa
-#    --genomeSAsparseD 2 # add this if you need to save RAM requirements; you can also increase the value to 3
-
-# Build STAR index on the genome with gene annotation
-mkdir STAR-2.7.2b-annot
-STAR \
-    --runMode genomeGenerate \
-    --runThreadN $threads \
-    --genomeDir STAR-2.7.2b-annot/ \
-    --genomeFastaFiles genome/genome.fa \
-    --sjdbGTFfile ensembl_genes.gtf \
-    --sjdbOverhang 100
-#    --genomeSAsparseD 2 # add this if you need to save RAM requirements; you can also increase the value to 3
 
 echo ">>> MAKE TRNA AND RRNA BED <<<"
 # We can use this for cleaning of the bam files from tRNA and rRNA
@@ -319,6 +255,70 @@ paste meth/encodeCcreHela.bed meth/tmp | awk 'BEGIN{FS="\t"; OFS="\t"} {print $1
 #  28043 pELS
 #  15872 PLS
 
+echo ">>> GET SIRV E2 REFERENCES <<<"
+# Download Lexogen information
+mkdir -p $DATA_DIR/spikein/sirv
+cd $DATA_DIR/spikein/sirv/
+
+#wget https://www.lexogen.com/wp-content/uploads/2018/08/SIRV_Set1_Sequences_170612a-ZIP.zip # The original download link
+unzip $DATA_DIR/SIRV_Set1_Sequences_170612a-ZIP.zip -d .
+mv SIRV_Set1_Sequences_170612a\ \(ZIP\) SIRV_Set1_Sequences_170612a
+for i in SIRV_Set1_Sequences_170612a/*; do
+    dos2unix $i
+done
+sed -i 's/SIRVome_isoforms/SIRV/' SIRV_Set1_Sequences_170612a/SIRVome_isoforms_170612a.fasta
+
+# Get only annotation and fasta E2 from SIRV Set 1
+# IMPORTANT: transcript fields in SIRV annotation often DON'T have correct strand
+# This is how we can fix it
+cat SIRV_Set1_Sequences_170612a/SIRVome_isoforms_C_170612a.gtf | grep -P "\ttranscript\t|\texon\t" > SIRV_Set1_Sequences_170612a/SIRVome_isoforms_C_170612a.gtf.tmp
+fix-transcript-field-gtf SIRV_Set1_Sequences_170612a/SIRVome_isoforms_C_170612a.gtf.tmp SIRV_Set1_Sequences_170612a/SIRVome_isoforms_C_170612a.fixed.gtf && rm SIRV_Set1_Sequences_170612a/SIRVome_isoforms_C_170612a.gtf.tmp
+ln -s SIRVome_isoforms_C_170612a.fixed.gtf SIRV_Set1_Sequences_170612a/SIRVome_isoforms_C_170612a.E2.gtf
+cat SIRV_Set1_Sequences_170612a/SIRVome_isoforms_C_170612a.E2.gtf | awk -v var="exon" 'BEGIN {FS="\t";OFS="\t"} {if ($3==var) {print $1, $4-1,$5, ".", ".", $7, $3, $9}}' \
+    | sort -k1,1 -k2,2n > SIRV_Set1_Sequences_170612a/SIRVome_isoforms_C_170612a.E2.bed
+gtf2bed12 SIRV_Set1_Sequences_170612a/SIRVome_isoforms_C_170612a.E2.gtf > SIRV_Set1_Sequences_170612a/SIRVome_isoforms_C_170612a.E2.bed12
+ln -s SIRV_isoforms_multi-fasta-annotation_C_170612a.gtf SIRV_Set1_Sequences_170612a/SIRV_isoforms_multi-fasta-annotation_C_170612a.E2.gtf
+
+gffread -w SIRV_Set1_Sequences_170612a/SIRVome_isoforms_170612a.transcripts_sirv1.E2.fa \
+    -g SIRV_Set1_Sequences_170612a/SIRVome_isoforms_170612a.fasta SIRV_Set1_Sequences_170612a/SIRVome_isoforms_C_170612a.E2.gtf # Poly(A)
+
+samtools faidx SIRV_Set1_Sequences_170612a/SIRVome_isoforms_170612a.transcripts_sirv1.E2.fa
+cat SIRV_Set1_Sequences_170612a/SIRVome_isoforms_170612a.transcripts_sirv1.E2.fa.fai | cut -f1-2 \
+    | sed '1i transcript_id\tlength' > SIRV_Set1_Sequences_170612a/SIRVome_isoforms_170612a.transcripts_sirv1.E2.length.tab
+
+mkdir SIRV_Set1_Sequences_170612a/minimap2.17
+ln -s ../SIRVome_isoforms_170612a.fasta SIRV_Set1_Sequences_170612a/minimap2.17/
+ln -s ../SIRVome_isoforms_170612a.transcripts_sirv1.E2.fa SIRV_Set1_Sequences_170612a/minimap2.17/
+
+minimap2 -k 12 -d SIRV_Set1_Sequences_170612a/minimap2.17/transcripts_sirv1.E2.k12.mmi SIRV_Set1_Sequences_170612a/minimap2.17/SIRVome_isoforms_170612a.transcripts_sirv1.E2.fa &
+minimap2 -k 12 -d SIRV_Set1_Sequences_170612a/minimap2.17/genome.k12.mmi SIRV_Set1_Sequences_170612a/minimap2.17/SIRVome_isoforms_170612a.fasta &
+wait
+
+echo ">>> MAKE STAR INDEX <<<"
+# Build STAR index on the genome without gene annotation
+# Note: For human, STAR will require ~33 GB RAM unless you change --genomeSAsparseD settings
+
+cd $DATA_DIR/$assembly/
+
+mkdir STAR-2.7.2b
+STAR \
+    --runMode genomeGenerate \
+    --runThreadN $threads \
+    --genomeDir STAR-2.7.2b/ \
+    --genomeFastaFiles genome/genome.fa
+#    --genomeSAsparseD 2 # add this if you need to save RAM requirements; you can also increase the value to 3
+
+# Build STAR index on the genome with gene annotation
+mkdir STAR-2.7.2b-annot
+STAR \
+    --runMode genomeGenerate \
+    --runThreadN $threads \
+    --genomeDir STAR-2.7.2b-annot/ \
+    --genomeFastaFiles genome/genome.fa \
+    --sjdbGTFfile ensembl_genes.gtf \
+    --sjdbOverhang 100
+#    --genomeSAsparseD 2 # add this if you need to save RAM requirements; you can also increase the value to 3
+
 echo ">>> MAKE MM10 REFERENCES <<<"
 
 assembly="mm10"
@@ -335,9 +335,8 @@ grep -A 1 --no-group-separator "Mus musculus" ribosomal.fa \
         --keep 0 \
         > ribosomal.mmu.fa
 
-cd $DATA_DIR/
-mkdir -p $assembly/genome
-cd $assembly/
+mkdir -p $DATA_DIR/$assembly/genome
+cd $DATA_DIR/$assembly/
 
 wget -qO- ftp://ftp.ensembl.org/pub/release-97/fasta/mus_musculus/dna/Mus_musculus.GRCm38.dna.primary_assembly.fa.gz \
     | gunzip -c \

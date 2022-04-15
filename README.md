@@ -56,7 +56,7 @@ In case you need a manual installation, you can also use:
     umi_tools fastx_toolkit bbmap=38.67 minimap2=2.17 subread=2.0.0 pigz \
     seqtk picard=2.20.8 sambamba=0.7.1 gmap=2019.09.12 gffread \
     ucsc-bedgraphtobigwig ucsc-bedtobigbed ucsc-genePredToBed ucsc-gtfToGenePred ucsc-liftover ucsc-bigbedtobed \
-    qualimap rseqc cd-hit bedops parallel
+    qualimap rseqc cd-hit bedops parallel perl-local-lib
 
 Note: If you get a lot of `ClobberError: This transaction has incompatible packages due to a shared path.` errors try to restart your Conda environment and/or exectue `conda clean --all` to [clean the Conda cache](https://github.com/conda/conda/issues/7038).
 

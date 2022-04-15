@@ -16,12 +16,9 @@ cd ../data/
 ./run.sh &> log.out
 
 #echo ">>> BASECALL FAST5 <<<"
+# Note: You have to populate fast5 directories first if you want to re-basecall
 #cd ../samples/
 #./run_Guppy.sh
-
-#echo ">>> POPULATING SAMPLES DIRECTORY <<<"
-#cd ../samples/
-#./run-populate.sh
 
 echo ">>> PREPARING SAMPLES <<<"
 cd ../samples/

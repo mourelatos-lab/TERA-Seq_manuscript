@@ -136,7 +136,38 @@ dependencies:
   - pcre=8.44=he6710b0_0
   - perl=5.26.2=h14c3975_0
   - perl-app-cpanminus=1.7044=pl526_1
+  - perl-carp=1.38=pl526_3
+  - perl-constant=1.33=pl526_1
+  - perl-cpan-meta=2.150010=pl526_0
+  - perl-cpan-meta-requirements=2.140=pl526_0
+  - perl-cpan-meta-yaml=0.018=pl526_0
   - perl-cpan-shell=5.5004=pl526_1
+  - perl-data-dumper=2.173=pl526_0
+  - perl-encode=2.88=pl526_1
+  - perl-exporter=5.72=pl526_1
+  - perl-extutils-cbuilder=0.280230=pl526_1
+  - perl-extutils-makemaker=7.36=pl526_1
+  - perl-extutils-manifest=1.72=pl526_0
+  - perl-extutils-parsexs=3.35=pl526_0
+  - perl-file-path=2.16=pl526_0
+  - perl-file-temp=0.2304=pl526_2
+  - perl-getopt-long=2.50=pl526_1
+  - perl-ipc-cmd=1.02=pl526_0
+  - perl-json-pp=4.04=pl526_0
+  - perl-local-lib=2.000024=pl526_0
+  - perl-locale-maketext-simple=0.21=pl526_2
+  - perl-module-build=0.4224=pl526_3
+  - perl-module-corelist=5.20190524=pl526_0
+  - perl-module-load=0.32=pl526_1
+  - perl-module-load-conditional=0.68=pl526_2
+  - perl-module-metadata=1.000036=pl526_0
+  - perl-params-check=0.38=pl526_1
+  - perl-parent=0.236=pl526_1
+  - perl-perl-ostype=1.010=pl526_1
+  - perl-scalar-list-utils=1.52=pl526h516909a_0
+  - perl-text-abbrev=1.02=pl526_0
+  - perl-text-parsewords=3.30=pl526_0
+  - perl-version=0.9924=pl526_0
   - picard=2.20.8=0
   - pigz=2.4=h84994c4_0
   - pillow=7.2.0=py37hb39fc2d_0
@@ -367,4 +398,4 @@ dependencies:
   - xz=5.2.5=h7b6447c_0
   - zlib=1.2.11=h7b6447c_3
   - zstd=1.4.5=h9ceee32_0
-prefix: /home/joppelt/Miniconda3/envs/teraseq
+prefix: /home/jan/tools/miniconda3/envs/teraseq
