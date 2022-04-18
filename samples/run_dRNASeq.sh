@@ -362,6 +362,7 @@ for i in "${samples[@]}"; do
                 > $sdir/align/reads.1.sanitize.noribo.toTranscriptome.sorted.polya.tab
         else
             echo "It seems that $sdir/fast5 directory is empty. Please check you downloaded and uncompressed fast5 tar.gz archive and placed the files in $sdir/fast5."
+        fi
     else
         echo "It seems that $sdir/fast5 directory doesn't exist. Please check you created $sdir/fast5, downloaded and uncompressed fast5 tar.gz and placed the files in $sdir/fast5."
     fi
