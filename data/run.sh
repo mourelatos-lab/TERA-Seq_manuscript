@@ -9,6 +9,8 @@ threads=8
 assembly="hg38"
 
 ####################################################################################################
+echo ">>> MAKE HG38 REFERENCES <<<"
+
 echo " >>> GET SILVA rRNA DATABASE <<<"
 # Download ribosomal sequences
 # Nr99 "version" clusters highly (99%) similar sequences. From the Silva - "Ref NR 99 (Web database & ARB file), a 99% identity criterion to remove highly identical sequences using the  UCLUST tool was applied."
@@ -20,7 +22,6 @@ cd silva/
 wget \
     https://www.arb-silva.de/fileadmin/silva_databases/release_132/Exports/SILVA_132_LSURef_tax_silva_trunc.fasta.gz \
     https://www.arb-silva.de/fileadmin/silva_databases/release_132/Exports/SILVA_132_SSURef_Nr99_tax_silva_trunc.fasta.gz
-
 
 # Merge all ribosomal sequences together eliminating duplicates
 source $INSTALL/perl-virtualenv/teraseq/bin/activate
@@ -88,8 +89,6 @@ gff-to-genic-elements-bed \
     --input genes.gtf \
     > genic_elements.bed
 
-deactivate
-
 # Create separate files for each genic element.
 grep -P ":utr5\t" genic_elements.bed > genic_elements.utr5.bed
 grep -P ":utr3\t" genic_elements.bed > genic_elements.utr3.bed
@@ -104,6 +103,45 @@ ln -s genic_elements.utr3.bed genic_elements-total.utr3.bed
 ln -s genic_elements.cds.bed genic_elements-total.cds.bed
 ln -s genic_elements.ncrna.bed genic_elements-total.ncrna.bed
 ln -s genic_elements.mrna.bed genic_elements-total.mrna.bed
+
+echo ">>> MAKE PART OF MM10 REFERENCES <<<"
+# We have to put this here because loading Conda messes up Perl libs
+assembly="mm10"
+
+cd $DATA_DIR/silva/
+
+grep -A 1 --no-group-separator "Mus musculus" ribosomal.fa \
+    | fasta-sanitize-header \
+        --input - \
+        --delim : \
+        --keep 0 \
+        > ribosomal.mmu.fa
+
+mkdir -p $DATA_DIR/$assembly/genome
+cd $DATA_DIR/$assembly/
+
+wget -qO- ftp://ftp.ensembl.org/pub/release-97/fasta/mus_musculus/dna/Mus_musculus.GRCm38.dna.primary_assembly.fa.gz \
+    | gunzip -c \
+    | clean-genome-headers --fasta - \
+    > genome/genome.fa
+
+wget -qO- ftp://ftp.ensembl.org/pub/release-97/gtf/mus_musculus/Mus_musculus.GRCm38.97.gtf.gz | gunzip -c > ensembl_genes.gtf
+ln -s ensembl_genes.gtf Mus_musculus.GRCm38.97.gtf
+
+echo ">>> CLEAN ANNOTATION <<<"
+
+# To keep protein-coding and polyA transcripts and delete transcripts that don't have either start or stop codons defined
+cat ensembl_genes.gtf \
+    | clean-gtf-lines-polya --gtf - \
+    > genes-polya.gtf
+ln -s genes-polya.gtf genes.gtf
+
+deactivate
+
+echo ">>> RETURN TO HG38 REFERENCES <<<"
+
+assembly="hg38"
+cd $DATA_DIR/$assembly/
 
 # Extract transcript sequences
 conda activate teraseq
@@ -323,44 +361,9 @@ echo ">>> MAKE MM10 REFERENCES <<<"
 
 assembly="mm10"
 
-cd $DATA_DIR/silva/
-
-conda deactivate
-source $INSTALL/perl-virtualenv/teraseq/bin/activate
-
-grep -A 1 --no-group-separator "Mus musculus" ribosomal.fa \
-    | fasta-sanitize-header \
-        --input - \
-        --delim : \
-        --keep 0 \
-        > ribosomal.mmu.fa
-
-mkdir -p $DATA_DIR/$assembly/genome
-cd $DATA_DIR/$assembly/
-
-wget -qO- ftp://ftp.ensembl.org/pub/release-97/fasta/mus_musculus/dna/Mus_musculus.GRCm38.dna.primary_assembly.fa.gz \
-    | gunzip -c \
-    | clean-genome-headers --fasta - \
-    > genome/genome.fa
-
-wget -qO- ftp://ftp.ensembl.org/pub/release-97/gtf/mus_musculus/Mus_musculus.GRCm38.97.gtf.gz | gunzip -c > ensembl_genes.gtf
-ln -s ensembl_genes.gtf Mus_musculus.GRCm38.97.gtf
-
-echo ">>> CLEAN ANNOTATION <<<"
-
-# To keep protein-coding and polyA transcripts and delete transcripts that don't have either start or stop codons defined
-cat ensembl_genes.gtf \
-    | clean-gtf-lines-polya --gtf - \
-    > genes-polya.gtf
-ln -s genes-polya.gtf genes.gtf
-
-deactivate
-
 echo ">>> ADD RRNA ANNOTATION <<<"
 ## Remove rRNA annotation from Ensembl and replace it with SILVA rRNA db annotation
 # Make SILVA rRNA db to genome mapping
-
-conda activate teraseq
 
 mkdir gmap-2019-09-12
 gmap_build -d genome -D gmap-2019-09-12 genome/genome.fa # Make index
