@@ -62,6 +62,8 @@ cpanm CLIPSeqTools
 echo ">> INSTALL PERL - GenOOx minimap2 parser <<"
 cp -r $DIR/misc/GenOOx/* $INSTALL/perl-virtualenv/teraseq/lib/perl5/GenOOx/
 
+deactivate
+
 conda activate teraseq
 
 echo ">>> INSTALL GeneCycle R PACKAGE <<<"
