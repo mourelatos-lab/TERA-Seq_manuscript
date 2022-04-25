@@ -13,7 +13,11 @@ The analysis was tested on Ubuntu 16.04 LTS, 16 threads, 32 GB RAM, 2 TB HDD. Th
 ## Requirements
 
 ### Environment
-First, we make a local copy of this repository anywhere you want.
+There are four system requirements: **git**, **gcc**, **make**, **wget**. You can install them with.
+
+    apt-get install -y git gcc make wget
+
+Make a local copy of this repository anywhere you want.
 
     git clone https://github.com/mourelatos-lab/TERA-Seq_manuscript
 Then, we would like to specificy some system-wide variables we will use in this analysis. The variables used throughout the analysis can be found in `PARAMS.sh` in the main `TERA-Seq_manuscript` directory you just downloaded. You can open in it and edit the variables so it suits to your needs. We will assume you will work on the analysis in the `TERA-Seq_manuscript` directory.
@@ -52,16 +56,18 @@ In case you need a manual installation, you can also use:
     r-data.table r-yaml r-treemap r-venndiagram r-extrafont r-hdf5r r-patchwork \
     bioconductor-ensembldb bioconductor-tximport bioconductor-dupradar bioconductor-gviz bioconductor-deseq2 \
     fastqc STAR=2.7.2b samtools">=1.10" bedtools=2.29.0 samblaster trimmomatic=0.39 \
-    perl-cpan-shell perl-app-cpanminus \
+    perl-cpan-shell perl-app-cpanminus perl-local-lib \
     umi_tools fastx_toolkit bbmap=38.67 minimap2=2.17 subread=2.0.0 pigz \
     seqtk picard=2.20.8 sambamba=0.7.1 gmap=2019.09.12 gffread \
     ucsc-bedgraphtobigwig ucsc-bedtobigbed ucsc-genePredToBed ucsc-gtfToGenePred ucsc-liftover ucsc-bigbedtobed \
-    qualimap rseqc cd-hit bedops parallel perl-local-lib
+    qualimap rseqc cd-hit bedops parallel
 
 Note: If you get a lot of `ClobberError: This transaction has incompatible packages due to a shared path.` errors try to restart your Conda environment and/or exectue `conda clean --all` to [clean the Conda cache](https://github.com/conda/conda/issues/7038).
 
 #### Additional software
 `tools` directory contains information additional software required for some of the analyses. Installation of the additioonal software **is included in the main** `run.sh`. If you wish to install it manually you can execute `run.sh` in the `tools` directory. We use virtual environments wherever possible.
+
+**Important: If your Conda main path is not exported by default, you have to specify `$CONDA_PREFIX` variable in `PARAMS.sh` file.**
 
     cd tools/
     ./run.sh

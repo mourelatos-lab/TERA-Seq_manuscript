@@ -10,7 +10,13 @@ echo "Note: This might take some time"
 # Note: All Perl libraries might be possible to install to Conda but from compatibility issues we have install them separately. Also, Perl likes to break Conda environments so it's safer to make them separate.
 # Note: If you have problems with local::lib makes sure it's correctly installed system-wide or in Conda and that Perl can see it but DO NOT activate Conda environment.
 
-export PERL5LIB=$PERL5LIB:$CONDA_PREFIX/envs/teraseq/lib/site_perl/5.26.2/
+if [ -z ${CONDA_PREFIX} ]; then
+    echo "Variable \$CONDA_PREFIX is not set. Please make sure you specified if in PARAMS.sh."
+    exit
+fi
+
+export PERL5LIB=${PERL5LIB}:${CONDA_PREFIX}/envs/teraseq/lib/site_perl/5.26.2/
+export PATH=${PATH}:${CONDA_PREFIX}/envs/teraseq/bin
 
 cd $INSTALL/
 
@@ -64,6 +70,7 @@ cp -r $DIR/misc/GenOOx/* $INSTALL/perl-virtualenv/teraseq/lib/perl5/GenOOx/
 
 deactivate
 
+#source $CONDA_PREFIX/bin/activate # If your Conda is not loaded by default, please source it here
 conda activate teraseq
 
 echo ">>> INSTALL GeneCycle R PACKAGE <<<"
