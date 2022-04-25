@@ -4,7 +4,7 @@
 # Can be overriden in individual scripts/steps
 #
 
-#CONDA_PREFIX="/home/your_user_name/miniconda3" # Main path to the Conda if Conda path is loaded in your device by default
+#CONDA_PREFIX="/home/your_user_name/installation_dir/miniconda3" # Main path to the Conda if Conda path is loaded in your device by default
 
 CUR_DIR=$(pwd) # Current directory; useful for analyses
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
