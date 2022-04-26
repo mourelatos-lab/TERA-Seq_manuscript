@@ -27,12 +27,12 @@ To re-analyze analysis using external data please populate the additional direct
 
 | Library type | Sample name | fastq | SRA | Library name |
 |--|--|--|--|--|
-| Mouse SIRV | SIRV_replicate1 | [download](ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR268/005/ERR2680375/ERR2680375.fastq.gz) | [link](https://www.ncbi.nlm.nih.gov/sra/ERX2695236) | mmu.dRNASeq.inclSIRV.PRJEB27590.ERR2680375.1 |
-| Mouse SIRV | SIRV_replicate2 | [download](ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR268/009/ERR2680379/ERR2680379.fastq.gz) | [link](https://www.ncbi.nlm.nih.gov/sra/ERX2695240) | mmu.dRNASeq.inclSIRV.PRJEB27590.ERR2680379.1 |
-| Mouse SIRV | SIRV_replicate3 | [download](ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR336/007/ERR3363657/ERR3363657_1.fastq.gz) | [link](https://www.ncbi.nlm.nih.gov/sra/ERX3387949) | mmu.dRNASeq.inclSIRV.PRJEB27590.ERR3363657.1 |
-| Mouse SIRV | SIRV_replicate4 | [download](ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR336/009/ERR3363659/ERR3363659_1.fastq.gz) | [link](https://www.ncbi.nlm.nih.gov/sra/ERX3387951) | mmu.dRNASeq.inclSIRV.PRJEB27590.ERR3363659.1 |
-| RNASeq | Illumina (RNA-Seq) | [download](ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR423/000/SRR4235530/SRR4235530_1.fastq.gz), [download](ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR423/000/SRR4235530/SRR4235530_2.fastq.gz) | [link](https://www.ncbi.nlm.nih.gov/sra/SRX2156830), [ENCODE](https://www.encodeproject.org/files/ENCFF000FOM/) | hsa.RNASeq.HeLa.xxx.polyA.ENCSR000CPR.1 |
-| RiboSeq | Ribo-Seq | [download](ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR330/009/SRR3306589/SRR3306589.fastq.gz) | [link](https://www.ncbi.nlm.nih.gov/sra/SRX1667370) | hsa.RiboSeq.HeLa.async.2 |
-| Akron5Seq | Akron5 | [download](ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR636/008/SRR6360508/SRR6360508_1.fastq.gz), [download](ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR636/008/SRR6360508/SRR6360508_2.fastq.gz) | [link](https://www.ncbi.nlm.nih.gov/sra/SRX3456569) | hsa.Akron5Seq.HeLa.whole.2 |
+| Mouse SIRV | SIRV_replicate1 | [download](ftp.sra.ebi.ac.uk/vol1/fastq/ERR268/005/ERR2680375/ERR2680375.fastq.gz) | [link](https://www.ncbi.nlm.nih.gov/sra/ERX2695236) | mmu.dRNASeq.inclSIRV.PRJEB27590.ERR2680375.1 |
+| Mouse SIRV | SIRV_replicate2 | [download](ftp.sra.ebi.ac.uk/vol1/fastq/ERR268/009/ERR2680379/ERR2680379.fastq.gz) | [link](https://www.ncbi.nlm.nih.gov/sra/ERX2695240) | mmu.dRNASeq.inclSIRV.PRJEB27590.ERR2680379.1 |
+| Mouse SIRV | SIRV_replicate3 | [download](ftp.sra.ebi.ac.uk/vol1/fastq/ERR336/007/ERR3363657/ERR3363657_1.fastq.gz) | [link](https://www.ncbi.nlm.nih.gov/sra/ERX3387949) | mmu.dRNASeq.inclSIRV.PRJEB27590.ERR3363657.1 |
+| Mouse SIRV | SIRV_replicate4 | [download](ftp.sra.ebi.ac.uk/vol1/fastq/ERR336/009/ERR3363659/ERR3363659_1.fastq.gz) | [link](https://www.ncbi.nlm.nih.gov/sra/ERX3387951) | mmu.dRNASeq.inclSIRV.PRJEB27590.ERR3363659.1 |
+| RNASeq | Illumina (RNA-Seq) | [download](ftp.sra.ebi.ac.uk/vol1/fastq/SRR423/000/SRR4235530/SRR4235530_1.fastq.gz), [download](ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR423/000/SRR4235530/SRR4235530_2.fastq.gz) | [link](https://www.ncbi.nlm.nih.gov/sra/SRX2156830), [ENCODE](https://www.encodeproject.org/files/ENCFF000FOM/) | hsa.RNASeq.HeLa.xxx.polyA.ENCSR000CPR.1 |
+| RiboSeq | Ribo-Seq | [download](ftp.sra.ebi.ac.uk/vol1/fastq/SRR330/009/SRR3306589/SRR3306589.fastq.gz) | [link](https://www.ncbi.nlm.nih.gov/sra/SRX1667370) | hsa.RiboSeq.HeLa.async.2 |
+| Akron5Seq | Akron5 | [download](ftp.sra.ebi.ac.uk/vol1/fastq/SRR636/008/SRR6360508/SRR6360508_1.fastq.gz), [download](ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR636/008/SRR6360508/SRR6360508_2.fastq.gz) | [link](https://www.ncbi.nlm.nih.gov/sra/SRX3456569) | hsa.Akron5Seq.HeLa.whole.2 |
 
 > Written with [StackEdit](https://stackedit.io/).
