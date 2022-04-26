@@ -17,8 +17,14 @@ echo ">>> GET TPM EXPRESSION <<<"
 # We don't care about having or not having adapters as we want to compare only the expression
 # We take only primary alignments
 # ONT-bam libraries
+if [ -z ${CONDA_PREFIX} ]; then
+    echo "Variable \$CONDA_PREFIX is not set. Please make sure you specified if in PARAMS.sh."
+    exit
+fi
 
+source $CONDA_PREFIX/bin/activate # Source Conda base
 conda activate teraseq
+
 source $INSTALL/perl-virtualenv/teraseq/bin/activate
 
 samples=(

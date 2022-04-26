@@ -61,6 +61,12 @@ wait
 
 deactivate
 
+if [ -z ${CONDA_PREFIX} ]; then
+    echo "Variable \$CONDA_PREFIX is not set. Please make sure you specified if in PARAMS.sh."
+    exit
+fi
+
+source $CONDA_PREFIX/bin/activate # Source Conda base
 conda activate teraseq
 
 echo ">>> ALIGN READS TO RIBOSOMAL (ALL ENSEMBL + SILVA-MOUSE) <<<"

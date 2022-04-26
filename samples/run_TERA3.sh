@@ -65,7 +65,14 @@ echo ">>> REMOVE REL3 ADAPTOR <<<"
 # First, we take only max. last 200 to identify reads with adapter and avoid internal trimming
 # With REL3 it's more complicated than with REL5 because first we have RTA (and the Guppy RTA trimming doesn't work well)
 
+if [ -z ${CONDA_PREFIX} ]; then
+    echo "Variable \$CONDA_PREFIX is not set. Please make sure you specified if in PARAMS.sh."
+    exit
+fi
+
+source $CONDA_PREFIX/bin/activate # Source Conda base
 conda activate teraseq
+
 source $INSTALL/cutadapt-2.5/venv/bin/activate
 
 # Identify reads with adapter from last 200 bp of each read

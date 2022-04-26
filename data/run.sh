@@ -144,6 +144,12 @@ assembly="hg38"
 cd $DATA_DIR/$assembly/
 
 # Extract transcript sequences
+if [ -z ${CONDA_PREFIX} ]; then
+    echo "Variable \$CONDA_PREFIX is not set. Please make sure you specified if in PARAMS.sh."
+    exit
+fi
+
+source $CONDA_PREFIX/bin/activate # Source Conda base
 conda activate teraseq
 
 gffread -w transcripts.fa -g genome/genome.fa genes.gtf # Poly(A)

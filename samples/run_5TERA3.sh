@@ -61,8 +61,14 @@ wait
 deactivate
 
 echo ">>> REMOVE REL5 ADAPTOR <<<"
+if [ -z ${CONDA_PREFIX} ]; then
+    echo "Variable \$CONDA_PREFIX is not set. Please make sure you specified if in PARAMS.sh."
+    exit
+fi
 
+source $CONDA_PREFIX/bin/activate # Source Conda base
 conda activate teraseq
+
 source $INSTALL/cutadapt-2.5/venv/bin/activate
 
 for i in "${samples[@]}"; do

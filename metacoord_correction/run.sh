@@ -21,6 +21,12 @@ echo ">>> MAKE A SINGLE CORRECTION FOR ALL SAMPLES <<<"
 # CIP.decap w REL5 for 5' end, all polyA libraries for 3' end correction
 # We go from sqlite db which we already have
 
+if [ -z ${CONDA_PREFIX} ]; then
+    echo "Variable \$CONDA_PREFIX is not set. Please make sure you specified if in PARAMS.sh."
+    exit
+fi
+
+source $CONDA_PREFIX/bin/activate # Source Conda base
 conda activate teraseq
 
 samples=(

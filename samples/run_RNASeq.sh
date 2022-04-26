@@ -52,7 +52,14 @@ done
 
 echo ">>> TRIM 3' ADAPTOR AND LOW QUALITY ENDS <<<"
 
+if [ -z ${CONDA_PREFIX} ]; then
+    echo "Variable \$CONDA_PREFIX is not set. Please make sure you specified if in PARAMS.sh."
+    exit
+fi
+
+source $CONDA_PREFIX/bin/activate # Source Conda base
 conda activate teraseq
+
 source $INSTALL/cutadapt-2.5/venv/bin/activate
 
 for i in "${samples[@]}"; do

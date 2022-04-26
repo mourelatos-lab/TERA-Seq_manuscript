@@ -17,6 +17,12 @@ mkdir -p $RES_DIR
 
 echo ">>> RELATIVE POS DISTRO 5p-5p - AKRON5 VS 5TERA W ADAPTER <<<"
 
+if [ -z ${CONDA_PREFIX} ]; then
+    echo "Variable \$CONDA_PREFIX is not set. Please make sure you specified if in PARAMS.sh."
+    exit
+fi
+
+source $CONDA_PREFIX/bin/activate # Source Conda base
 conda activate teraseq
 
 source $INSTALL/perl-virtualenv/teraseq/bin/activate

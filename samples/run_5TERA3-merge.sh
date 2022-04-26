@@ -8,7 +8,12 @@ source ../PARAMS.sh
 threads=6
 
 ####################################################################################################
+if [ -z ${CONDA_PREFIX} ]; then
+    echo "Variable \$CONDA_PREFIX is not set. Please make sure you specified if in PARAMS.sh."
+    exit
+fi
 
+source $CONDA_PREFIX/bin/activate # Source Conda base
 conda activate teraseq
 
 i="hsa.dRNASeq.HeLa.total.REL5.long.REL3.X"

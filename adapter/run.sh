@@ -100,9 +100,16 @@ done > $RES_DIR/cmds.txt
 cat $RES_DIR/cmds.txt | parallel --eta -j $threads --load 95% --noswap '{}'
 rm $RES_DIR/cmds.txt
 
+deactivate
+
 echo ">>> VISUALIZE TRIMMING - TRANSCRIPTS <<<"
 
-deactivate
+if [ -z ${CONDA_PREFIX} ]; then
+    echo "Variable \$CONDA_PREFIX is not set. Please make sure you specified if in PARAMS.sh."
+    exit
+fi
+
+source $CONDA_PREFIX/bin/activate # Source Conda base
 conda activate teraseq
 
 ./src/R/cutadapt-transcripts.R "$RES_DIR/transcripts/${ad_name}/logfiles" \

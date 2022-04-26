@@ -29,6 +29,12 @@ done
 echo ">> MAKE BIGWIG FROM BED <<"
 # https://www.biostars.org/p/150036/
 
+if [ -z ${CONDA_PREFIX} ]; then
+    echo "Variable \$CONDA_PREFIX is not set. Please make sure you specified if in PARAMS.sh."
+    exit
+fi
+
+source $CONDA_PREFIX/bin/activate # Source Conda base
 conda activate teraseq
 
 for i in $RES_DIR/common/*.bed; do
