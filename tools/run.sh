@@ -67,10 +67,48 @@ cpanm CLIPSeqTools
 
 echo ">> INSTALL PERL - GenOOx minimap2 parser <<"
 cp -r $DIR/misc/GenOOx/* $INSTALL/perl-virtualenv/teraseq/lib/perl5/GenOOx/
-
 deactivate
 
-#source $CONDA_PREFIX/bin/activate # If your Conda is not loaded by default, please source it here
+echo ">>> INSTALL NANOPOLISH <<<"
+
+CONDA_BIN="$CONDA_PREFIX/bin"
+
+# version used for polya tail estimates
+# Note: We used commit 480fc85 but there are some make issues after the latests commits and --reset won't fix it. Version 0.14.0 doesn't seem to have any major changes that would change the results of the analysis
+cd $INSTALL/
+git clone --recursive https://github.com/jts/nanopolish.git
+mv nanopolish nanopolish-480fc85
+cd nanopolish-480fc85/
+git reset 480fc85 --hard
+#wget https://github.com/jts/nanopolish/archive/refs/tags/v0.14.0.tar.gz -O nanopolish.tar.gz
+#tar xvzf nanopolish.tar.gz
+#cd nanopolish-0.14.0/
+# fix outdated link to eigen and some code
+sed -i 's#http://bitbucket.org/eigen/eigen/get/$(EIGEN_VERSION).tar.bz2#https://gitlab.com/libeigen/eigen/-/archive/$(EIGEN_VERSION)/eigen-$(EIGEN_VERSION).tar.bz2#' Makefile
+sed -i 's/tar -xjf $(EIGEN_VERSION).tar.bz2/tar -xjf eigen-$(EIGEN_VERSION).tar.bz2/' Makefile
+sed -i 's/eigen-eigen-\*/eigen-$(EIGEN_VERSION)/' Makefile
+## Commit 18d6e3 removed fast5 necessary for this commit and --recursive and git reset won't work, we have to get it separately
+rm -rf fast5
+git clone https://github.com/mateidavid/fast5.git
+cd fast5/
+git reset 18d6e34 --hard
+cd ../
+rm -rf htslib
+git clone --recursive https://github.com/samtools/htslib.git
+cd htslib/
+git reset 3dc96c5 --hard
+cd ../
+make
+ln -s $(pwd)/nanopolish $CONDA_BIN/nanopolish
+
+# new version with polya hmm scripts
+cd $INSTALL/
+git clone --recursive https://github.com/jts/nanopolish.git
+mv nanopolish nanopolish-ab9722b
+cd nanopolish-ab9722b/
+git reset ab9722b --hard
+
+source $CONDA_PREFIX/bin/activate # Source Conda base
 conda activate teraseq
 
 echo ">>> INSTALL GeneCycle R PACKAGE <<<"
@@ -125,30 +163,5 @@ cd jvarkit/
 mkdir $CONDA_PREFIX/share/jvarkit # the git commit version
 ln -s $INSTALL/jvarkit/dist/biostar84452.jar $CONDA_PREFIX/share/jvarkit/remove-softlip.jar
 #ln -s $INSTALL/tools/utils/biostar84452.jar $CONDA_PREFIX/share/jvarkit/remove-softlip.jar # Use this to link the used commit instead of the recent one
-
-echo ">>> INSTALL NANOPOLISH <<<"
-
-CONDA_BIN="$CONDA_PREFIX/bin"
-conda deactivate
-
-# version used for polya tail estimates
-cd $INSTALL/
-git clone --recursive https://github.com/jts/nanopolish.git
-mv nanopolish nanopolish-480fc85
-cd nanopolish-480fc85/
-git reset 480fc85 --hard
-# fix outdated link to eigen and some code
-sed -i 's#http://bitbucket.org/eigen/eigen/get/$(EIGEN_VERSION).tar.bz2#https://gitlab.com/libeigen/eigen/-/archive/$(EIGEN_VERSION)/eigen-$(EIGEN_VERSION).tar.bz2#' Makefile
-sed -i 's/tar -xjf $(EIGEN_VERSION).tar.bz2/tar -xjf eigen-$(EIGEN_VERSION).tar.bz2/' Makefile
-sed -i 's/eigen-eigen-\*/eigen-$(EIGEN_VERSION)/' Makefile
-make
-ln -s $(pwd)/nanopolish $CONDA_BIN/nanopolish
-
-# new version with polya hmm scripts
-cd $INSTALL/
-git clone --recursive https://github.com/jts/nanopolish.git
-mv nanopolish nanopolish-ab9722b
-cd nanopolish-ab9722b/
-git reset ab9722b --hard
 
 echo ">>> ALL DONE <<<"

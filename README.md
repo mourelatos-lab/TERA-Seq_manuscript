@@ -13,9 +13,9 @@ The analysis was tested on Ubuntu 16.04 LTS, 16 threads, 32 GB RAM, 2 TB HDD. Th
 ## Requirements
 
 ### Environment
-There are four system requirements: **git**, **gcc**, **make**, **wget**. You can install them with.
+There are six system requirements: **`git`**, **`gcc`**, **`make`**, **`wget`**, **`g++`**, **`zlib-dev`**. `g++` and `zlib-dev` are Nanopolish requirements. If you don't plan to run Nanopolish, you can skip these two. You can install them (on Ubuntu) with:
 
-    apt-get install -y git gcc make wget
+    apt-get install -y git gcc make wget g++ zlib1g-dev
 
 Make a local copy of this repository anywhere you want.
 
@@ -67,7 +67,7 @@ Note: If you get a lot of `ClobberError: This transaction has incompatible packa
 #### Additional software
 `tools` directory contains information additional software required for some of the analyses. Installation of the additioonal software **is included in the main** `run.sh`. If you wish to install it manually you can execute `run.sh` in the `tools` directory. We use virtual environments wherever possible.
 
-**Important: If your Conda main path is not exported by default, you have to specify `$CONDA_PREFIX` variable in `PARAMS.sh` file.**. If you **cannot** use Conda at this stage, you will need to system-install **curl**, **Perl 5.2**, Perl **local::lib**, and **R 3.5.1**.
+**Important: If your Conda main path is not exported by default, you have to specify `$CONDA_PREFIX` variable in `PARAMS.sh` file.**. If you **cannot** use Conda at this stage, you will need system-install **curl**, **Perl 5.22**, Perl **local::lib**, and **R 3.5.1**.
 
     cd tools/
     ./run.sh
