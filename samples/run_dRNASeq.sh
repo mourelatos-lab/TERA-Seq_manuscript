@@ -35,7 +35,7 @@ for i in "${samples[@]}"; do
         echo "$sdir/fastq/reads.1.fastq.gz is present, continue."
     else
         echo "$sdir/fastq/reads.1.fastq.gz does not exist, trying to download."
-        download=$(cat README.md | grep download | grep $i | cut -d '|' -f 6 | cut -d '(' -f2  | sed 's/)//')
+        download=$(cat README.md | grep download | grep $i | cut -d '|' -f 6 | cut -d '(' -f2  | sed 's/)//' | sed 's#https://##')
         mkdir $sdir/fastq
         curl $download > $sdir/fastq/reads.1.fastq.gz
     fi
