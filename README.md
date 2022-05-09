@@ -12,6 +12,12 @@ The analysis was tested on Ubuntu 16.04 LTS, 16 threads, 32 GB RAM, 2 TB HDD. Th
 
 ## Requirements
 
+### Docker
+Using Docker is strongly recommended. The Docker container that could be used to reanalyze the data is available here:
+    docker pull joppelt/teraseq
+
+If you don't have access do Docker, please follow the instructions for Conda environment installation below.
+
 ### Environment
 There are six system requirements: **`git`**, **`gcc`**, **`make`**, **`wget`**, **`g++`**, **`zlib-dev`**. `g++` and `zlib-dev` are Nanopolish requirements. If you don't plan to run Nanopolish, you can skip these two. You can install them (on Ubuntu) with:
 
