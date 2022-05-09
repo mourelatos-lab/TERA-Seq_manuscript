@@ -164,4 +164,8 @@ mkdir $CONDA_PREFIX/share/jvarkit # the git commit version
 ln -s $INSTALL/jvarkit/dist/biostar84452.jar $CONDA_PREFIX/share/jvarkit/remove-softlip.jar
 #ln -s $INSTALL/tools/utils/biostar84452.jar $CONDA_PREFIX/share/jvarkit/remove-softlip.jar # Use this to link the used commit instead of the recent one
 
+echo ">>> INCREASE FASTQC RAM <<<"
+
+sed -i 's/-Xmx250m/-Xmx5g/g' $CONDA_PREFIX/opt/fastqc-*/fastqc
+
 echo ">>> ALL DONE <<<"
