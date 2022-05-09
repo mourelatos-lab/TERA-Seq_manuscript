@@ -14,6 +14,7 @@ The analysis was tested on Ubuntu 16.04 LTS, 16 threads, 32 GB RAM, 2 TB HDD. Th
 
 ### Docker
 Using Docker is strongly recommended. The Docker container that could be used to reanalyze the data is available here:
+
     docker pull joppelt/teraseq
 
 If you don't have access do Docker, please follow the instructions for Conda environment installation below.
