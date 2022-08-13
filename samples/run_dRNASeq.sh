@@ -355,7 +355,7 @@ for i in "${samples[@]}"; do
     echo " Working for" $i
 
     if [ -d "$sdir/fast5" ]; then
-        if [ ! -z `ls $sdir/fast5/*.fast5` ]; then
+	if [ `find $sdir/fast5 -maxdepth 1 -type f -name '*.fast5' | wc -l` != 0 ]; then
             nanopolish index \
                 --directory $sdir/fast5/ \
                 $sdir/fastq/reads.1.fastq.gz
