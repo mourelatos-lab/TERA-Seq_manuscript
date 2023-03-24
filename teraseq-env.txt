@@ -358,6 +358,7 @@ sambamba                  0.7.1                h984e79f_3    bioconda
 samblaster                0.1.26               hc9558a2_0    bioconda
 samtools                  1.10                 h2e538c0_3    bioconda
 scipy                     1.5.2            py37hb14ef9d_0    conda-forge
+seqkit                    2.1.0                h9ee0642_0    bioconda
 seqtk                     1.3                  hed695b0_2    bioconda
 setuptools                49.6.0                   py37_0  
 six                       1.15.0                     py_0  

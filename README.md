@@ -65,7 +65,7 @@ In case you need a manual installation, you can also use:
     fastqc STAR=2.7.2b samtools">=1.10" bedtools=2.29.0 samblaster trimmomatic=0.39 \
     perl-cpan-shell perl-app-cpanminus perl-local-lib \
     umi_tools fastx_toolkit bbmap=38.67 minimap2=2.17 subread=2.0.0 pigz \
-    seqtk picard=2.20.8 sambamba=0.7.1 gmap=2019.09.12 gffread \
+    seqkit seqtk picard=2.20.8 sambamba=0.7.1 gmap=2019.09.12 gffread \
     ucsc-bedgraphtobigwig ucsc-bedtobigbed ucsc-genePredToBed ucsc-gtfToGenePred ucsc-liftover ucsc-bigbedtobed \
     qualimap rseqc cd-hit bedops parallel
 
