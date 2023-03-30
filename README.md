@@ -20,13 +20,14 @@ Using Docker is strongly recommended. The Docker container that could be used to
 If you don't have access do Docker, please follow the instructions for Conda environment installation below.
 
 ### Environment
-There are six system requirements: **`git`**, **`gcc`**, **`make`**, **`wget`**, **`g++`**, **`zlib-dev`**. `g++` and `zlib-dev` are Nanopolish requirements. If you don't plan to run Nanopolish, you can skip these two. You can install them (on Ubuntu) with:
+There are seven system requirements: **`git`**, **`gcc`**, **`make`**, **`wget`**, **`g++`**, **`zlib-dev`**, **`bzip2`**. `g++`, `zlib-dev`, and `bzip2` are Nanopolish requirements. If you don't plan to run Nanopolish, you can skip these two. You can install them (on Ubuntu) with:
 
-    apt-get install -y git gcc make wget g++ zlib1g-dev
+    apt-get install -y git gcc make wget g++ zlib1g-dev bzip2
 
 Make a local copy of this repository anywhere you want.
 
     git clone https://github.com/mourelatos-lab/TERA-Seq_manuscript
+
 Then, we would like to specificy some system-wide variables we will use in this analysis. The variables used throughout the analysis can be found in `PARAMS.sh` in the main `TERA-Seq_manuscript` directory you just downloaded. You can open in it and edit the variables so it suits to your needs. We will assume you will work on the analysis in the `TERA-Seq_manuscript` directory.
 
 The individual analysis scripts **will assume the structure** from `PARAMS.sh`.

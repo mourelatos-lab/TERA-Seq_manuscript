@@ -3,7 +3,7 @@ FROM ubuntu:16.04
 
 # LABEL about the custom image
 LABEL maintainer="jan.oppelt@pennmedicine.upenn.edu"
-LABEL version="0.1"
+LABEL version="0.2"
 LABEL description="This is custom Docker Image for \
 analysis of TERA-Seq publication (DOI: https://doi.org/10.1093/nar/gkab713)."
 
@@ -14,7 +14,9 @@ ARG DEBIAN_FRONTEND=noninteractive
 SHELL ["/bin/bash", "-c"]
 
 ### System-wide requirements; cpanminus is not required if Perl uses virtual environment method; g++ and zlib1g-dev are required only for Nanopolish
-RUN apt-get update && apt-get install -y git gcc make wget g++ zlib1g-dev cpanminus && rm -rf /var/lib/apt/lists/*
+RUN apt-get update \
+    && apt-get install -y git gcc make wget g++ zlib1g-dev cpanminus curl bzip2 \
+    && rm -rf /var/lib/apt/lists/*
 
 ### Main GitHub repo
 WORKDIR /root
@@ -26,25 +28,26 @@ ARG PATH="/root/miniconda3/bin:${PATH}"
 RUN echo ${PATH}
 
 RUN wget \
-    https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh \
+    https://repo.anaconda.com/miniconda/Miniconda3-py37_23.1.0-1-Linux-x86_64.sh -O Miniconda3.sh \
     && mkdir /root/.conda \
-    && bash Miniconda3-latest-Linux-x86_64.sh -b \
-    && rm -f Miniconda3-latest-Linux-x86_64.sh
-RUN conda --version
+    && bash Miniconda3.sh -b \
+    && rm -f Miniconda3.sh
+#RUN conda --version
 
-# Install Mamba for faster installation
-RUN conda install -c conda-forge mamba
+## Install Mamba for faster installation
+#RUN conda install -c conda-forge mamba
 
 # Get Conda yml and install environment
-RUN mamba env create -f /root/TERA-Seq_manuscript/teraseq-env.yml
+#RUN mamba env create -f /usr/local/TERA-Seq_manuscript/teraseq-env.yml
+RUN conda env create -f /root/TERA-Seq_manuscript/teraseq-env.yml
 
 # Increase default FastQC RAM
 RUN sed -i 's/-Xmx250m/-Xmx5g/g' /root/miniconda3/envs/teraseq/opt/fastqc-*/fastqc
 
 #ENV PATH="${PATH}:/root/miniconda3/envs/teraseq/bin"
 
-RUN ln -s /root/miniconda3/envs/teraseq/bin/R /bin/R \
-    && ln -s /root/miniconda3/envs/teraseq/bin/curl /bin/curl
+RUN ln -s /root/miniconda3/envs/teraseq/bin/R /bin/R
+#   \ && ln -s /root/miniconda3/envs/teraseq/bin/curl /bin/curl
 
 ### Save default Conda path
 RUN sed -i '/CONDA_PREFIX/d' /root/TERA-Seq_manuscript/PARAMS.sh \
@@ -96,21 +99,21 @@ RUN git clone https://github.com/jizhang/perl-virtualenv.git \
     && chmod +x teraseq/bin/cpanm
 
 RUN . perl-virtualenv/teraseq/bin/activate \
-    && cpanm inc::Module::Install \
-    && cpanm autodie \
-    && cpanm DBI \
-    && cpanm Devel::Size \
-    && cpanm Getopt::Long::Descriptive \
-    && cpanm IO::File \
-    && cpanm IO::Interactive \
-    && cpanm IO::Uncompress::Gunzip \
-    && cpanm Params::Validate \
-    && cpanm Params::Util \
-    && cpanm Sub::Install \
-    && cpanm Modern::Perl \
-    && cpanm --force MooseX::App::Simple \
+    && cpanm inc::Module::Install@1.19 \
+    && cpanm autodie@2.29 \
+    && cpanm DBI@1.642 \
+    && cpanm Devel::Size@0.83 \
+    && cpanm Getopt::Long::Descriptive@0.104 \
+    && cpanm IO::File@1.39 \
+    && cpanm IO::Interactive@1.022 \
+    && cpanm --force IO::Uncompress::Gunzip \
+    && cpanm Params::Validate@1.29 \
+    && cpanm Params::Util@1.07 \
+    && cpanm Sub::Install@0.928 \
+    && cpanm Modern::Perl@1.20190601 \
+    && cpanm --force MooseX::App::Simple@1.41 \
     && cpanm --force MooseX::App::Command \
-    && cpanm --force MooseX::Getopt::Meta::Attribute::Trait::NoGetopt
+    && cpanm --force MooseX::Getopt::Meta::Attribute::Trait::NoGetopt@0.74
 
 RUN git clone --recursive https://github.com/genoo/GenOO.git perl-virtualenv/teraseq/lib/perl5/GenOO_git \
     && cd perl-virtualenv/teraseq/lib/perl5/GenOO_git/ \
@@ -119,10 +122,12 @@ RUN git clone --recursive https://github.com/genoo/GenOO.git perl-virtualenv/ter
     && mkdir GenOO \
     && cp -r GenOO_git/lib/GenOO/* GenOO/
 
+# Install specific version of Perl module https://stackoverflow.com/questions/260593/how-can-i-install-a-specific-version-of-a-set-of-perl-modules
 RUN . perl-virtualenv/teraseq/bin/activate \
-    && cpanm CLIPSeqTools \
+    && cpanm --force CLIPSeqTools@0.1.9  \
     && cp -r /root/TERA-Seq_manuscript/misc/GenOOx/* perl-virtualenv/teraseq/lib/perl5/GenOOx/
 
+################################################################################
 ### Nanopolish
 # Default version
 RUN git clone --recursive https://github.com/jts/nanopolish.git \
@@ -132,6 +137,8 @@ RUN git clone --recursive https://github.com/jts/nanopolish.git \
     && sed -i 's#http://bitbucket.org/eigen/eigen/get/$(EIGEN_VERSION).tar.bz2#https://gitlab.com/libeigen/eigen/-/archive/$(EIGEN_VERSION)/eigen-$(EIGEN_VERSION).tar.bz2#' Makefile \
     && sed -i 's/tar -xjf $(EIGEN_VERSION).tar.bz2/tar -xjf eigen-$(EIGEN_VERSION).tar.bz2/' Makefile \
     && sed -i 's/eigen-eigen-\*/eigen-$(EIGEN_VERSION)/' Makefile \
+    && sed -i '27 i EIGEN_VERSION_MV ?= 'd9c80169e091a2c6e75ceb509f81764d22cf6a63 Makefile \
+    && sed -i 's/mv\ eigen-\$(EIGEN_VERSION)/mv\ eigen-\$(EIGEN_VERSION_MV)/' Makefile \
     && rm -rf fast5 \
     && git clone https://github.com/mateidavid/fast5.git \
     && cd fast5/ \
@@ -151,11 +158,13 @@ RUN git clone --recursive https://github.com/jts/nanopolish.git \
     && cd nanopolish-ab9722b/ \
     && git reset ab9722b --hard
 
+################################################################################
 ### Other dependencies
 # Make sure to activate Conda
 SHELL ["conda", "run", "-n", "teraseq", "/bin/bash", "-c"]
 
 ## GeneCycle
+# TODO: Install specific version of R package https://support.posit.co/hc/en-us/articles/219949047-Installing-older-versions-of-packages
 RUN Rscript -e 'install.packages("GeneCycle", repos="https://cloud.r-project.org")'
 
 ## Cutadapt
@@ -186,9 +195,15 @@ RUN mkdir ont-fast5-api \
 
 ## Jvarkit
 RUN git clone "https://github.com/lindenb/jvarkit.git" \
-    && cd jvarkit/ \
+    && mv jvarkit jvarkit-014d3e9 \
+    && cd jvarkit-014d3e9/ \
+    && git reset 014d3e9 --hard \
     && ./gradlew biostar84452 \
     && mkdir $CONDA_PREFIX/share/jvarkit \
-    && ln -s /root/jvarkit/dist/biostar84452.jar /root/miniconda3/envs/teraseq/share/jvarkit/remove-softlip.jar
+    && ln -s $(pwd)/dist/biostar84452.jar /root/miniconda3/envs/teraseq/share/jvarkit/remove-softlip.jar
+
+
+### Add utils dir to PATH
+ENV PATH "/usr/local/TERA-Seq_manuscript/tools/utils:${PATH}"
 
 WORKDIR /root/TERA-Seq_manuscript
