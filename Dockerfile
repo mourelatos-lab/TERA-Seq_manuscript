@@ -137,8 +137,8 @@ RUN git clone --recursive https://github.com/jts/nanopolish.git \
     && sed -i 's#http://bitbucket.org/eigen/eigen/get/$(EIGEN_VERSION).tar.bz2#https://gitlab.com/libeigen/eigen/-/archive/$(EIGEN_VERSION)/eigen-$(EIGEN_VERSION).tar.bz2#' Makefile \
     && sed -i 's/tar -xjf $(EIGEN_VERSION).tar.bz2/tar -xjf eigen-$(EIGEN_VERSION).tar.bz2/' Makefile \
     && sed -i 's/eigen-eigen-\*/eigen-$(EIGEN_VERSION)/' Makefile \
-    && sed -i '27 i EIGEN_VERSION_MV ?= 'd9c80169e091a2c6e75ceb509f81764d22cf6a63 Makefile \
-    && sed -i 's/mv\ eigen-\$(EIGEN_VERSION)/mv\ eigen-\$(EIGEN_VERSION_MV)/' Makefile \
+#    && sed -i '27 i EIGEN_VERSION_MV ?= 'd9c80169e091a2c6e75ceb509f81764d22cf6a63 Makefile \
+#    && sed -i 's/mv\ eigen-\$(EIGEN_VERSION)/mv\ eigen-\$(EIGEN_VERSION_MV)/' Makefile \
     && rm -rf fast5 \
     && git clone https://github.com/mateidavid/fast5.git \
     && cd fast5/ \
