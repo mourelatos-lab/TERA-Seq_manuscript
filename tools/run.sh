@@ -36,19 +36,19 @@ echo $PERL5LIB
 echo ">> INSTALL PERL - MODULES <<"
 # Note: If installation of a module fails, try to rerun the installation with `--force`.
 
-cpanm inc::Module::Install
-cpanm autodie
-cpanm DBI
-cpanm Devel::Size
-cpanm Getopt::Long::Descriptive
-cpanm IO::File
-cpanm IO::Interactive
-cpanm IO::Uncompress::Gunzip
-cpanm Params::Validate
-cpanm Params::Util
-cpanm Sub::Install
-cpanm Modern::Perl
-cpanm --force MooseX::App::Simple
+cpanm inc::Module::Install@1.19
+cpanm autodie@2.29
+cpanm DBI@1.642
+cpanm Devel::Size@0.83
+cpanm Getopt::Long::Descriptive@0.104
+cpanm IO::File@1.39
+cpanm IO::Interactive@1.022
+cpanm --force IO::Uncompress::Gunzip
+cpanm Params::Validate@1.29
+cpanm Params::Util@1.07
+cpanm Sub::Install@0.928
+cpanm Modern::Perl@1.20190601
+cpanm --force MooseX::App::Simple@1.41
 cpanm --force MooseX::App::Command
 cpanm --force MooseX::Getopt::Meta::Attribute::Trait::NoGetopt
 
@@ -63,7 +63,7 @@ cp -r GenOO_git/lib/GenOO/* GenOO/
 
 echo ">> INSTALL PERL - CLIPSeqTools <<"
 # Install CLIPSeqTools
-cpanm CLIPSeqTools
+cpanm CLIPSeqTools@0.1.9
 
 echo ">> INSTALL PERL - GenOOx minimap2 parser <<"
 cp -r $DIR/misc/GenOOx/* $INSTALL/perl-virtualenv/teraseq/lib/perl5/GenOOx/
@@ -115,7 +115,8 @@ echo ">>> INSTALL GeneCycle R PACKAGE <<<"
 # This R-package is not available from Conda so we have to install it manually
 # Installing packages manually in Conda environment is NOT recommended
 
-Rscript -e 'install.packages("GeneCycle", repos="https://cloud.r-project.org")'
+#Rscript -e 'install.packages("GeneCycle", repos="https://cloud.r-project.org")'
+Rscript -e 'install.packages("https://cran.r-project.org/src/contrib/GeneCycle_1.1.5.tar.gz", repos=NULL, type="source")'
 
 echo ">>> INSTALL CUTADAPT <<<"
 
@@ -155,14 +156,12 @@ deactivate
 echo ">>> INSTALL JVARKIT <<<"
 
 cd $INSTALL/
-git clone "https://github.com/lindenb/jvarkit.git" # commit "ebcbaba"
+git clone "https://github.com/lindenb/jvarkit.git" # commit "014d3e9"
 cd jvarkit/
-# Note: there has been substantial changes in the compilation recipe so we cannot reuse the 'ebcbaba' commit version; we provide the compiled jar in tools/utils but we recommend to compile your own
-#git reset ebcbaba --hard
+git reset 014d3e9 --hard
 ./gradlew biostar84452
-mkdir $CONDA_PREFIX/share/jvarkit # the git commit version
+mkdir $CONDA_PREFIX/share/jvarkit
 ln -s $INSTALL/jvarkit/dist/biostar84452.jar $CONDA_PREFIX/share/jvarkit/remove-softlip.jar
-#ln -s $INSTALL/tools/utils/biostar84452.jar $CONDA_PREFIX/share/jvarkit/remove-softlip.jar # Use this to link the used commit instead of the recent one
 
 echo ">>> INCREASE FASTQC RAM <<<"
 

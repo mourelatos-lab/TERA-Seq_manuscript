@@ -17,9 +17,9 @@ Using Docker is strongly recommended. The Docker container that could be used to
 
     docker pull joppelt/teraseq:latest
 
-If you don't have access do Docker, please follow the instructions for Conda environment installation below.
+If you don't have access do Docker, please follow the instructions for [manual installation below](#manual-installation).
 
-### Environment
+### Manual installation
 There are seven system requirements: **`git`**, **`gcc`**, **`make`**, **`wget`**, **`g++`**, **`zlib-dev`**, **`bzip2`**. `g++`, `zlib-dev`, and `bzip2` are Nanopolish requirements. If you don't plan to run Nanopolish, you can skip these two. You can install them (on Ubuntu) with:
 
     apt-get install -y git gcc make wget g++ zlib1g-dev bzip2
@@ -37,16 +37,19 @@ Most of the software used for the analyses can be installed using the provided C
 
 To get the Conda environment, you need to get Conda environment manager ([Miniconda](https://docs.conda.io/en/latest/miniconda.html) or [Conda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html)) first. We recommend Miniconda but Conda installation should work as well.
 
-Once you installed Conda manager (tested with `conda 4.9.0`) you can use the `teraseq.yml` file (recommended) file and install the environment:
+Once you installed Conda manager (tested with `conda 4.9.0`), we recommend to install [Mamba](https://mamba.readthedocs.io/en/latest/index.html) to significantly speed up the installation:
+
+    conda install mamba -n base -c conda-forge 
+
+Either w/ or w/o you can processed to install the main environment. We recommend to use the included yaml file `teraseq.yml`. Choose `mamba` or default `conda` installer, not both:
 
     cd TERA-Seq_manuscript/
-    conda env create -f teraseq-env.yml
+    # mamba env create -f teraseq-env.yml # If you installed Mamba
+    conda env create -f teraseq-env.yml # If you use base Conda installer
 
-This will install `teraseq` environment. In case yml installation doesn't work you can try to install the environment using the provided `teraseq-env.txt` using the same command.
+This will install `teraseq` environment. In case yaml installation doesn't work you can try to install the environment using the provided `teraseq-env.txt` using the same command.
 
-Note: To speed up the installation I would strongly recommend you to use [mamba](https://github.com/mamba-org/mamba).
-
-In case you need a manual installation, you can also use:
+In case you need a manual installation, you can also use (substitute `conda` for `mamba` if you installed it, it is going to be much faster):
 
     # Intiate environment
     conda create --name teraseq python=3.7
