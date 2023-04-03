@@ -12,68 +12,68 @@ cd tools/
 ./run.sh &> log.out
 
 echo ">>> COMPILING REFERENCES <<<"
-cd ../data/
+cd ${main_dir}/tools
 ./run.sh &> log.out
 
 #echo ">>> BASECALL FAST5 <<<"
 # Note: You have to populate fast5 directories first if you want to re-basecall
-#cd ../samples/
+#cd ${main_dir}/samples/
 #./run_Guppy.sh
 
 echo ">>> PREPARING SAMPLES <<<"
-cd ../samples/
+cd ${main_dir}/samples/
 ./run.sh &> log.out
 
 echo ">>> RUNNING ADAPTER LENGTH VISUALIZATION <<<"
-cd ../adapter/
+cd ${main_dir}/adapter/
 ./run.sh &> log.out
 
 echo ">>> RUNNING ALIGNMENT STATISTICS <<<"
-cd ../align-stats/
+cd ${main_dir}/align-stats/
 ./run.sh &> log.out
 
 echo ">>> RUNNING ANNOTATION CORRECTION AND META-COORDINATES <<<"
-cd ../metacoord_correction/
+cd ${main_dir}/metacoord_correction/
 ./run.sh &> log.out
 
 echo ">>> RUNNING CHANGES AFTER CORRECTION <<<"
-cd ../reannot-change/
+cd ${main_dir}/reannot-change/
 ./run.sh &> log.out
 
 echo ">>> RUNNING TRANSCRIPT COVERAGE <<<"
-cd ../trans-coverage/
+cd ${main_dir}/trans-coverage/
 ./run.sh &> log.out
 
 echo ">>> RUNNING POLY(A) LENGTH <<<"
-cd ../polya/
+cd ${main_dir}/polya/
 ./run.sh &> log.out
 
 echo ">>> RUNNING CAGE AND APA <<<"
-cd ../cage_apa/
+cd ${main_dir}/cage_apa/
 ./run.sh &> log.out
 
 echo ">>> RUNNING PROMOTER HEATMAP <<<"
-cd ../promoter-heatmap/
+cd ${main_dir}/promoter-heatmap/
 ./run.sh &> log.out
 
 echo ">>> RUNNING RELATIVE POSITION DISTRIBUTION <<<"
-cd ../relative-pos-distro/
+cd ${main_dir}/relative-pos-distro/
 ./run.sh &> log.out
 
 echo ">>> RUNNING CONSERVATION <<<"
-cd ../conservation/
+cd ${main_dir}/conservation/
 ./run.sh &> log.out
 
 echo ">>> RUNNING SIRV <<<"
-cd ../sirv/
+cd ${main_dir}/sirv/
 ./run.sh &> log.out
 
 echo ">>> RUNNING META-COORDINATES AND POLY(A) CORRELATION <<<"
-cd ../metacoord-vs-polya/
+cd ${main_dir}/metacoord-vs-polya/
 ./run.sh &> log.out
 
 echo ">>> RUNNING EXPRESSION CORRELATION <<<"
-cd ../expression/
+cd ${main_dir}/expression/
 ./run.sh &> log.out
 
 echo ">>> ALL DONE <<<"

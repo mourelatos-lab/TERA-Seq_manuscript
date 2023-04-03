@@ -372,7 +372,6 @@ echo ">>> MAKE MM10 REFERENCES <<<"
 
 assembly="mm10"
 
-mkdir -p $DATA_DIR/$assembly
 cd $DATA_DIR/$assembly/
 
 echo ">>> ADD RRNA ANNOTATION <<<"
