@@ -4,6 +4,8 @@
 # Can be overriden in individual scripts/steps
 #
 
+# Set CONDA_PREFIX; you can also export it before the analysis
+#CONDA_PREFIX="/root/miniconda3" # If you use Docker image
 #CONDA_PREFIX="/home/your_user_name/installation_dir/miniconda3" # Main path to the Conda if Conda path is loaded in your device by default
 
 CUR_DIR=$(pwd) # Current directory; useful for analyses

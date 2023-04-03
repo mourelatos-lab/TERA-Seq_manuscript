@@ -50,7 +50,7 @@ cpanm Sub::Install@0.928
 cpanm Modern::Perl@1.20190601
 cpanm --force MooseX::App::Simple@1.41
 cpanm --force MooseX::App::Command
-cpanm --force MooseX::Getopt::Meta::Attribute::Trait::NoGetopt
+cpanm --force MooseX::Getopt::Meta::Attribute::Trait::NoGetopt@0.74
 
 echo ">> INSTALL PERL - GENOO <<"
 # Note: Please use the GitHub version as the CPAN version is not up-to-date:
@@ -60,6 +60,7 @@ git reset 6527029 --hard
 cd ../
 mkdir GenOO
 cp -r GenOO_git/lib/GenOO/* GenOO/
+
 
 echo ">> INSTALL PERL - CLIPSeqTools <<"
 # Install CLIPSeqTools
@@ -116,7 +117,7 @@ echo ">>> INSTALL GeneCycle R PACKAGE <<<"
 # Installing packages manually in Conda environment is NOT recommended
 
 #Rscript -e 'install.packages("GeneCycle", repos="https://cloud.r-project.org")'
-Rscript -e 'install.packages("https://cran.r-project.org/src/contrib/GeneCycle_1.1.5.tar.gz", repos=NULL, type="source")'
+Rscript -e 'install.packages(c("longitudinal", "fdrtool"), repos = "http://cran.us.r-project.org"); install.packages("https://cran.r-project.org/src/contrib/GeneCycle_1.1.5.tar.gz", repos=NULL, type="source")'
 
 echo ">>> INSTALL CUTADAPT <<<"
 

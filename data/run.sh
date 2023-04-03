@@ -6,10 +6,11 @@
 source ../PARAMS.sh
 
 threads=8
-assembly="hg38"
 
 ####################################################################################################
 echo ">>> MAKE HG38 REFERENCES <<<"
+
+assembly="hg38"
 
 echo " >>> GET SILVA rRNA DATABASE <<<"
 # Download ribosomal sequences
@@ -62,7 +63,7 @@ wget -qO- ftp://ftp.ensembl.org/pub/release-91/fasta/homo_sapiens/dna/Homo_sapie
     > genome/genome.fa
 
 # Get chromosome sizes
-samtools faidx genome/genome.fa
+$CONDA_PREFIX/envs/teraseq/bin/samtools faidx genome/genome.fa
 cut -f1-2 genome/genome.fa.fai > chrom.sizes
 
 # Download Ensembl annotation
@@ -222,9 +223,12 @@ echo ">>> GET CAGE SIGNALS <<<"
 # CAGE data directly from FANTOM5 and convert to hg38 (hg19 in the database)
 # Get FANTOM5 HeLa only
 mkdir fantom5
-wget http://fantom.gsc.riken.jp/5/datafiles/latest/basic/human.cell_line.hCAGE/epitheloid%2520carcinoma%2520cell%2520line%253a%2520HelaS3%2520ENCODE%252c%2520biol_rep1.CNhs12325.10815-111B5.hg19.ctss.bed.gz -O fantom5/HeLa.rep1.hg19.ctss_chr.bed.gz
-wget http://fantom.gsc.riken.jp/5/datafiles/latest/basic/human.cell_line.hCAGE/epitheloid%2520carcinoma%2520cell%2520line%253a%2520HelaS3%2520ENCODE%252c%2520biol_rep2.CNhs12326.10816-111B6.hg19.ctss.bed.gz -O fantom5/HeLa.rep2.hg19.ctss_chr.bed.gz
-wget http://fantom.gsc.riken.jp/5/datafiles/latest/basic/human.cell_line.hCAGE/epitheloid%2520carcinoma%2520cell%2520line%253a%2520HelaS3%2520ENCODE%252c%2520biol_rep3.CNhs12327.10817-111B7.hg19.ctss.bed.gz -O fantom5/HeLa.rep3.hg19.ctss_chr.bed.gz
+#wget http://fantom.gsc.riken.jp/5/datafiles/latest/basic/human.cell_line.hCAGE/epitheloid%2520carcinoma%2520cell%2520line%253a%2520HelaS3%2520ENCODE%252c%2520biol_rep1.CNhs12325.10815-111B5.hg19.ctss.bed.gz -O fantom5/HeLa.rep1.hg19.ctss_chr.bed.gz
+#wget http://fantom.gsc.riken.jp/5/datafiles/latest/basic/human.cell_line.hCAGE/epitheloid%2520carcinoma%2520cell%2520line%253a%2520HelaS3%2520ENCODE%252c%2520biol_rep2.CNhs12326.10816-111B6.hg19.ctss.bed.gz -O fantom5/HeLa.rep2.hg19.ctss_chr.bed.gz
+#wget http://fantom.gsc.riken.jp/5/datafiles/latest/basic/human.cell_line.hCAGE/epitheloid%2520carcinoma%2520cell%2520line%253a%2520HelaS3%2520ENCODE%252c%2520biol_rep3.CNhs12327.10817-111B7.hg19.ctss.bed.gz -O fantom5/HeLa.rep3.hg19.ctss_chr.bed.gz
+wget https://fantom.gsc.riken.jp/5/datafiles/latest/basic/human.cell_line.hCAGE/epitheloid%2520carcinoma%2520cell%2520line%253a%2520HelaS3%2520ENCODE%252c%2520biol_rep1.CNhs12325.10815-111B5.hg19.ctss.bed.gz -O fantom5/HeLa.rep1.hg19.ctss_chr.bed.gz
+wget https://fantom.gsc.riken.jp/5/datafiles/latest/basic/human.cell_line.hCAGE/epitheloid%2520carcinoma%2520cell%2520line%253a%2520HelaS3%2520ENCODE%252c%2520biol_rep2.CNhs12326.10816-111B6.hg19.ctss.bed.gz -O fantom5/HeLa.rep2.hg19.ctss_chr.bed.gz
+wget https://fantom.gsc.riken.jp/5/datafiles/latest/basic/human.cell_line.hCAGE/epitheloid%2520carcinoma%2520cell%2520line%253a%2520HelaS3%2520ENCODE%252c%2520biol_rep3.CNhs12327.10817-111B7.hg19.ctss.bed.gz -O fantom5/HeLa.rep3.hg19.ctss_chr.bed.gz
 
 ## Download required files for liftover from hg19 to hg38
 wget http://hgdownload.cse.ucsc.edu/goldenPath/hg19/liftOver/hg19ToHg38.over.chain.gz -O hg19ToHg38.over.chain.gz
@@ -304,12 +308,13 @@ echo ">>> GET SIRV E2 REFERENCES <<<"
 mkdir -p $DATA_DIR/spikein/sirv
 cd $DATA_DIR/spikein/sirv/
 
-#wget https://www.lexogen.com/wp-content/uploads/2018/08/SIRV_Set1_Sequences_170612a-ZIP.zip # The original download link
-unzip $DATA_DIR/SIRV_Set1_Sequences_170612a-ZIP.zip -d .
-mv SIRV_Set1_Sequences_170612a\ \(ZIP\) SIRV_Set1_Sequences_170612a
-for i in SIRV_Set1_Sequences_170612a/*; do
-    dos2unix $i
-done
+#wget https://www.lexogen.com/wp-content/uploads/2018/08/SIRV_Set1_Sequences_170612a-ZIP.zip # The original download link - you would need to uncomment the following section and install `unzip` and `dos2unix`
+# unzip $DATA_DIR/SIRV_Set1_Sequences_170612a-ZIP.zip -d .
+# mv SIRV_Set1_Sequences_170612a\ \(ZIP\) SIRV_Set1_Sequences_170612a
+# for i in SIRV_Set1_Sequences_170612a/*; do
+#     dos2unix $i
+# done
+tar -xvf SIRV_Set1_Sequences_170612a.tar
 sed -i 's/SIRVome_isoforms/SIRV/' SIRV_Set1_Sequences_170612a/SIRVome_isoforms_170612a.fasta
 
 # Get only annotation and fasta E2 from SIRV Set 1

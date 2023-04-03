@@ -20,9 +20,11 @@ Using Docker is strongly recommended. The Docker container that could be used to
 If you don't have access do Docker, please follow the instructions for [manual installation below](#manual-installation).
 
 ### Manual installation
-There are seven system requirements: **`git`**, **`gcc`**, **`make`**, **`wget`**, **`g++`**, **`zlib-dev`**, **`bzip2`**. `g++`, `zlib-dev`, and `bzip2` are Nanopolish requirements. If you don't plan to run Nanopolish, you can skip these two. You can install them (on Ubuntu) with:
+There are seven system requirements: **`git`**, **`gcc`**, **`make`**, **`wget`**, **`g++`**, **`zlib-dev`**, **`bzip2`**. `g++`, `zlib-dev`, and `bzip2` are Nanopolish requirements. If you don't plan to run Nanopolish, you can skip these three. You can install them (on Ubuntu) with:
 
+    apt-get update
     apt-get install -y git gcc make wget g++ zlib1g-dev bzip2
+    # rm -rf /var/lib/apt/lists/*
 
 Make a local copy of this repository anywhere you want.
 
@@ -35,20 +37,23 @@ The individual analysis scripts **will assume the structure** from `PARAMS.sh`.
 #### Conda environment
 Most of the software used for the analyses can be installed using the provided Conda environment yml (or text) file. Some additional software had to be installed outside  Conda environment for various reason.
 
-To get the Conda environment, you need to get Conda environment manager ([Miniconda](https://docs.conda.io/en/latest/miniconda.html) or [Conda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html)) first. We recommend Miniconda but Conda installation should work as well.
+To get the Conda environment, you need to get Conda environment manager ([Miniconda](https://docs.conda.io/en/latest/miniconda.html) or [Conda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html)) first. We recommend Miniconda but Conda installation should work as well. The tested version is [Miniconda3-py37_23.1.0-1-Linux-x86_64](https://repo.anaconda.com/miniconda/Miniconda3-py37_23.1.0-1-Linux-x86_64.sh).
 
-Once you installed Conda manager (tested with `conda 4.9.0`), we recommend to install [Mamba](https://mamba.readthedocs.io/en/latest/index.html) to significantly speed up the installation:
+Once you installed Conda manager (tested with `conda 4.9.0`), we recommend to install [Mamba](https://mamba.readthedocs.io/en/latest/index.html) to significantly speed up the installation (90% of the time, it works every time):
 
     conda install mamba -n base -c conda-forge 
 
+
+##### From provided YAML file (recommended)
 Either w/ or w/o you can processed to install the main environment. We recommend to use the included yaml file `teraseq.yml`. Choose `mamba` or default `conda` installer, not both:
 
     cd TERA-Seq_manuscript/
     # mamba env create -f teraseq-env.yml # If you installed Mamba
     conda env create -f teraseq-env.yml # If you use base Conda installer
 
-This will install `teraseq` environment. In case yaml installation doesn't work you can try to install the environment using the provided `teraseq-env.txt` using the same command.
+This will install the `teraseq` environment. In case yaml installation doesn't work, you can try to install the environment using the provided `teraseq-env.txt` using the same command. If you need to install the dependencies manually, please follow instructions in the [manual Conda environment install](#manual-conda-environment-install).
 
+##### Manual Conda environment install
 In case you need a manual installation, you can also use (substitute `conda` for `mamba` if you installed it, it is going to be much faster):
 
     # Intiate environment
@@ -78,7 +83,7 @@ Note: If you get a lot of `ClobberError: This transaction has incompatible packa
 #### Additional software
 `tools` directory contains information additional software required for some of the analyses. Installation of the additioonal software **is included in the main** `run.sh`. If you wish to install it manually you can execute `run.sh` in the `tools` directory. We use virtual environments wherever possible.
 
-**Important: If your Conda main path is not exported by default, you have to specify `$CONDA_PREFIX` variable in `PARAMS.sh` file.**. If you **cannot** use Conda at this stage, you will need system-install **curl**, **Perl 5.22**, Perl **local::lib**, and **R 3.5.1**.
+**Important: If your Conda main path is not exported by default, you have to specify `$CONDA_PREFIX` variable in `PARAMS.sh` file.**. If you **cannot** use Conda at this stage, you will need system-wide install **curl**, **Perl 5.22**, Perl **local::lib**, and **R 3.5.1**.
 
     cd tools/
     ./run.sh

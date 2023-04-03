@@ -3,7 +3,7 @@ FROM ubuntu:16.04
 
 # LABEL about the custom image
 LABEL maintainer="jan.oppelt@pennmedicine.upenn.edu"
-LABEL version="0.2"
+LABEL version="0.3"
 LABEL description="This is custom Docker Image for \
 analysis of TERA-Seq publication (DOI: https://doi.org/10.1093/nar/gkab713)."
 
@@ -13,9 +13,9 @@ ARG DEBIAN_FRONTEND=noninteractive
 # Set default shell
 SHELL ["/bin/bash", "-c"]
 
-### System-wide requirements; cpanminus is not required if Perl uses virtual environment method; g++ and zlib1g-dev are required only for Nanopolish
+### System-wide requirements; cpanminus is not required if Perl uses virtual environment method; g++, zlib1g-dev, and bzip2 are required only for Nanopolish
 RUN apt-get update \
-    && apt-get install -y git gcc make wget g++ zlib1g-dev cpanminus curl bzip2 \
+    && apt-get install -y git gcc make wget g++ zlib1g-dev bzip2 \
     && rm -rf /var/lib/apt/lists/*
 
 ### Main GitHub repo
@@ -46,8 +46,8 @@ RUN sed -i 's/-Xmx250m/-Xmx5g/g' /root/miniconda3/envs/teraseq/opt/fastqc-*/fast
 
 #ENV PATH="${PATH}:/root/miniconda3/envs/teraseq/bin"
 
-RUN ln -s /root/miniconda3/envs/teraseq/bin/R /bin/R
-#   \ && ln -s /root/miniconda3/envs/teraseq/bin/curl /bin/curl
+RUN ln -s /root/miniconda3/envs/teraseq/bin/R /bin/R \
+    && ln -s /root/miniconda3/envs/teraseq/bin/curl /bin/curl
 
 ### Save default Conda path
 RUN sed -i '/CONDA_PREFIX/d' /root/TERA-Seq_manuscript/PARAMS.sh \
@@ -164,8 +164,8 @@ RUN git clone --recursive https://github.com/jts/nanopolish.git \
 SHELL ["conda", "run", "-n", "teraseq", "/bin/bash", "-c"]
 
 ## GeneCycle
-# TODO: Install specific version of R package https://support.posit.co/hc/en-us/articles/219949047-Installing-older-versions-of-packages
-RUN Rscript -e 'install.packages("GeneCycle", repos="https://cloud.r-project.org")'
+#RUN Rscript -e 'install.packages("GeneCycle", repos="https://cloud.r-project.org")'
+RUN Rscript -e 'install.packages(c("longitudinal", "fdrtool"), repos = "http://cran.us.r-project.org"); install.packages("https://cran.r-project.org/src/contrib/GeneCycle_1.1.5.tar.gz", repos=NULL, type="source")'
 
 ## Cutadapt
 RUN mkdir cutadapt-2.5 \
