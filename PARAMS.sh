@@ -8,8 +8,8 @@
 #CONDA_PREFIX="/root/miniconda3" # If you use default installation or the Docker image
 #CONDA_PREFIX="/home/your_user_name/installation_dir/miniconda3" # Main path to the Conda if Conda path is loaded in your device by default
 
-export PERL5LIB=${PERL5LIB}:${CONDA_PREFIX}/envs/teraseq/lib/site_perl/5.26.2/
-export PATH=${PATH}:${CONDA_PREFIX}/envs/teraseq/bin
+export PERL5LIB=${CONDA_PREFIX}/envs/teraseq/lib/site_perl/5.26.2/:${PERL5LIB}
+export PATH=${CONDA_PREFIX}/envs/teraseq/bin:${PATH}
 
 CUR_DIR=$(pwd) # Current directory; useful for analyses
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"

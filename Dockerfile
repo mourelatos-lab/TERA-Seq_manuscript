@@ -25,7 +25,6 @@ RUN git clone https://github.com/mourelatos-lab/TERA-Seq_manuscript.git
 ### Install Miniconda3
 ENV PATH "/root/miniconda3/bin:${PATH}"
 ARG PATH="/root/miniconda3/bin:${PATH}"
-RUN echo ${PATH}
 
 RUN wget \
     https://repo.anaconda.com/miniconda/Miniconda3-py37_23.1.0-1-Linux-x86_64.sh -O Miniconda3.sh \
@@ -89,6 +88,10 @@ WORKDIR /root/TERA-Seq_manuscript/tools
 #     && wget https://raw.githubusercontent.com/mourelatos-lab/TERA-Seq_manuscript/main/misc/GenOOx/Data/File/SAMminimap2/Record.pm -O /usr/local/share/perl/5.22.1/GenOOx/Data/File/SAMminimap2/Record.pm
 
 ## Virtual environment install (option 2)
+# Export Conda perl lib path (mainly for local::lib module)
+ENV PERL5LIB "/root/miniconda3/envs/teraseq/lib/site_perl/5.26.2/:${PERL5LIB}"
+ARG PERL5LIB="/root/miniconda3/envs/teraseq/lib/site_perl/5.26.2/:${PERL5LIB}"
+
 RUN git clone https://github.com/jizhang/perl-virtualenv.git \
     && cd perl-virtualenv/ \
     && git reset f931774 --hard \

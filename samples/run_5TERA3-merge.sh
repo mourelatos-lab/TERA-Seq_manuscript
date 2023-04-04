@@ -165,7 +165,7 @@ echo ">>> MERGE NANOPOLISH POLYA <<<"
 
 inlist="reads.1.sanitize.noribo.toTranscriptome.sorted.polya.tab"
 
-if [ `ls -1 -a hsa.dRNASeq.HeLa.total.REL5.long.REL3.[4,5,6]/fastq/.txt 2>/dev/null | wc -l` -eq 3 ]; then
+if [ `ls -1 -a hsa.dRNASeq.HeLa.total.REL5.long.REL3.[4,5,6]/align/${inlist} 2>/dev/null | wc -l` -eq 3 ]; then
     source $INSTALL/perl-virtualenv/teraseq/bin/activate
 
     table-cat \

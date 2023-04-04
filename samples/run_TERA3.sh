@@ -475,7 +475,7 @@ for i in "${samples[@]}"; do
     echo " Working for" $i
 
     if [ -d "$sdir/fast5" ]; then
-	if [ `find $sdir/fast5 -maxdepth 1 -type f -name '*.fast5' | wc -l` != 0 ]; then
+	    if [ `find $sdir/fast5 -maxdepth 1 -type f -name '*.fast5' | wc -l` != 0 ]; then
             nanopolish index \
                 --directory $sdir/fast5/ \
                 $sdir/fastq/reads.1.fastq.gz
@@ -503,11 +503,15 @@ for i in "${samples[@]}"; do
     sdir=$SAMPLE_DIR/$i
     echo " Working for" $i
 
-    annotate-sqlite-with-file \
-        --db_col_add "polya" --db_col_bind "qname" \
-        --db_tables "genome" --database "$sdir/db/sqlite.db" \
-        --ifile "$sdir/align/reads.1.sanitize.noribo.toTranscriptome.sorted.polya.filt.tab" \
-        --round &
+    if [ -f "$sdir/align/reads.1.sanitize.noribo.toTranscriptome.sorted.polya.filt.tab" ]; then
+        annotate-sqlite-with-file \
+            --db_col_add "polya" --db_col_bind "qname" \
+            --db_tables "genome" --database "$sdir/db/sqlite.db" \
+            --ifile "$sdir/align/reads.1.sanitize.noribo.toTranscriptome.sorted.polya.filt.tab" \
+            --round &
+    else
+        echo "It seems $sdir/align/reads.1.sanitize.noribo.toTranscriptome.sorted.polya.filt.tab doesn't exist. Not going to annotate the db with poly(A) tail lengths."
+    fi
 done
 wait
 
@@ -517,11 +521,15 @@ for i in "${samples[@]}"; do
     sdir=$SAMPLE_DIR/$i
     echo " Working for" $i
 
-    annotate-sqlite-with-file \
-        --db_col_add "polya" --db_col_bind "qname" \
-        --db_tables "transcr" --database "$sdir/db/sqlite.db" \
-        --ifile "$sdir/align/reads.1.sanitize.noribo.toTranscriptome.sorted.polya.filt.tab" \
-        --round &
+    if [ -f "$sdir/align/reads.1.sanitize.noribo.toTranscriptome.sorted.polya.filt.tab" ]; then
+        annotate-sqlite-with-file \
+            --db_col_add "polya" --db_col_bind "qname" \
+            --db_tables "transcr" --database "$sdir/db/sqlite.db" \
+            --ifile "$sdir/align/reads.1.sanitize.noribo.toTranscriptome.sorted.polya.filt.tab" \
+            --round &
+    else 
+        echo "It seems $sdir/align/reads.1.sanitize.noribo.toTranscriptome.sorted.polya.filt.tab doesn't exist. Not going to annotate the db with poly(A) tail lengths."
+    fi
 done
 wait
 
