@@ -69,7 +69,7 @@ In case you need a manual installation, you can also use (substitute `conda` for
     r=3.5.1 r-base \
     r-optparse=1.6.2 r-dplyr r-rio r-ggplot2 r-bit64 r-reshape2 r-devtools r-ggpubr \
     r-ggridges r-corrplot r-rsqlite r-futile.logger r-plyr r-readr r-scales r-viridis \
-    r-data.table r-yaml r-treemap r-venndiagram r-extrafont r-hdf5r r-patchwork \
+    r-data.table r-yaml r-treemap r-venndiagram r-extrafont r-hdf5r r-patchwork r-r.utils \
     bioconductor-ensembldb bioconductor-tximport bioconductor-dupradar bioconductor-gviz bioconductor-deseq2 \
     fastqc STAR=2.7.2b samtools">=1.10" bedtools=2.29.0 samblaster trimmomatic=0.39 \
     perl-cpan-shell perl-app-cpanminus perl-local-lib \

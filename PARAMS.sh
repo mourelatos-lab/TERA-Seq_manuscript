@@ -5,7 +5,7 @@
 #
 
 # Set CONDA_PREFIX; you can also export it before the analysis
-#CONDA_PREFIX="/root/miniconda3" # If you use Docker image
+#CONDA_PREFIX="/root/miniconda3" # If you use default installation or the Docker image
 #CONDA_PREFIX="/home/your_user_name/installation_dir/miniconda3" # Main path to the Conda if Conda path is loaded in your device by default
 
 export PERL5LIB=${PERL5LIB}:${CONDA_PREFIX}/envs/teraseq/lib/site_perl/5.26.2/
