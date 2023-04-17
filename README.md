@@ -3,7 +3,7 @@ This repository contains all the main tools and scripts needed to reproduce anal
 
 This repository will be archived as soon as the publication is accepted to keep the code in the same *version* as in the time of publication.
 
-# For **primary TERA-Seq data processing** we strongly recommend to use [**TERA-Seq Snakemake workflow**](https://github.com/opplatek/TERA-Seq_snakemake).
+# For **primary TERA-Seq data processing** we strongly recommend using [**TERA-Seq Snakemake workflow**](https://github.com/opplatek/TERA-Seq_snakemake).
 
 ## Samples
 **fast5** (basecalled, untrimmed) and **fastq** files can be found in the [`samples`](samples) directory.
