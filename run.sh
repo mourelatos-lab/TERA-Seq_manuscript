@@ -33,7 +33,7 @@ cd ${main_dir}/align-stats/
 ./run.sh &> log.out
 
 echo ">>> RUNNING ANNOTATION CORRECTION AND META-COORDINATES <<<"
-cd ${main_dir}/metacoord_correction/
+cd ${main_dir}/metacoord-correction/
 ./run.sh &> log.out
 
 echo ">>> RUNNING CHANGES AFTER CORRECTION <<<"

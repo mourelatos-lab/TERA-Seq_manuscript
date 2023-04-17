@@ -45,7 +45,7 @@ for err in $(seq 15 35); do
     done
 done > $RES_DIR/cmds.txt
 
-cat $RES_DIR/cmds.txt | parallel --eta -j $threads --load 95% --noswap '{}'
+cat $RES_DIR/cmds.txt | parallel -j $threads --load 95% --noswap '{}'
 rm $RES_DIR/cmds.txt
 
 echo ">>> TRIM ADAPTER - LIBRARIES <<<"
@@ -97,7 +97,7 @@ for sample in ${samples[@]}; do
     done
 done > $RES_DIR/cmds.txt
 
-cat $RES_DIR/cmds.txt | parallel --eta -j $threads --load 95% --noswap '{}'
+cat $RES_DIR/cmds.txt | parallel -j $threads --load 95% --noswap '{}'
 rm $RES_DIR/cmds.txt
 
 deactivate

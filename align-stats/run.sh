@@ -44,14 +44,14 @@ for i in "${samples[@]}"; do
     # Longest aligned read - it doesn't mean there is no softclipping or extensive splicing!!!
     samtools view -@ 1 -F 4 -F 256 -F 2048 $SAMPLE_DIR/$i/align/reads.1.sanitize.toGenome.sorted.bam \
         | awk '{print $1,$3,length($10)}' | sort -T . -k3,3nr -t ' ' > $RES_DIR/lengths/${i}.alignedReadLen.genome.full.txt &
-    samtools view -@ 1 -F 4 -F 256 -F 2048 $SAMPLE_DIR/$i/align/reads.1.sanitize.noribo.toTranscriptome.sorted.bam \
+    samtools view -@ 1 -F 4 -F 256 -F 2048 -F 16 $SAMPLE_DIR/$i/align/reads.1.sanitize.noribo.toTranscriptome.sorted.bam \
         | awk '{print $1,$3,length($10)}' | sort -T . -k3,3nr -t ' ' > $RES_DIR/lengths/${i}.alignedReadLen.transcriptome.full.txt &
 
     # Longest aligned section of the read (sum of bases); counts M, X, = and D, doesn't count N, I, ...
     samtools view -@ 1 -F 4 -F 256 -F 2048 $SAMPLE_DIR/$i/align/reads.1.sanitize.toGenome.sorted.bam \
         | perl -slane '$l = 0; $F[5] =~ s/(\d+)[MX=D]/$l+=$1/eg; print $F[0],"\t",$F[2],"\t",$l' | sort -T . -k3,3nr \
         > $RES_DIR/lengths/${i}.alignedReadPart.genome.full.txt &
-    samtools view -@ 1 -F 4 -F 256 -F 2048 $SAMPLE_DIR/$i/align/reads.1.sanitize.noribo.toTranscriptome.sorted.bam \
+    samtools view -@ 1 -F 4 -F 256 -F 2048 -F 16 $SAMPLE_DIR/$i/align/reads.1.sanitize.noribo.toTranscriptome.sorted.bam \
         | perl -slane '$l = 0; $F[5] =~ s/(\d+)[MX=D]/$l+=$1/eg; print $F[0],"\t",$F[2],"\t",$l' | sort -T . -k3,3nr \
         > $RES_DIR/lengths/${i}.alignedReadPart.transcriptome.full.txt &
 
@@ -97,7 +97,7 @@ samples=(
     "hsa.dRNASeq.HeLa.polyA.CIP.decap.REL5.long.1"
     "hsa.dRNASeq.HeLa.polyA.decap.REL5.long.1"
     "hsa.dRNASeq.HeLa.polyA.REL5.long.1"
-	"hsa.dRNASeq.HeLa.polyA.REL5OH.long.1"
+    "hsa.dRNASeq.HeLa.polyA.REL5OH.long.1"
     "hsa.dRNASeq.HeLa.total.REL5.long.REL3.4"
     "hsa.dRNASeq.HeLa.total.REL5.long.REL3.5"
     "hsa.dRNASeq.HeLa.total.REL5.long.REL3.6"

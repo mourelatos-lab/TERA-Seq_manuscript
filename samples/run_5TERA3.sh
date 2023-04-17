@@ -121,7 +121,8 @@ for i in "${samples[@]}"; do
     gunzip -c $sdir/fastq/reads.1.sanitize.rel5_trim.fastq.gz | seqkit seq -M $N \
     | gzip -c > $sdir/fastq/tmp2.fastq.gz
 
-    cat $sdir/fastq/tmp1.fastq.gz $sdir/fastq/tmp2.fastq.gz > $sdir/fastq/tmp.fastq.gz && rm $sdir/fastq/tmp1.fastq.gz $sdir/fastq/tmp2.fastq.gz
+    cat $sdir/fastq/tmp1.fastq.gz $sdir/fastq/tmp2.fastq.gz \
+        > $sdir/fastq/tmp.fastq.gz && rm $sdir/fastq/tmp1.fastq.gz $sdir/fastq/tmp2.fastq.gz
 
     cutadapt \
         -a GTGTCAGTCACTTCCA \
@@ -542,7 +543,8 @@ for i in "${samples[@]}"; do
                 --bam $sdir/align/reads.1.sanitize.noribo-nanopolish.toTranscriptome-total.sorted.bam \
                 --genome $DATA_DIR/$assembly/transcripts-total.fa \
                 --threads $threads \
-                > $sdir/align/reads.1.sanitize.noribo.toTranscriptome.sorted.polya.tab
+                > $sdir/align/reads.1.sanitize.noribo.toTranscriptome.sorted.polya.tab \
+                && touch $sdir/align/nanopolish-polya.done
         else
             echo "It seems that $sdir/fast5 directory is empty. Please check you downloaded and uncompressed fast5 tar.gz archive and placed the files in $sdir/fast5."
         fi

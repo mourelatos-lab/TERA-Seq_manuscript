@@ -191,6 +191,8 @@ if [ `ls -1 -a hsa.dRNASeq.HeLa.total.REL5.long.REL3.[4,5,6]/align/${inlist} 2>/
     annotate-sqlite-with-file --db_col_add "polya" --db_col_bind "qname" \
         --db_tables "transcr" --database "$sdir/db/sqlite.db" --ifile "$sdir/align/reads.1.sanitize.noribo.toTranscriptome.sorted.polya.filt.tab" \
         --round
+
+    touch touch $sdir/align/nanopolish-polya.done    
 else
     echo "It seems that $inlist doesn't exist for at least one of the samples. Please check you created hsa.dRNASeq.HeLa.total.REL5.long.REL3.[4,5,6]/fast5, downloaded and uncompressed fast5 tar.gz and placed the files in hsa.dRNASeq.HeLa.total.REL5.long.REL3.[4,5,6]/fast5 directories."
 fi

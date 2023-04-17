@@ -1,7 +1,11 @@
 #!/usr/bin/env python3
 #
 # # Add new SAM flag with number of mappings per read name
-# Add number of mappings per read by name. The goal is to avoid dependance on mapper MAPQ (or other way it assigns unique mappings). A very beta version. So far cannot handle chimeric and paired-end reads. TODO: Add support for paired-end reads (paired, singletons). TODO: Add support for chimeric reads. 
+# Add number of mappings per read by name. The goal is to avoid dependance on mapper MAPQ (or other way it assigns unique mappings). A very beta version. So far cannot handle chimeric and paired-end reads. 
+#
+#TODO: Add support for paired-end reads (paired, singletons). 
+#TODO: Add support for chimeric reads. 
+#
 
 import argparse
 import sys

@@ -365,7 +365,8 @@ for i in "${samples[@]}"; do
                 --bam $sdir/align/reads.1.sanitize.noribo.toTranscriptome.sorted.bam \
                 --genome $DATA_DIR/$assembly/transcripts.fa \
                 --threads $threads \
-                > $sdir/align/reads.1.sanitize.noribo.toTranscriptome.sorted.polya.tab
+                > $sdir/align/reads.1.sanitize.noribo.toTranscriptome.sorted.polya.tab \
+                && touch $sdir/align/nanopolish-polya.done
         else
             echo "It seems that $sdir/fast5 directory is empty. Please check you downloaded and uncompressed fast5 tar.gz archive and placed the files in $sdir/fast5."
         fi
